@@ -1,82 +1,45 @@
-# Sistema de Análise de Despesas Públicas
+# Andre Fiscaliza
 
-Plataforma em Python para coleta, processamento e detecção automatizada de erros, irregularidades e fraudes em despesas públicas das esferas Federal, Estadual e Municipal.
+Sistema de análise de despesas públicas reescrito em JavaScript/TypeScript para executar 100% na infraestrutura Cloudflare.
 
 ## Arquitetura
 
-- **Ingestão**: coletores de APIs e fontes públicas
-- **ETL**: limpeza, normalização, validação e enriquecimento
-- **Detecção**: regras determinísticas, estatística, grafos e ML
-- **Scoring**: cálculo de risco composto
-- **API**: FastAPI para consulta e execução de análises
-- **Dashboard/Relatórios**: visualização e exportação
-
-## Pré-requisitos
-
-- Python 3.11+
-- Docker e Docker Compose (opcional)
-
-## Instalação
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+```text
+Cloudflare Pages (Frontend HTML/CSS/JS)
+         ↕
+Cloudflare Workers (Backend API - TypeScript)
+         ↕
+Cloudflare D1 (SQLite) + Cloudflare R2 (Arquivos)
 ```
 
-## Configuração
+## Estrutura principal
 
-1. Copie o arquivo de exemplo:
-
-```bash
-cp .env.example .env
+```text
+andre-fiscaliza/
+├── wrangler.toml
+├── package.json
+├── tsconfig.json
+├── worker/src
+├── frontend/public
+├── frontend/assets
+└── schema.sql
 ```
 
-2. Preencha as variáveis sensíveis (tokens, credenciais e URLs).
+## Deploy
 
-## Execução
+1. `npm install`
+2. `wrangler d1 create andre-fiscaliza-db`
+3. `wrangler r2 bucket create andre-fiscaliza-docs`
+4. `wrangler d1 execute andre-fiscaliza-db --file=schema.sql`
+5. `wrangler deploy`
 
-### Coleta de dados
+## Credenciais padrão
 
-```bash
-python scripts/run_collection.py
-```
+- Usuário: `andre`
+- Senha: `fiscaliza2026`
 
-### Pipeline de análise
+## Identidade visual
 
-```bash
-python scripts/run_analysis.py
-```
-
-### API
-
-```bash
-uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Dashboard
-
-```bash
-python -m src.reporting.dashboard
-```
-
-## Testes
-
-```bash
-pytest -q
-```
-
-## Regras de detecção
-
-As regras configuráveis ficam em `config/rules.yaml` e as fontes em `config/sources.yaml`.
-
-## Contribuição
-
-1. Crie uma branch de feature
-2. Implemente e teste
-3. Abra PR com descrição objetiva
-
-## Licença
-
-MIT
+- Nome: **Andre Fiscaliza**
+- Proprietário: **Andre de Jesus Oliveira**
+- Cores: azul escuro `#1a237e`, dourado `#ffd600` e branco

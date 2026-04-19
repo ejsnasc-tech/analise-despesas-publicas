@@ -1,0 +1,20 @@
+name = "andre-fiscaliza"
+main = "worker/src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "andre-fiscaliza-db"
+database_id = "YOUR_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "andre-fiscaliza-docs"
+
+[vars]
+ADMIN_USER = "andre"
+ADMIN_PASSWORD_HASH = "fiscaliza2026"
+JWT_SECRET = "andre-fiscaliza-secret-2026"
+
+[site]
+bucket = "./frontend/public"
