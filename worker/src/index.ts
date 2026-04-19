@@ -70,20 +70,25 @@ export default {
       return Response.redirect(`${url.origin}/login`, 302);
     }
 
-    if (pathname === "/api/upload") return uploadRoute(request, env, username!);
-    if (pathname === "/api/dashboard") return dashboardRoute(env, username!);
-    if (pathname === "/api/documentos" && request.method === "GET") return listDocumentosRoute(request, env, username!);
+    if (isApi && !username) {
+      return Response.json({ ok: false, message: "Não autenticado" }, { status: 401 });
+    }
+    const authUser = username ?? "";
+
+    if (pathname === "/api/upload") return uploadRoute(request, env, authUser);
+    if (pathname === "/api/dashboard") return dashboardRoute(env, authUser);
+    if (pathname === "/api/documentos" && request.method === "GET") return listDocumentosRoute(request, env, authUser);
 
     const docMatch = pathname.match(/^\/api\/documentos\/(\d+)$/);
     if (docMatch) {
       const id = Number(docMatch[1]);
-      if (request.method === "GET") return getDocumentoRoute(env, username!, id);
-      if (request.method === "DELETE") return deleteDocumentoRoute(env, username!, id);
+      if (request.method === "GET") return getDocumentoRoute(env, authUser, id);
+      if (request.method === "DELETE") return deleteDocumentoRoute(env, authUser, id);
     }
 
     const downloadMatch = pathname.match(/^\/api\/documentos\/(\d+)\/download$/);
     if (downloadMatch && request.method === "GET") {
-      return downloadDocumentoRoute(request, env, username!, Number(downloadMatch[1]));
+      return downloadDocumentoRoute(request, env, authUser, Number(downloadMatch[1]));
     }
 
     return serveStatic(request, env);

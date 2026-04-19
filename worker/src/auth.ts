@@ -66,6 +66,20 @@ export function clearSessionCookie(): string {
   return `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 }
 
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
 export async function authenticateUser(
   db: D1Database,
   username: string,
@@ -78,11 +92,13 @@ export async function authenticateUser(
     .bind(username)
     .first<{ username: string; nome_completo: string; password_hash: string }>();
 
-  if (row && row.password_hash === password) {
+  const passwordHash = await sha256Hex(password);
+
+  if (row && timingSafeEqual(row.password_hash, passwordHash)) {
     return { username: row.username, nomeCompleto: row.nome_completo };
   }
 
-  if (username === fallbackUser && password === fallbackPassword) {
+  if (username === fallbackUser && timingSafeEqual(fallbackPassword, passwordHash)) {
     return { username: fallbackUser, nomeCompleto: "Andre de Jesus Oliveira" };
   }
 

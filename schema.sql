@@ -22,4 +22,4 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 INSERT OR IGNORE INTO usuarios (username, nome_completo, email, password_hash, criado_em)
-VALUES ('andre', 'Andre de Jesus Oliveira', '', 'fiscaliza2026', datetime('now'));
+VALUES ('andre', 'Andre de Jesus Oliveira', '', 'c4776115426be5e3e1a8b79c7adaa7d6af3fc916681881363342b3b5406a6c9c', datetime('now'));

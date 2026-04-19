@@ -59,13 +59,6 @@ export async function downloadDocumentoRoute(request: Request, env: Env, usernam
   const direct = url.searchParams.get("direct") === "1";
 
   if (!direct) {
-    const preset = await (env.BUCKET as unknown as { createPresignedUrl?: (o: { key: string; method: string; expiresIn: number }) => Promise<string> }).createPresignedUrl?.({
-      key: doc.r2_key,
-      method: "GET",
-      expiresIn: 600
-    });
-    if (preset) return Response.json({ downloadUrl: preset, expiresIn: 600 });
-
     return Response.json({ downloadUrl: `${new URL(request.url).origin}/api/documentos/${id}/download?direct=1`, expiresIn: 600 });
   }
 
