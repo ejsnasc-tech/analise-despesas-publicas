@@ -1,0 +1,13 @@
+rules:
+  bid_exemption_limits:
+    obras: 17600
+    servicos: 8800
+  price_zscore_threshold: 3.0
+  bid_splitting_days_window: 30
+  temporal_end_of_year_months: [11, 12]
+weights:
+  cnpj_invalido: 15
+  empresa_inidonea: 30
+  pagamento_duplicado: 20
+  sem_licitacao_acima_limite: 25
+  valor_invalido: 10

@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    command: python scripts/run_analysis.py
+    env_file: .env
+  dashboard:
+    build: .
+    command: python -m src.reporting.dashboard
+    env_file: .env
+    ports:
+      - "8050:8050"
+  api:
+    build: .
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    ports:
+      - "8000:8000"
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: despesas
+      POSTGRES_USER: despesas
+      POSTGRES_PASSWORD: despesas
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+  celery:
+    build: .
+    command: celery -A src.reporting.alert_system worker -l info
+    env_file: .env
+    depends_on:
+      - redis
+  flower:
+    image: mher/flower
+    command: ["flower", "--broker=redis://redis:6379/0"]
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
