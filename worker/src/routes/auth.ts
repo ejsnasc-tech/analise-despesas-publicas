@@ -2,7 +2,7 @@ import { authenticateUser, buildSessionCookie, clearSessionCookie, generateToken
 
 interface Env {
   DB: D1Database;
-  JWT_SECRET?: string;
+  JWT_SECRET: string;
 }
 
 export async function loginRoute(request: Request, env: Env): Promise<Response> {
@@ -27,7 +27,7 @@ export async function loginRoute(request: Request, env: Env): Promise<Response> 
     return Response.json({ ok: false, message: "Credenciais inválidas" }, { status: 401 });
   }
 
-  const token = await generateToken(user.username, env.JWT_SECRET ?? "fiscaliza-secret-2026-key");
+  const token = await generateToken(user.username, env.JWT_SECRET);
   const response = Response.json({ ok: true, user });
   response.headers.set("Set-Cookie", buildSessionCookie(token));
   return response;

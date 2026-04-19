@@ -80,6 +80,10 @@ function timingSafeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
+function isSha256Hex(value: string): boolean {
+  return /^[a-f0-9]{64}$/i.test(value);
+}
+
 export async function authenticateUser(
   db: D1Database,
   username: string,
@@ -92,8 +96,18 @@ export async function authenticateUser(
 
   const passwordHash = await sha256Hex(password);
 
-  if (row && (timingSafeEqual(row.password_hash, passwordHash) || timingSafeEqual(row.password_hash, password))) {
-    return { username: row.username, nomeCompleto: row.nome_completo };
+  if (row) {
+    if (isSha256Hex(row.password_hash)) {
+      if (timingSafeEqual(row.password_hash, passwordHash)) {
+        return { username: row.username, nomeCompleto: row.nome_completo };
+      }
+    } else if (timingSafeEqual(row.password_hash, password)) {
+      await db
+        .prepare("UPDATE usuarios SET password_hash = ? WHERE username = ? AND password_hash = ?")
+        .bind(passwordHash, row.username, row.password_hash)
+        .run();
+      return { username: row.username, nomeCompleto: row.nome_completo };
+    }
   }
 
   return null;
