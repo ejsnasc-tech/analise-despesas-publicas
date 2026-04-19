@@ -8,7 +8,13 @@ async function carregarDocumentos(page = 1) {
   if (tipo) params.set('tipo', tipo);
   if (busca) params.set('busca', busca);
 
-  const response = await fetch(`/api/documentos?${params.toString()}`);
+  let response;
+  try {
+    response = await fetch(`/api/documentos?${params.toString()}`);
+  } catch (err) {
+    console.error('Erro de rede ao carregar documentos:', err);
+    return;
+  }
   if (response.status === 401) {
     window.location.href = '/login';
     return;
@@ -21,19 +27,40 @@ async function carregarDocumentos(page = 1) {
   tbody.innerHTML = '';
   data.items.forEach((doc) => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${doc.id}</td>
-      <td>${doc.nome_arquivo}</td>
-      <td>${doc.tipo}</td>
-      <td>${doc.status}</td>
-      <td>${doc.score}</td>
-      <td><span class="badge ${String(doc.nivel).toLowerCase()}">${doc.nivel}</span></td>
-      <td>
-        <a href="/analise.html?id=${doc.id}">Ver análise</a> |
-        <a href="#" data-download="${doc.id}">Download</a> |
-        <a href="#" data-delete="${doc.id}">Excluir</a>
-      </td>
-    `;
+
+    const fields = [doc.id, doc.nome_arquivo, doc.tipo, doc.status, doc.score];
+    fields.forEach((value) => {
+      const td = document.createElement('td');
+      td.textContent = String(value);
+      tr.appendChild(td);
+    });
+
+    const tdNivel = document.createElement('td');
+    const badge = document.createElement('span');
+    badge.className = 'badge ' + String(doc.nivel).toLowerCase();
+    badge.textContent = doc.nivel;
+    tdNivel.appendChild(badge);
+    tr.appendChild(tdNivel);
+
+    const tdActions = document.createElement('td');
+    const linkAnalise = document.createElement('a');
+    linkAnalise.href = '/analise.html?id=' + encodeURIComponent(doc.id);
+    linkAnalise.textContent = 'Ver análise';
+    tdActions.appendChild(linkAnalise);
+    tdActions.appendChild(document.createTextNode(' | '));
+    const linkDownload = document.createElement('a');
+    linkDownload.href = '#';
+    linkDownload.setAttribute('data-download', doc.id);
+    linkDownload.textContent = 'Download';
+    tdActions.appendChild(linkDownload);
+    tdActions.appendChild(document.createTextNode(' | '));
+    const linkDelete = document.createElement('a');
+    linkDelete.href = '#';
+    linkDelete.setAttribute('data-delete', doc.id);
+    linkDelete.textContent = 'Excluir';
+    tdActions.appendChild(linkDelete);
+    tr.appendChild(tdActions);
+
     tbody.appendChild(tr);
   });
 

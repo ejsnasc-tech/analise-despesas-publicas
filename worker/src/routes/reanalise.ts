@@ -1,0 +1,47 @@
+import { analisarDocumento } from "../analise";
+
+interface Env {
+  DB: D1Database;
+  BUCKET: R2Bucket;
+}
+
+export async function reanaliseRoute(env: Env, username: string, id: number): Promise<Response> {
+  const doc = await env.DB
+    .prepare("SELECT * FROM documentos WHERE id = ? AND usuario = ?")
+    .bind(id, username)
+    .first<{ id: number; nome_arquivo: string; tipo: string; tamanho: number; r2_key: string }>();
+
+  if (!doc) {
+    return Response.json({ ok: false, message: "Documento não encontrado" }, { status: 404 });
+  }
+
+  const obj = await env.BUCKET.get(doc.r2_key);
+  if (!obj) {
+    return Response.json({ ok: false, message: "Arquivo não encontrado no storage" }, { status: 404 });
+  }
+
+  let conteudo: string | undefined;
+  let conteudoPdf: ArrayBuffer | undefined;
+  const tipo = doc.tipo || "";
+
+  if (tipo.includes("csv") || tipo.includes("text") || doc.nome_arquivo.endsWith(".csv")) {
+    conteudo = await obj.text();
+  } else if (tipo.includes("pdf") || doc.nome_arquivo.endsWith(".pdf")) {
+    conteudoPdf = await obj.arrayBuffer();
+  }
+
+  const resultado = await analisarDocumento({
+    nomeArquivo: doc.nome_arquivo,
+    tipo: tipo,
+    tamanho: doc.tamanho,
+    conteudo,
+    conteudoPdf,
+  });
+
+  await env.DB
+    .prepare("UPDATE documentos SET score = ?, nivel = ?, alertas = ?, status = 'concluido' WHERE id = ?")
+    .bind(resultado.score, resultado.nivel, JSON.stringify({ alertas: resultado.alertas, resumo: resultado.resumo }), id)
+    .run();
+
+  return Response.json({ ok: true, resultado });
+}

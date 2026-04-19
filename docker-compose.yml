@@ -19,9 +19,9 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: despesas
-      POSTGRES_USER: despesas
-      POSTGRES_PASSWORD: despesas
+      POSTGRES_DB: ${POSTGRES_DB:-despesas}
+      POSTGRES_USER: ${POSTGRES_USER:-despesas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
     ports:
       - "5432:5432"
   redis:

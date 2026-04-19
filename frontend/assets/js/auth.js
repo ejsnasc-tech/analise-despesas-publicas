@@ -3,18 +3,23 @@ async function login(event) {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
-  const response = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
 
-  if (response.ok) {
-    window.location.href = '/dashboard.html';
-    return;
+    if (response.ok) {
+      window.location.href = '/dashboard.html';
+      return;
+    }
+  } catch (err) {
+    console.error('Erro de rede ao fazer login:', err);
   }
 
   const card = document.querySelector('.login-card');
+  if (!card) return;
   card.classList.remove('shake');
   void card.offsetWidth;
   card.classList.add('shake');

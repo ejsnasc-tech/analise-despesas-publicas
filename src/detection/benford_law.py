@@ -16,11 +16,13 @@ class BenfordAnalysis:
 
     def analyze(self, values: list[float]) -> dict:
         """Computa distribuição observada e desvio absoluto médio."""
-        digits = [
-            int(str(v).lstrip("0")[0])
-            for v in values
-            if v and float(v) > 0 and str(v).lstrip("0")[0].isdigit()
-        ]
+        digits = []
+        for v in values:
+            if not v or float(v) <= 0:
+                continue
+            stripped = str(v).lstrip("0")
+            if stripped and stripped[0].isdigit():
+                digits.append(int(stripped[0]))
         total = len(digits) or 1
         observed_count = Counter(digits)
         observed = {

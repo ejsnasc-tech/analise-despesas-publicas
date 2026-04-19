@@ -31,7 +31,12 @@ class RulesEngine:
         service_limit = self.rules.get("bid_exemption_limits", {}).get("servicos", 8800)
 
         for row in rows:
-            if float(row.get("valor", 0) or 0) <= 0:
+            try:
+                valor = float(row.get("valor", 0) or 0)
+            except (ValueError, TypeError):
+                valor = 0.0
+
+            if valor <= 0:
                 alerts.append({"tipo": "VALOR_ZERADO_OU_NEGATIVO", "registro": row})
 
             if row.get("cnpj_fornecedor") in sanctioned:
@@ -39,7 +44,7 @@ class RulesEngine:
 
             if (
                 row.get("modalidade") == "DISPENSA"
-                and float(row.get("valor", 0) or 0) > service_limit
+                and valor > service_limit
             ):
                 alerts.append(
                     {"tipo": "CONTRATO_SEM_LICITACAO_INDEVIDO", "registro": row}

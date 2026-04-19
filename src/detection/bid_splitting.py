@@ -21,14 +21,20 @@ class BidSplittingDetector:
             for index, start in enumerate(ordered):
                 if not start.get("data_empenho"):
                     continue
-                start_date = datetime.fromisoformat(str(start["data_empenho"]))
+                try:
+                    start_date = datetime.fromisoformat(str(start["data_empenho"]))
+                except (ValueError, TypeError):
+                    continue
                 end_date = start_date + timedelta(days=days_window)
-                window = [
-                    item
-                    for item in ordered[index:]
-                    if item.get("data_empenho")
-                    and datetime.fromisoformat(str(item["data_empenho"])) <= end_date
-                ]
+                window = []
+                for item in ordered[index:]:
+                    if not item.get("data_empenho"):
+                        continue
+                    try:
+                        if datetime.fromisoformat(str(item["data_empenho"])) <= end_date:
+                            window.append(item)
+                    except (ValueError, TypeError):
+                        continue
                 total = sum(float(item.get("valor", 0) or 0) for item in window)
                 if total > limit and len(window) > 1:
                     alerts.append(

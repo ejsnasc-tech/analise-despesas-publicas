@@ -13,7 +13,9 @@ class PriceAnalysis:
         if not prices:
             return []
         avg = mean(prices)
-        std = pstdev(prices) or 1
+        std = pstdev(prices)
+        if std == 0:
+            return []
         return [
             {"valor": value, "zscore": (value - avg) / std}
             for value in prices

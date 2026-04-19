@@ -17,6 +17,9 @@ class TemporalAnalysis:
             date_value = row.get("data_pagamento") or row.get("data_empenho")
             if not date_value:
                 continue
-            if datetime.fromisoformat(str(date_value)).month in months:
-                critical += 1
+            try:
+                if datetime.fromisoformat(str(date_value)).month in months:
+                    critical += 1
+            except (ValueError, TypeError):
+                continue
         return critical / len(rows)

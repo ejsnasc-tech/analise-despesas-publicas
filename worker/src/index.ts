@@ -8,6 +8,7 @@ import {
 } from "./routes/documentos";
 import { loginRoute, logoutRoute } from "./routes/auth";
 import { uploadRoute } from "./routes/upload";
+import { reanaliseRoute } from "./routes/reanalise";
 
 interface Env {
   DB: D1Database;
@@ -55,6 +56,11 @@ export default {
 
     if (pathname === "/login") {
       if (request.method === "GET") return serveStatic(new Request(`${url.origin}/login.html`, request), env);
+      if (request.method === "POST") return loginRoute(request, env);
+      return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    if (pathname === "/api/login" && request.method === "POST") {
       return loginRoute(request, env);
     }
 
@@ -87,6 +93,11 @@ export default {
     const downloadMatch = pathname.match(/^\/api\/documentos\/(\d+)\/download$/);
     if (downloadMatch && request.method === "GET") {
       return downloadDocumentoRoute(request, env, authUser, Number(downloadMatch[1]));
+    }
+
+    const reanaliseMatch = pathname.match(/^\/api\/documentos\/(\d+)\/reanalisar$/);
+    if (reanaliseMatch && request.method === "POST") {
+      return reanaliseRoute(env, authUser, Number(reanaliseMatch[1]));
     }
 
     return serveStatic(request, env);

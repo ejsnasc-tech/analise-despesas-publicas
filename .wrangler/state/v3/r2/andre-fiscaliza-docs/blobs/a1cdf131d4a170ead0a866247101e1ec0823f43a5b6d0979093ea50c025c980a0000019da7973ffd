@@ -1,0 +1,4 @@
+cnpj_fornecedor,valor,data_pagamento,objeto,modalidade
+12345678000100,15000.00,2026-01-15,Consultoria em TI,DISPENSA
+98765432000199,8500.00,2026-02-20,Material de escritório,PREGAO
+11222333000144,22000.00,2026-11-28,Serviços de limpeza,DISPENSA

@@ -13,6 +13,9 @@ class ClusteringAnalysis:
         """Retorna rótulos de cluster via KMeans."""
         if KMeans is None:
             raise RuntimeError("scikit-learn não está instalado.")
+        if not features:
+            return []
+        n_clusters = min(n_clusters, len(features))
         return (
             KMeans(n_clusters=n_clusters, random_state=42, n_init="auto")
             .fit_predict(features)

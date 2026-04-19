@@ -1,0 +1,19 @@
+numero_empenho;data_empenho;cnpj_fornecedor;razao_social;objeto;modalidade;valor;orgao
+2026NE000101;15/01/2026;12345678000100;TechSol Ltda;Consultoria em sistemas;DISPENSA;7500.00;Secretaria de Educação
+2026NE000102;20/01/2026;12345678000100;TechSol Ltda;Consultoria em sistemas;DISPENSA;7200.00;Secretaria de Educação
+2026NE000103;28/01/2026;12345678000100;TechSol Ltda;Consultoria em sistemas;DISPENSA;6800.00;Secretaria de Educação
+2026NE000104;15/02/2026;98765432000199;Office Paper ME;Material de escritório;PREGAO;3200.00;Secretaria de Saúde
+2026NE000105;20/02/2026;98765432000199;Office Paper ME;Material de escritório;PREGAO;3200.00;Secretaria de Saúde
+2026NE000106;20/02/2026;98765432000199;Office Paper ME;Material de escritório;PREGAO;3200.00;Secretaria de Saúde
+2026NE000107;15/03/2026;11222333000144;CleanMax Serv;Serviços de limpeza;DISPENSA;12000.00;Secretaria de Administração
+2026NE000108;10/04/2026;55667788000155;Construmax Eng;Obra reforma escola;TOMADA_PRECOS;85000.00;Secretaria de Educação
+2026NE000109;12/04/2026;55667788000155;Construmax Eng;Obra reforma escola;TOMADA_PRECOS;85000.00;Secretaria de Educação
+2026NE000110;15/05/2026;99887766000111;MedPlus Dist;Medicamentos hospitalares;PREGAO;15000.00;Secretaria de Saúde
+2026NE000111;20/05/2026;99887766000111;MedPlus Dist;Medicamentos hospitalares;PREGAO;14800.00;Secretaria de Saúde
+2026NE000112;25/05/2026;99887766000111;MedPlus Dist;Medicamentos hospitalares;PREGAO;95000.00;Secretaria de Saúde
+2026NE000113;01/11/2026;44556677000122;InfoData Tec;Licenças de software;DISPENSA;8500.00;Secretaria de Administração
+2026NE000114;10/11/2026;44556677000122;InfoData Tec;Licenças de software;DISPENSA;8200.00;Secretaria de Administração
+2026NE000115;20/11/2026;33445566000133;Eventos Prime;Organização de eventos;INEXIGIBILIDADE;45000.00;Gabinete do Prefeito
+2026NE000116;05/12/2026;77889900000166;Combustível Express;Combustível para frota;PREGAO;22000.00;Secretaria de Transportes
+2026NE000117;15/12/2026;77889900000166;Combustível Express;Combustível para frota;PREGAO;0.00;Secretaria de Transportes
+2026NE000118;20/12/2026;11223344000177;Papel & Cia;Material de expediente;DISPENSA;4500.00;Secretaria de Educação

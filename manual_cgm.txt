@@ -1,0 +1,1458 @@
+﻿===== PAGE 1 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+MANUAL DE ROTINAS,
+CHECK LIST E FLUXOGRAMA
+DA DESPESA
+
+===== PAGE 2 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Apresenta├º├úo
+A Controladoria tem a miss├úo de estar presente junto aos administradores p├║blicos
+auxiliando- os no desempenho de suas fun├º├Áes e para isso exerce o controle financeiro,
+or├ºament├írio, operacional e patrimonial da Prefeitura Municipal de Est├óncia (PME), conforme
+preconiza a Cons(cid:415)tui├º├úo Federal de 1988, Lei Federal de 4.320 de 17 de mar├ºo 1964, a Lei Federal
+14.133, de 1┬║ de abril de 2021, a Lei Complementar 101 de 2000 e as Resolu├º├Áes dos Tribunais de
+Contas.
+Com a elabora├º├úo deste Manual, espera-se conseguir ins(cid:415)tucionalizar os procedimentos
+inerentes ao fluxograma da despesa, buscando atender aos princ├¡pios da efici├¬ncia, efic├ícia,
+economicidade e efe(cid:415)vidade. Atrav├®s da dissemina├º├úo do conhecimento, fazendo com que exista
+uma converg├¬ncia e racionaliza├º├úo das ro(cid:415)nas administra(cid:415)vas executadas pela en(cid:415)dade e ├│rg├úos
+p├║blicos municipais.
+1. INTRODU├ç├âO
+O presente Manual foi desenvolvido para orientar os servidores da PME quanto ├ás ro(cid:415)nas e
+procedimentos inerentes ao fluxo da despesa dentro da Prefeitura Municipal de Est├óncia. Sua
+apresenta├º├úo ├® flex├¡vel a qualquer modifica├º├úo posterior que se julgar necess├íria.
+Os obje(cid:415)vos maiores deste documento s├úo direcionar e uniformizar os procedimentos e
+ro(cid:415)nas, estabelecer uma sequ├¬ncia l├│gica ao fluxo da despesa dentro do munic├¡pio, de forma a
+garan(cid:415)r clareza e compreens├úo para todos que deste u(cid:415)lizem, al├®m de aumentar a efici├¬ncia e
+efic├ícia, com a consequente redu├º├úo de custos dos procedimentos administra(cid:415)vos.
+O fluxo da despesa compreende: planejamento da despesa, verifica├º├úo da necessidade,
+mo(cid:415)va├º├úo da despesa, aprova├º├úo do ordenador, cota├º├úo de pre├ºos pelo setor de compras, an├ílise
+inicial do ordenador com a verifica├º├úo de saldo financeiro e or├ºament├írio/quan(cid:415)ta(cid:415)vos e valores,
+aprova├º├úo da cota├º├úo, caso necessite de licita├º├úo, encaminhar primeiramente ├á Comiss├úo de
+Licita├º├úo, caso n├úo, empenho no Departamento de Contabilidade, aquisi├º├úo do objeto pelo Setor
+de Compras, recebimento pelo Almoxarifado e, caso bem permanente, seja tombado pelo Setor
+de Patrim├┤nio, o fiscal de contrato efetua o atesto da Nota Fiscal, caso o produto esteja nos termos
+do solicitado, liquida├º├úo da nota fiscal, precedida de an├ílise final (Check List) e autoriza├º├úo do
+pagamento e, por fim, ├á Tesouraria para enquadramento no Cronograma de Pagamentos,
+conforme disponibilidade de caixa da En(cid:415)dade, separa├º├úo documental e na Contabilidade;
+Os procedimentos apresentados ser├úo demonstrados em fluxograma e cada fase do fluxo da
+despesa ser├í devidamente detalhada no corpo deste manual.
+
+===== PAGE 3 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+2. PROCEDIMENTOS E ROTINAS
+Neste t├│pico ser├úo apresentados os procedimentos e ro(cid:415)nas inerentes a cada fase do processo
+de gera├º├úo da despesa p├║blica.
+2.1.PLANEJAMENTO
+Esta fase consiste na elabora├º├úo de planos e cronogramas a serem seguidos durante o
+exerc├¡cio financeiro. S├úo elementos b├ísicos de planejamento: Plano Plurianual (PPA), Lei de
+Diretrizes Or├ºament├írias (LDO) e a Lei Or├ºament├íria Anual (LOA).
+Contudo, cabe ao ordenador das despesas, juntamente com os setores estrat├®gicos de cada
+secretaria, elaborar uma rela├º├úo de despesas necess├írias ├á manuten├º├úo de suas a(cid:415)vidades,
+compreendendo o levantamento de itens a serem licitados no in├¡cio do exerc├¡cio, verificando o
+equil├¡brio financeiro e or├ºament├írio, a fim de atender as necessidades em conformidade com o
+Plano Anual de Contrata├º├Áes (PCA) que n├úo se deve apenas reportar aos itens elencados, mais ao
+cronograma de trabalho indicado por cada secretaria, visto indicar no referido documento a data
+de in├¡cio e finaliza├º├úo do processo de compra do material e/ou servi├ºo.
+O planejamento ├® de sua import├óncia para o perfeito funcionamento da Administra├º├úo da
+PME. Pois, se o planejamento for bem elaborado n├úo exis(cid:415)r├úo surpresas indesejadas durante o
+ano, fazendo com que a m├íquina p├║blica funcione a contento. Prevenindo o desperd├¡cio, uso
+inadequado, e a ociosidade.
+2.2.VERIFICA├ç├âO DA NECESSIDADE
+Essa fase consiste na verifica├º├úo da necessidade de u(cid:415)liza├º├úo daquele objeto que se deseja
+solicitar. Deve-se levar em considera├º├úo a demanda pelo objeto, em compara(cid:415)vo com os
+exerc├¡cios anteriores, n├║mero de usu├írios, prazo de u(cid:415)liza├º├úo, finalidade, quan(cid:415)dade a ser
+solicitada, etc. Essas s├úo orienta├º├Áes gen├®ricas que devem ser observadas para qualquer
+solicita├º├úo de despesa.
+2.3.MOTIVA├ç├âO DA DESPESA
+A mo(cid:415)va├º├úo da despesa ├® documento que comp├Áe o processo de despesa, nela ├® que
+constar├úo os argumentos que embasam a solicita├º├úo do objeto, conforme par├ómetros
+evidenciados no item anterior. Deve-se desprender bastante aten├º├úo ├á elabora├º├úo deste
+documento, pois ele nortear├í todo o processo da despesa. Serve de fonte de informa├º├úo para
+outros setores que par(cid:415)cipam do processo, por├®m que n├úo fizeram parte da solicita├º├úo, logo, n├úo
+conhecem o objeto, n├úo sabem a sua finalidade, possivelmente.
+S├úo elementos essenciais que comp├Áem a Mo(cid:415)va├º├úo da Despesa:
+*Setor requisitante;
+*Especifica├º├úo fidedigna do objeto a ser adquirido;
+*Quan(cid:415)dade a ser adquirida;
+*Prazo de dura├º├úo do objeto (per├¡odo que a demanda pelo objeto ser├í suportada);
+*Dota├º├úo or├ºament├íria: Elemento de Despesa e Sub-elemento;
+
+===== PAGE 4 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+*Fonte de recursos que cobrir├í a despesa;
+*Finalidade do objeto a ser adquirido;
+*Assinatura do solicitante;
+*Ci├¬ncia e aprova├º├úo do gestor do ├ôrg├úo.
+2.4.COTA├ç├âO DE PRE├çO
+Esta fase consiste em uma pesquisa de mercado para saber qual fornecedor oferece a
+condi├º├úo mais vantajosa para o ├│rg├úo, seja menor pre├ºo, maior desconto, melhor t├®cnica ou
+melhor pre├ºo e t├®cnica.
+├ë importante salientar, que para alcan├ºar o sucesso desta etapa do processo depende de
+perfeita especifica├º├úo do objeto a ser adquirido. De tal forma que uma pessoa que n├úo conhe├ºa o
+produto a ser solicitado possa adquiri-lo no mercado sem dificuldade de comunica├º├úo com o
+fornecedor, evitando assim pedidos de materiais que n├úo atendem ├á necessidade da En(cid:415)dade, por
+falha na especifica├º├úo do objeto. Contudo, n├úo se deve direcionar marca de produto, e sim, as
+caracter├¡s(cid:415)cas do objeto que melhor atendam ├á demanda do ente. Deve-se preocupar tamb├®m em
+n├úo caracterizar um objeto de forma que beneficie um fornecedor em detrimento de outros,
+configurando a burla e a capacidade de concorr├¬ncia, infringindo a lei de Licita├º├Áes.
+A cota├º├úo de pre├ºos realizada deve seguir o disposto na Instru├º├úo Norma(cid:415)va SEGES/ME n┬║ 65,
+de 07 de Julho de 2021, em especial o seu art. 5┬║:
+*composi├º├úo de custos unit├írios menores ou iguais ├á mediana do item correspondente nos
+sistemas oficiais de governo, como Painel de Pre├ºos ou banco de pre├ºos em sa├║de,
+observado o ├¡ndice de atualiza├º├úo de pre├ºos correspondente
+*contrata├º├Áes similares (desde que a maioria das caracter├¡s(cid:415)cas sejam compa(cid:417)veis com o
+produto/servi├ºos. Ex.: caneta esferogr├ífica / caneta azul, caf├® / caf├® sol├║vel 250 gramas) feitas pela
+Administra├º├úo P├║blica, em execu├º├úo ou conclu├¡das no per├¡odo de 1 (um) ano anterior ├á data da
+pesquisa de pre├ºos, inclusive mediante sistema de registro de pre├ºos, observado o ├¡ndice de
+atualiza├º├úo de pre├ºos correspondente. Obs.: Com rela├º├úo as atas registradas que s├úo aceitas como
+cota├º├úo, deve ser observado o hist├│rico do produto e os pre├ºos do mercado para que n├úo ocorra de
+ter item fracassado ou deserto, tornando o processo frustado e n├úo c├®lere;
+*dados de pesquisa publicada em m├¡dia especializada, de tabela de refer├¬ncia formalmente
+aprovada pelo Poder Execu(cid:415)vo Federal e de s├¡(cid:415)os eletr├┤nicos especializados ou de dom├¡nio amplo,
+desde que atualizados no momento da pesquisa e compreendidos no intervalos de at├® 6 (seis)
+meses de anteced├¬ncia da data de divulga├º├úo do edital, contendo a data e a hora de acesso;
+*pesquisa direta com, no m├¡nimo, 3 (tr├¬s) fornecedores, mediante solicita├º├úo formal de cota├º├úo, por
+meio de o(cid:304)cio ou e-mail, desde que seja apresentada jus(cid:415)fica(cid:415)va da escolha desses fornecedores e
+que n├úo tenham sido ob(cid:415)dos os or├ºamentos com mais de 6 (seis) meses de anteced├¬ncia da data
+de divulga├º├úo do edital; ou
+*pesquisa na base nacional de notas fiscais eletr├┤nicas, desde que a data das notas fiscais esteja
+compreendida no per├¡odo de at├® 1 (um) ano anterior ├á data de divulga├º├úo do edital, conforme
+disposto no Caderno de Log├¡s(cid:415)ca, elaborado pela Secretaria de Gest├úo da Secretaria Especial de
+Desburocra(cid:415)za├º├úo, Gest├úo e Governo Digital do Minist├®rio da Economia.
+Quando se tratar de pesquisa direta com fornecedores deve ser observados os crit├®rios
+abaixo:
+
+===== PAGE 5 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+*Pelo menos tr├¬s or├ºamentos, com solicita├º├úo formal da cota├º├úo e jus(cid:415)fica(cid:415)va da escolha
+pelo par├ómetro e das empresas;
+* As empresas cotadas devem ter objetos compa(cid:417)veis para contratar com a administra├º├úo
+p├║blica e ter em sua a(cid:415)vidade objeto social compa(cid:417)vel com o objeto do pedido, sendo verificado
+atrav├®s do comprovante de inscri├º├úo e de situa├º├úo cadastral (Cart├úo CNPJ);
+*Deve-se elaborar um mapa compara(cid:415)vo de pre├ºos, dando ├¬nfase ├á oferta ganhadora;
+* Deve exis(cid:415)r as informa├º├Áes b├ísicas do fornecedor, para que se possa entrar em contato
+com ele, caso se concre(cid:415)ze a inten├º├úo de compra, proceder o empenho da despesa, caso n├úo seja
+necess├íria a realiza├º├úo de procedimento licitat├│rio para aquisi├º├úo;
+Observa├º├úo: Existem exce├º├Áes na pesquisa de pre├ºos, visto que servi├ºos de obras/engenharia s├úo
+cotadas por sistema pr├│prio (ORSE/SINAPI), assim, n├úo seguido a forma tradicional de cota├º├úo.
+2.5.PROCEDIMENTO LICITAT├ôRIO
+Caso a despesa a ser realizada a(cid:415)nja limite para licita├º├úo, deve-se encaminhar o processo
+de compra, composto pelo Documento de Formaliza├º├úo de Demanda (DFD), Estudo T├®cnico
+Preliminar (ETP), Termo de Refer├¬ncia (TR) e/ou Projeto B├ísico (PB), Matriz de Risco, mo(cid:415)va├º├úo da
+despesa (jus(cid:415)fica(cid:415)va) e cota├º├úo de pre├ºos devidamente autorizada pelo Prefeito, ao Setor de
+Licita├º├Áes e Contratos (SLC) para que proceda a concorr├¬ncia p├║blica de acordo com a modalidade
+e o (cid:415)po que melhor atendam a necessidade da administra├º├úo.
+Sempre atentar para os prazos e limites de acordo com a modalidade de licita├º├úo a ser
+realizada, considerando os crit├®rios para avalia├º├úo quanto ao fracionamento de despesa, que s├úo:
+objeto semelhante, concomitantemente (verificar a tempes(cid:415)vidade da solicita├º├úo de compra) e a
+finalidade, verificando se a aquisi├º├úo est├í sendo mo(cid:415)vada por fato novo.
+Os demais procedimentos s├úo priva(cid:415)vos do Setor de Licita├º├Áes e Contratos (SLC). Por├®m, os
+agentes p├║blicos devem ter conhecimento b├ísico sobre o assunto, para evitar fracionamentos,
+compras irregulares, contrata├º├úo de pessoas/empresas inabilitadas e consequentemente,
+devolu├º├úo de recursos e outras penas administra(cid:415)vas, c├¡veis e/ou criminais, dependendo da
+natureza da infra├º├úo come(cid:415)da.
+2.6.EMPENHO DA DESPESA
+Esta etapa consiste na primeira fase da execu├º├úo da despesa, segundo a Lei Federal 4.320
+de 1964, conforme transcri├º├úo abaixo:
+Art. 58. O empenho de despesa ├® o ato emanado de autoridade competente que cria para o estado
+obriga├º├úo de pagamento pendente ou n├úo de implemento de condi├º├úo. [...] Art. 61. Para cada empenho
+ser├í extra├¡do um documento denominado "nota de empenho" que indicar├í o nome do credor, a
+representa├º├úo e a import├óncia da despesa bem como a dedu├º├úo desta do saldo da dota├º├úo pr├│pria.
+No munic├¡pio, atrav├®s deste manual, ins(cid:415)tui-se a mo(cid:415)va├º├úo da despesa como primeira fase
+da execu├º├úo da despesa p├║blica. Logo, ser├í o referido documento que embasar├í a solicita├º├úo de
+despesa, no qual resultar├í no empenho, conforme texto extra├¡do da lei em tela. Assim, ser├í um
+ato de compet├¬ncia do ordenador de despesa, que cria para a en(cid:415)dade a obriga├º├úo de pagamento,
+
+===== PAGE 6 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+dependente ou n├úo de implemento de condi├º├úo, configuram como empenho, licita├º├Áes, contratos,
+etc., sendo a nota de empenho o ato que cria esta obriga├º├úo para o munic├¡pio.
+Para que a solicita├º├úo de realiza├º├úo de despesa siga o processo, faz-se necess├írio o envio
+do processo para an├ílise da Controladoria Geral do Munic├¡pio. Este processo deve conter a DFD
+(mo(cid:415)va├º├úo), cota├º├úo de pre├ºos e informa├º├Áes contratuais do processo licitat├│rio quando for o
+caso, autoriza├º├Áes (├│rg├úo gerenciador e secretaria das finan├ºas), saldo or├ºament├írio suficiente
+para despesa e cer(cid:415)d├Áes de regularidade fiscal e trabalhista para que o controle interno municipal
+possa analisar e autorizar a despesa e o setor da contabilidade possa registrar o empenho e dar
+seguimento ├á solicita├º├úo.
+Conclui-se que para a despesa correr o curso sugerido neste manual, n├úo poder├í exis(cid:415)r
+empenho a posteriori, despesas empenhadas indevidamente, ou inexist├¬ncia de saldo de dota├º├úo
+or├ºament├íria para arcar com a obriga├º├úo vindoura.
+A Controladoria ir├í analisar as pe├ºas iniciais as quais devem ser analisadas tamb├®m pela
+Procuradoria Geral do Munic├¡pio e Setor de Licita├º├Áes e Contratos, segue demonstra(cid:415)vo abaixo:
+Pontos iden(cid:415)fic├íveis de an├ílise direta:
+´éÀ Controladoria Geral do Munic├¡pio ÔÇô An├ílise de Dota├º├úo Or├ºament├íria contendo todas as
+pe├ºas iniciais e emiss├úo de Parecer T├®cnico Final. Obs.: No que compete o Parecer Final, a
+Controladoria se resguardar├í a an├ílise da fase externa do processo de licita├º├úo.
+´éÀ Setor de Licita├º├Áes e Contratos ÔÇô Elabora├º├úo de Editais, Publica├º├úo, Condu├º├úo do Processo e
+Elabora├º├úo do Contrato.
+´éÀ Procuradoria Geral do Munic├¡pio ÔÇô An├ílise de editais e emiss├úo de Parecer Jur├¡dico.
+´éÀ Secretaria Especial da Casa Civil ÔÇô An├ílise do processo final.
+DAS ATRIBUI├ç├òES - De acordo com a Lei n┬║ 2.426/2025:
+Art. 24 ÔÇô ├Ç Procuradoria-Geral do Munic├¡pio compete, dentre
+outras atribui├º├Áes regulamentares:
+I - Fazer a representa├º├úo jur├¡dica do Munic├¡pio em qualquer
+ju├¡zo ou tribunal, atuando nos feitos em que haja interesse da
+Administra├º├úo Municipal;
+II - Receber, encaminhar e acompanhar os pedidos
+formulados pelo Minist├®rio P├║blico, Poder Judici├írio, ├ôrg├úos
+de Controle, dentre outros;
+III - Assessorar o Chefe do Poder Execu(cid:415)vo e demais ├│rg├úos
+da Administra├º├úo
+Municipal em assuntos de natureza jur├¡dica;
+IV - Elaborar e Revisar os Projetos de Leis, Decretos,
+Regulamentos, Medidas Provis├│rias e outros assuntos
+jur├¡dicos e administra(cid:415)vos da compet├¬ncia do Chefe do Poder
+Execu(cid:415)vo;
+V - Revisar as mensagens, prepara├º├úo e fundamenta├º├úo de
+raz├Áes de veto, observando os prazos legais para san├º├Áes
+
+===== PAGE 7 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+e/ou vetos;
+VI - Zelar pela observ├óncia das Leis, Decretos e outros atos do
+Execu(cid:415)vo;
+VII - Propor medidas necess├írias a uniformiza├º├úo dos
+entendimentos da legisla├º├úo municipal e organiza├º├úo das
+respec(cid:415)vas s├║mulas;
+VIII - Prestar assist├¬ncia aos processos judiciais e extrajudiciais
+referentes a desapropria├º├úo, aliena├º├úo e aquisi├º├úo de im├│veis
+pela Administra├º├úo Municipal ou que o Ente Municipal tenha
+interesse;
+IX - Analisar os contratos, conv├¬nios e outros instrumentos
+legais;
+X - Fazer a defesa dos atos oficiais pra(cid:415)cados pelo Prefeito,
+pelos Secret├írios e pelos demais agentes da Administra├º├úo
+Direta:
+XI - Redigir pareceres sobre consultas formuladas pelo
+Prefeito e demais ├│rg├úos da Administra├º├úo Municipal,
+concernentes aos assuntos jur├¡dicos administra(cid:415)vos;
+XII - Encaminhar sugest├Áes ao Prefeito e aos Secret├írios
+Municipais rela(cid:415)vas ├ás provid├¬ncias de ordem jur├¡dica de
+interesse p├║blico ou aptas a proporcionar a boa
+aplica├º├úo das Leis;
+XIII - Atuar na forma├º├úo e pagamento dos precat├│rios
+judiciais;
+XIV - Executar judicialmente a divida a(cid:415)va do Munic├¡pio;
+XV - Assessorar o prefeito quando da necessidade de
+contrata├º├úo de advogados terceirizados;
+XVI - Desempenhar demais a(cid:415)vidades afins e correlatas ├á
+a(cid:415)vidade jur├¡dica na forma determinada pelo Chefe do
+Execu(cid:415)vo e em conson├óncia com o ordenamento jur├¡dico
+vigente.
+Art. 30 - A Controladoria Geral do Munic├¡pio compete, dentre
+outras atribui├º├Áes regulamentares:
+I - Elaborar as normas de Controle Interno para os atos da
+Administra├º├úo;
+II - Efetuar o controle e a supervis├úo program├í(cid:415)ca nos
+processos licitat├│rios e contratuais no ├ómbito da
+Administra├º├úo P├║blica;
+III - Efetuar a supervis├úo, o acompanhamento e a fiscaliza├º├úo
+no cumprimento de conv├¬nios, ajustes e acordos firmados
+com a Administra├º├úo Municipal de Est├óncia;
+IV - Propor ao Chefe do Poder Execu(cid:415)vo Municipal, quando
+necess├írio, atualiza├º├úo e adequa├º├úo das normas de controle
+interno para os atos da administra├º├úo;
+V - Programar e organizar auditorias nas en(cid:415)dades
+administra(cid:415)vas, com periodicidade ao
+
+===== PAGE 8 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ao menos anual;
+VI - Programar e organizar auditorias nas en(cid:415)dades ou
+pessoas beneficiadas com recursos p├║blicos de munic├¡pio,
+com periodicidade ao menos anual;
+VII - Manifestar-se, expressamente, sobre as contas anuais
+do Prefeito, o qual tomou conhecimento das conclus├Áes
+nelas con(cid:415)das e encaminhar ao Tribunal de Contas
+Relat├│rio de Auditoria, com indica├º├úo ao gestor das
+providencias adotadas e a adotar para
+corrigir eventuais ilegalidades ou irregularidades, ressarcir
+danos causados ao er├írio, ou evitar a ocorr├¬ncia de falhas
+semelhantes, se forem detectadas;
+VIII - Auxiliar nas respostas aos pedidos formulados pelos
+├ôrg├úos de Controle;
+IX - Assessorar o Chefe do Poder Execu(cid:415)vo e demais org├úos
+da Administra├º├úo
+Municipal em assuntos de natureza cont├íbil e administra(cid:415)vo;
+X - Fiscalizar o cumprimento das Leis e atos emanados dos
+Poderes P├║blicos;
+XI - Emi(cid:415)r pareceres sobre consultas formuladas pelo
+Prefeito e demais ├│rg├úos da
+Administra├º├úo concernentes aos assuntos cont├íbil e
+administra(cid:415)vo;
+XII - Encaminhar sugest├Áes, recomenda├º├Áes e orienta├º├Áes ao
+Prefeito e aos Secret├írios
+Municipais rela(cid:415)vas as provid├¬ncias de ordem de interesse
+publico ou aptas a
+proporcionar a eficiente aplica├º├úo das Leis;
+XIII ÔÇô Sugerir ao Chefe do Poder Execu(cid:415)vo Municipal que
+solicite ao Tribunal de Contas a realiza├º├úo de auditorias;
+XIV - Sugerir ao Chefe do Poder Execu(cid:415)vo Municipal, na
+├ómbito da sua compet├¬ncia, a Instaura├º├úo de Processo
+Administra(cid:415)vo e acompanhar a sua realiza├º├úo, nas casos de
+descumprimento de norma de controle interno,
+caracterizando como grave infra├º├úo a norma cons(cid:415)tucional
+Iegal;
+XV - Assinar por seu (cid:415)tular, o Relat├│rio de Gest├úo Fiscal de
+que tratam os ar(cid:415)gos 54 e
+55 da LC n┬║ 101/2000, e demais relat├│rios da legisla├º├úo
+vigente;
+XVI ÔÇô Desempenhar demais a(cid:415)vidades afins e correlatas a
+Controladoria na forma
+determinada pelo Chefe do Execu(cid:415)vo Municipal e em
+conson├óncia com a legisla├º├úo vigente.
+
+===== PAGE 9 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Observa├º├úo: O processo de empenho ├® feito em duas fases: solicita├º├úo de empenho ÔÇô
+contrato (caso seja exigido no edital) ÔÇô nota de empenho.
+Observa├º├úo: Para fins de aferi├º├úo dos valores que atendam aos limites referidos nos incisos
+I e II do art. 75 da Lei Federal n┬║ 14.133, de 1┬║ de abril de 2021, dever├í ser observado o somat├│rio
+do que for despendido no exerc├¡cio financeiro pela respec(cid:415)va unidade gestora, com objetos de
+mesma natureza, entendidos como tais aqueles rela(cid:415)vos a contrata├º├Áes no mesmo ramo de
+a(cid:415)vidade.
+Considera-se mesmo ramo de a(cid:415)vidade, aqueles que se enquadrem no mesmo subelemento
+de despesa, assim iden(cid:415)ficado segundo regras da Resolu├º├úo n┬║ 267, de 25 de agosto de 2011, do
+Tribunal de Contas do Estado de Sergipe, e da Portaria n┬║ 448, de 13 de setembro de 2002, da
+Secretaria do Tesouro Nacional.
+O limite de valor estabelecido para os ├│rg├úos municipais n├úo se confunde com
+aqueles fixados para os Fundos Municipais, que ser├úo, para os fins deste Decreto, tratados como
+unidades or├ºament├írias aut├┤nomas. As compras, obras e servi├ºos contratados por cons├│rcio
+p├║blico ou por autarquia ou funda├º├úo qualificadas como ag├¬ncias execu(cid:415)vas devem observar o
+disposto no ┬º 2┬║ do art. 75 da Lei n┬║ 14.133, de 1┬║ de abril de 2021. N├úo se aplica o limite disposto
+├ás contrata├º├Áes a que se refere o ┬º 7┬║ do art. 75 da Lei n┬║ 14.133, de 1┬║ de abril de 2021. Nas
+hip├│teses de contrata├º├úo u(cid:415)lizada de forma indevida, o agente p├║bico respons├ível e o contratado
+poder├úo ser responsabilizados na forma da lei.
+2.7.SOLICITA├ç├âO DO MATERIAL OU SERVI├çO
+Depois de percorridos os passos anteriores, onde fora mo(cid:415)vada a despesa, comprovada a
+sua necessidade, viabilidade financeira e or├ºamentaria, realizada a licita├º├úo ou contrato, quando
+for o caso, feito o empenho da despesa e extra├¡da a nota de empenho, o material j├í poder├í ser
+solicitado, bem como o servi├ºo poder├í ser solicitado a sua execu├º├úo, atrav├®s da Ordem de
+Servi├ºo/Ordem de Fornecimento.
+O Setor de Compras da secretaria emi(cid:415)r├í a respec(cid:415)va ordem de compras/servi├ºos
+des(cid:415)nada a seu controle, ao fornecedor e para o Setor de almoxarifado, obje(cid:415)vando a confer├¬ncia
+no recebimento do bem/servi├ºo, as NFs devem ser emi(cid:415)das conforme Nota de Empenho e dever├í
+ser solicitado ao fornecedor que para cada NE a Nota Fiscal correspondente.
+A solicita├º├úo do material ou servi├ºo deve ser feita de acordo com a necessidade da
+administra├º├úo, verificando a disponibilidade de caixa para o cumprimento da obriga├º├úo de
+pagamento, que ap├│s a entrega do objeto ├® l├¡quido e certo.
+Em caso de presta├º├úo de servi├ºo, este deve ocorrer conforme seja conveniente a
+administra├º├úo e apresenta├º├úo em conjunto com o relat├│rio de a(cid:415)vidades. Por├®m se for material
+deve ser entregue no almoxarifado, respeitando os procedimentos a seguir.
+Observa├º├úo: Frisar que, em alguns certames como: Obras e servi├ºos de engenharia e atas
+de registro de pre├ºos apenas a nota de empenho n├úo servir├í de instrumento para aquisi├º├úo ou
+
+===== PAGE 10 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+execu├º├úo, mas a Ordem de Servi├ºo ou Ordem de Fornecimento, cabendo a an├ílise do edital de
+licita├º├úo para indicar a exig├¬ncia.
+2.8.ALMOXARIFADO
+2.8.1.BENS DE CONSUMO
+O recebimento que embasa a entrada do material ├® a nota de empenho e nota fiscal. A
+nota de empenho e a ordem de fornecimento configuram que o material a ser entregue
+corresponde com o material solicitado e autorizado pelo ordenador de despesa e a nota fiscal ├® o
+documento que caracteriza a entrega do material.
+Deve-se ter muita aten├º├úo por parte do agente respons├ível pelo recebimento do material
+para verificar a veracidade e legalidade da nota fiscal que est├í sendo entregue. Obedecendo aos
+seguintes crit├®rios:
+*Verificar a legalidade do documento;
+* Todas as notas fiscais devem ser atestadas pelo fiscal de contrato e o visto do
+respons├ível pelo almoxarifado, com carimbo contendo o nome e matr├¡cula do servidor, garan(cid:415)ndo
+o atesto do recebimento do material/servi├ºos;
+A sa├¡da de material adquirido deve ser feita com base na nota de fornecimento emi(cid:415)da
+pelo almoxarifado.
+Bem como os materiais guardados no almoxarifado dever├úo ser solicitados por escrito,
+mediante solicita├º├Áes onde fiquem comprovados o (cid:415)po do material, o nome e assinatura e a sua
+des(cid:415)na├º├úo.
+Vale salientar que n├úo ├® permi(cid:415)da a des(cid:415)na├º├úo gen├®rica, ou seja, o material deve ser
+dispensado para o setor que ser├í u(cid:415)lizado, por exemplo, n├úo pode ser requisitado pelo
+Departamento "tal" e sim para o setor especifico que ser├í u(cid:415)lizado o material.
+Observa├º├úo: Verificar que a legi(cid:415)midade da nota fiscal (para bens e materiais) ├® feita
+mediante o Portal da Nota Fiscal Eletr├┤nica (h(cid:425)ps://www.nfe.fazenda.gov.br/portal/consulta),
+mediante Chave de Acesso individual de cada nota e atesto do respons├ível pelo seu recebimento.
+2.8.2. BENS PERMANENTES
+Os materiais permanentes seguem a mesma ro(cid:415)na dos bens de consumo, contudo, quando
+recebidos pelos almoxarifados, o servidor respons├ível pelo controle dos bens permanentes deve
+ser requisitado ao almoxarifado da unidade gestora e aquele realizar├í o tombamento do bem
+(atrav├®s do controle patrimonial) e, ap├│s, registrar├í, afixando a plaqueta no objeto adquirido e o
+n├║mero do tombamento deve constar no Termo de Responsabilidade. Com este procedimento,
+deve-se (cid:415)rar c├│pia do documento, ficando a c├│pia no setor e original segue na pasta de
+pagamento para an├ílise final devidamente atestado para dar prosseguimento ao processo.
+
+===== PAGE 11 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Quando o bem for dispensado para o setor que ser├í u(cid:415)lizado, o respons├ível pela guarda do
+bem deve assinar um termo de responsabilidade, devendo ficar sob seu encargo informar ao setor
+de patrim├┤nio do munic├¡pio caso este bem seja movimentado para outra unidade.
+Observa├º├úo: Consideradas as demais de formas de recebimento de bens: transfer├¬ncia,
+comodato, aliena├º├úo e desapropria├º├úo deve-se constar na juntada de documentos o Termo de
+Transfer├¬ncia do bem, seja ele por comodado ou doa├º├úo. Em caso de aliena├º├úo deve ser dada
+baixa patrimonial ap├│s a conclus├úo do processo de leil├úo seguindo todos os tr├ómites de baixa pela
+Comiss├úo de Materiais e Patrim├┤nio cons(cid:415)tu├¡da, e em caso de desapropria├º├úo verificar a legisla├º├úo
+municipal que autoriza o ato junto a Procuradoria.
+2.9.LIQUIDA├ç├âO DA DESPESA
+Esta fase consiste no reconhecimento, por parte do ├│rg├úo, da obriga├º├úo de pagamento
+junto ├á terceiro, conforme ar(cid:415)gos transcritos da Lei Federal n. 4.320, de 1964, a seguir:
+ÔÇ£Art. 62. O pagamento da despesa s├│ ser├í efetuado quando ordenado ap├│s sua
+regular liquida├º├úo.
+Art. 63. A liquida├º├úo da despesa consiste na verifica├º├úo do direito adquirido pelo credor
+tendo por base os (cid:417)tulos e documentos comprobat├│rios do respec(cid:415)vo cr├®dito.
+┬º1┬║ Essa verifica├º├úo tem por fim apurar:
+I- A origem e o objeto do que se deve pagar;
+II- A import├óncia exata a pagar;
+III- A quem se deve pagar a import├óncia, para ex(cid:415)nguir a obriga├º├úo.
+┬º2┬║ A liquida├º├úo da despesa por fornecimentos feitos ou servi├ºos prestados ter├í por base:
+I- O contrato, ajuste ou acordo respec(cid:415)vo;
+II- A nota de empenho;
+III- Os comprovantes da entrega de material ou da presta├º├úo efe(cid:415)va do servi├ºo.ÔÇØ
+Os (cid:415)pos de documentos comprobat├│rios referidos no ar(cid:415)go supracitado s├úo exatamente as
+notas fiscais, recibos e relat├│rio de a(cid:415)vidades, devidamente atestado pelos respons├íveis. Somente
+com base nesses documentos ├® que o departamento de contabilidade, precedido de an├ílise
+pr├®via, registrar├í a liquida├º├úo da despesa, para ent├úo enviar o processo para a tesouraria e ser
+inserido na programa├º├úo de pagamento.
+A emiss├úo da Nota Fiscal deve ser logo posterior a conclus├úo do servi├ºo, o que deve ser
+obedecida a ordem cronol├│gica. Em casos excepecionais esta ordem n├úo ser├í seguida em
+a(cid:415)vidades que comprometam as a├º├Áes final├¡s(cid:415)cas do poder p├║blico e em casos espec├¡ficos da Lei
+Federal n┬║ 14.133/2021 a exemplo de: pagamento da presta├º├úo de servi├ºo de ├ígua e esgoto e
+energia el├®trica.
+
+===== PAGE 12 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Por fim, outro ponto importante ├® no que tange as reten├º├Áes das consigna├º├Áes, previd├¬ncia
+social, IR que devem ser feitas conforme o Decreto Municipal n┬║ 8.419/2023 legi(cid:415)mando as
+al├¡quotas e incid├¬ncia do Imposto de Renda nas notas de presta├º├úo de servi├ºos e de materiais,
+como tamb├®m, o C├│digo Tribut├írio Municipal que regulamenta os descontos de ISS, sendo
+observado cada caso. E ap├│s a reten├º├úo deve-se efetuar o recolhimento at├® o prazo legal, para n├úo
+configurar apropria├º├úo ind├®bita e consequentemente penalidade do gestor. Vale ressaltar que
+antes de efetuar algum pagamento, verificar as regularidades fiscais junto aos ├│rg├úos
+competentes.
+2.10.PAGAMENTO
+Ap├│s o recebimento do material ou servi├ºo e o processo encontrar-se devidamente
+liquidado pelo departamento de Administra├º├úo e Contabilidade, com a an├ílise pr├®via, conforme
+confer├¬ncia com o Check List (em anexo) a tesouraria pode receber o processo de despesa e
+programar o pagamento.
+Nesta etapa deve-se ter bastante aten├º├úo para que n├úo sejam realizados pagamentos com
+atraso, pois os juros e multas posteriormente poder├úo devolvidos pelos ordenadores de despesa.
+Nos casos em que houver a iden(cid:415)fica├º├úo direta do agente respons├ível, o processo dever├í est├í
+instru├¡do da autoriza├º├úo de desconto em folha de pagamento do valor correspondente
+devidamente assinado pelo servidor e o recebido pelo setor de recursos humanos. Quando n├úo for
+iden(cid:415)ficado o respons├ível, dever├í ser aberto processo de sindic├óncia administra(cid:415)va para apura├º├úo
+de responsabiliza├º├úo, sendo necess├írio acostar a comprova├º├úo da sua abertura no processo de
+pagamento.
+Referente a previd├¬ncia social faz-se necess├íria preocupa├º├úo redobrada referente ├á cess├úo
+da m├úo-de-obra, presta├º├úo de servi├ºo aut├┤noma, obras de engenharia e transporte de cargas e/ou
+passageiros. Essas a(cid:415)vidades recebem tratamento especial. N├úo devendo deixar de informar ├á
+previd├¬ncia social, atrav├®s da GPS (Guia de Previd├¬ncia Social), as remunera├º├Áes pagas a terceiros
+e recolhidas, pois a aus├¬ncia desta informa├º├úo est├í sujeita ├ás penalidades legais, incluindo multas,
+arbitramentos, e devolu├º├úo de recursos por parte dos gestores. Pois ├® atrav├®s desta informa├º├úo
+que o contribuinte ter├í direito aos bene(cid:304)cios da seguridade social.
+Observa├º├úo: Todos os descontos de Previd├¬ncia Social, expressos em Nota Fiscal devem
+ser repassados ├á Receita Federal mediante DARF (Documento de Arrecada├º├úo da Receita Federal),
+e suas dedu├º├Áes informadas mensalmente na EFD-Reinf e DCTF-Web.
+3. CONSIDERA├ç├òES FINAIS
+Atrav├®s deste trabalho buscou-se difundir conhecimentos no tocante ├á execu├º├úo da
+despesa p├║blica, adequando ├á realidade da Prefeitura Municipal de Est├óncia visando trazer maior
+harmonia nas rela├º├Áes intersetoriais, considerando que o munic├¡pio ├® um sistema integrado
+formado por unidades or├ºament├írias que realizam a(cid:415)vidades que possuem uma
+interdepend├¬ncia, onde um setor depende do outro para funcionar com efici├¬ncia e efic├ícia. Para
+isso, faz-se necess├írio o conhecimento ins(cid:415)tucionalizado de todo o processo por parte dos agentes
+envolvidos, a par(cid:415)r do ordenador de despesas, que ├® o maior respons├ível pelo sucesso ou fracasso
+de uma administra├º├úo, podendo ser penalizados posteriormente por procedimentos inadequados
+
+===== PAGE 13 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+efetuados em sua gest├úo, em consequ├¬ncia da falta de informa├º├úo e capacita├º├úo dos profissionais
+envolvidos no processo produ(cid:415)vo.
+Ra(cid:415)ficamos enfim que a Controladoria Geral do Munic├¡pio dever├í criar, norma(cid:415)zar e
+publicar os respec(cid:415)vos manuais do procedimento em atendimento ao que determina a legisla├º├úo
+per(cid:415)nente os quais ser├úo objetos de auditorias ro(cid:415)neiras por parte deste ├ôrg├úo Controle Interno.
+Outrossim, contamos com a ado├º├úo imediata do uso destes roteiros que buscam uniformizar
+os procedimentos legais no bom uso das verbas p├║blicas pra(cid:415)cadas por gestores e ordenadores de
+despesas
+Est├óncia (SE), 10 de fevereiro de 2026.
+Teresa Roselange Barreto Costa
+Controladora Geral do Munic├¡pio
+Decreto n┬║ 8.928/2025
+
+===== PAGE 14 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO I ÔÇô DESPACHO
+Estado de Sergipe
+Munic├¡pio de Est├óncia
+Controladoria Geral do Munic├¡pio
+(79) 3522-1143. Pra├ºa Bar├úo do Rio Branco, n┬║ 76, centro (49.200-000)
+DESPACHO
+Processo n┬║ Data:
+├ôrg├úo: Valor:
+Modalidade de Licita├º├úo: Elemento de despesa:
+Dota├º├úo Or├ºament├íria: Programa: A├º├úo:
+Em an├ílise ao processo verificamos:
+- OR├çAMENTOS
+Falta assinatura do respons├ível pela cota├º├úo dos pre├ºos
+Falta autoriza├º├úo do secret├írio
+Iden(cid:415)fica├º├úo do fornecedor/prestador incorreta em:
+Especifica├º├úo incorreta: quan(cid:415)dade, valor unit├írio e total
+SOLICITA├ç├âO DE EMPENHO
+Iden(cid:415)fica├º├úo da Secretaria incorreta
+Data anterior ao or├ºamento
+Falta autoriza├º├úo do secret├írio
+Valor n├úo corresponde ao or├ºamento
+Contratado n├úo corresponde a proposta mais vantajosa
+Quan(cid:415)dade de di├írias para deslocamento incorreta
+Falta assinatura do prefeito/gestor
+CLASSIFICA├ç├âO ECON├öMICA
+├ôrg├úo incorreto
+Unidade or├ºament├íria incorreta
+A├º├úo incorreta
+Projeto/a(cid:415)vidade incorreto
+Natureza da despesa incorreta
+Sub-elemento incorreto
+Fonte de recurso incorreta
+TIPO DO EMPENHO INCORRETO
+BASE LEGAL INCORRETA
+HIST├ôRICO (O qu├¬? Como? Quando? Onde? Obje(cid:415)vo? Jus(cid:415)fica(cid:415)va?)
+Objeto divergente do requerido e/ou da natureza da despesa
+Falta discriminar local do evento
+Falta discriminar data do evento
+Falta discriminar Objeto
+CERTID├òES NEGATIVAS
+Cer(cid:415)d├úo n├úo corresponde ao fornecedor
+Cer(cid:415)d├úo vencida
+Falta cer(cid:415)d├úo
+NOTA DE EMPENHO
+Falta assinatura do secret├írio
+Falta assinatura do encarregado do setor de empenho
+Diverg├¬ncia em rela├º├úo a solicita├º├úo de empenho em:
+NOTA FISCAL
+Nota fiscal emi(cid:415)da anterior ao empenho
+Nota fiscal sem atesto do recebimento do material, servi├ºo ou obra
+Nota fiscal sem atesto do almoxarifado ou patrim├┤nio
+Nota fiscal com hist├│rico incorreto
+Nota fiscal com dados do fornecedor incorretos em:
+Nota fiscal precisa ser eletr├┤nica
+Nota fiscal com valor incorreto
+Diverg├¬ncia em rela├º├úo a nota de empenho em:
+- OUTRAS OBSERVA├ç├òES
+Est├óncia-SE, de de 2026.
+Analista
+
+===== PAGE 15 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO II ÔÇô SOLICITA├ç├òES DE DI├üRIAS
+Estado de Sergipe
+Munic├¡pio de Est├óncia
+Secretaria Municipal XXXXXXX
+Endere├ºo xxxxxxxxxxxxxx.
+SOLICITA├ç├âO DE DI├üRIA
+DADOS GERAIS
+Nome
+CPF
+Matr─▒c╠ü ula
+Cargo
+Nu╠ümero de dia╠ürias
+Valor Unita╠ürio R$
+Valor Total R$
+Motivo do deslocamento
+Local do evento
+Hora╠ürio e Descri├ºa╠âo da programa├ºa╠âo
+Origem da Viagem UF Data da Sa─▒d╠ü a Hora da Sa─▒╠üda
+Destino da Viagem UF Data do retorno Hora do retorno
+0bs. Deve ser justi(cid:976)icado, se for o caso, o in─▒╠ücio do deslocamento em data anterior a╠Ç do evento, e o te╠ürmino do
+deslocamento em data posterior a╠Ç da (cid:976)inaliza├ºa╠âo do evento.
+JUSTIFICATIVA
+TERMO DE COMPROMISSO
+Comprometo-me a apresentar Relato╠ürio de Viagem acompanhado de comprovantes de deslocamento, comprovantes
+de participa├ºa╠âo em cursos e demais documentos que comprovem a realiza├ºa╠âo da viagem, conforme disposto no art.
+8┬║ da Resolu├ºa╠âo TCE n┬║ 297/2016, no prazo de 05 dias u╠üteis, sob pena de sofrer as san├ºo╠âes cab─▒╠üveis, como
+ressarcimento ao era╠ürio no prazo de 48h, suspensa╠âo da mesma e demais penalidades.
+___________________________________________________________________
+BENEFICIA(cid:437)RIO
+DEFERIDO ( ) INDEFERIDO( )
+AUTORIDADE COMPETENTE
+SECRET├üRIA MUNICIPAL
+
+===== PAGE 16 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+RELAT├ôRIO DE VIAGEM ÔÇô UTILIZA├ç├âO DA D├ì├üRIA
+RESOLU├ç├âO N┬║ 297/2016
+1) IDENTIFICA├ç├âO
+O(cid:437)rga╠âo:
+Nome do Servidor Bene(cid:976)iciado
+N┬║ do empenho da libera├ºa╠âo da dia╠üria
+2) DESTINO DO SERVIDOR BENEFICI├üRIO
+Destino
+Data da sa─▒d╠ü a
+Data de chegada
+3) ATIVIDADES RELACIONADAS
+(descrever de forma sucinta as atividades realizadas e os conhecimentos adquiridos)
+4) Canhotos comprovantes do deslocamento (passagens -o╠énibus ou avia╠âo, abastecimento da viatura
+utilizada por meio de nota (cid:976)iscal informando a placa do ve─▒c╠ü ulo, estacionamento, peda╠ügio ou outros
+(anexo)
+5) Certi(cid:976)icado ou documentos que comprove participa├º├úo em eventos de interesse p├║blico ou o
+servi├ºo prestado, se for o caso. (anexo)
+6) Outras comprova├º├Áes: (Nota (cid:976)iscal e recibo de hospedagem, de restaurante, declara├ºa╠âo do o╠ürga╠âo
+visitado, etc).
+
+===== PAGE 17 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO III ÔÇô CONTROLE DI├üRIO DE QUILOMETRAGEM
+
+===== PAGE 18 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO IV - C HECK L IST DA DESPESA
+CHECK LIST DO PROCESSO DE DESPESA ÔÇô EMPENHO
+AQUISI├ç├òES E PRESTA├ç├âO DE SERVI├çOS
+´éÀ Solicita├º├úo formal dos setores e departamentos demonstrando a necessidade da
+aquisi├º├úo contendo informa├º├Áes acerca dos quan(cid:415)ta(cid:415)vos e itens a serem adquiridos,
+devendo ser autorizado pelo gestor da pasta;
+Obs.: Atentar a necessidade de acostar documentos per(cid:415)nentes que jus(cid:415)fiquem a
+necessidade em quest├úo.
+´éÀ O(cid:304)cio solicitando autoriza├º├úo da despesa para a secretaria gestora da licita├º├úo (nos casos
+de ata de registro de pre├ºos);
+´éÀ Resposta da Secretaria gestora autorizando o consumo;
+´éÀ Autoriza├º├úo da Secretaria Municipal das Finan├ºas para a realiza├º├úo da despesa (nos casos
+de processos das secretaria integrantes da administra├º├úo geral);
+´éÀ C├│pia da Ata de Registro de Pre├ºos, Contrato e adi(cid:415)vo (quando houver);
+´éÀ Controle de Saldo de quan(cid:415)ta(cid:415)vos da licita├º├úo;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e
+C├¡vel);
+
+===== PAGE 19 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO V - CHECK LIST DA DESPESA
+CHECK LIST DO PROCESSO DE DESPESA ÔÇô LIQUIDA├ç├âO /PAGAMENTO
+PROCESSO DE PAGAMENTO DE MATERIAL PERMANENTE
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do fornecedor;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Ordem de Fornecimento emi(cid:415)da pelo sistema e assinada;
+´éÀ C├│pia da Ata de Registro de Pre├ºos, Contrato e adi(cid:415)vo (quando houver);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Nota Fiscal com carimbo de atesto, assinaturas do Almoxarife/Fiscal do Contrato;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e C├¡vel)
+e Consulta Optante do Simples Nacional;
+´éÀ Nota Fiscal, acompanhado do relat├│rio de tombamento (carga patrimonial);
+PROCESSO DE PAGAMENTO DE MATERIAL DE CONSUMO
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do fornecedor;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Ordem de Fornecimento emi(cid:415)da pelo sistema e assinada;
+´éÀ C├│pia da Ata de Registro de Pre├ºos, Contrato e adi(cid:415)vo (quando houver);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Nota Fiscal com carimbo de atesto, assinaturas do Almoxarife/Fiscal do Contrato;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e C├¡vel)
+e Consulta Optante do Simples Nacional;
+´éÀ Rela├º├úo de Assinaturas nos casos de aquisi├º├úo de refei├º├Áes, camisas e etc;
+´éÀ Arquivo fotogr├ífico e mat├®rias jornal├¡s(cid:415)cas (quando houver).
+PROCESSO DE PAGAMENTO DE AQUISI├ç├âO DE COMBUST├ìVEL
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do fornecedor;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ C├│pia da Ata de Registro de Pre├ºos, Contrato e adi(cid:415)vo (quando houver);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Nota Fiscal com carimbo de atesto, assinaturas do Almoxarife/Fiscal do Contrato;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e C├¡vel)
+e Consulta Optante do Simples Nacional;
+´éÀ Documento dos ve├¡culos;
+´éÀ Mapa de Abastecimento do sistema assinada;
+´éÀ Ordem de Servi├ºo do sistema assinada;
+´éÀ Cupons fiscais devidamente atestados;
+´éÀ Controle de Quilometragem devidamente preenchido pelo motorista;
+
+===== PAGE 20 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Obs.: Os roteiros no controle de quilomentragem n├úo pode ser preenchido
+genericamente, ex: Secretaria/Circulando/Secretaria, secretaria/a servi├ºo da
+secretaria/secretaria, garagem/posto/garagem.
+Obs.: Os hor├írios dos roteiros devem ser preenchidos corretamente e que a escrita
+deve ser leg├¡vel facilitando a an├ílise das informa├º├Áes.
+PROCESSO DE PAGAMENTO DE PRESTA├ç├âO DE SERVI├çOS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do fornecedor;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Ordem de Servi├ºo emi(cid:415)da pelo sistema e assinada;
+´éÀ C├│pia da Ata de Registro de Pre├ºos, Contrato e adi(cid:415)vo (quando houver);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Nota Fiscal com carimbo de atesto assinado pelo liquidante/Fiscal do Contrato;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e
+C├¡vel) e Consulta Optante do Simples Nacional;
+´éÀ Rela├º├úo de Assinaturas (quando houver);
+´éÀ Relat├│rio acerca da presta├º├úo do servi├ºo com arquivo fotogr├ífico e mat├®rias
+jornal├¡s(cid:415)cas (quando houver).
+PROCESSO DE PAGAMENTO DE ASSESSORIAS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do fornecedor;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Ordem de Servi├ºo emi(cid:415)da pelo sistema e assinada;
+´éÀ C├│pia do Contrato e adi(cid:415)vo (quando houver);
+´éÀ Nota Fiscal com carimbo de atesto com as assinaturas do Fiscal do Contrato;
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e
+C├¡vel) e Consulta Optante do Simples Nacional;
+´éÀ Relat├│rio de A(cid:415)vidades executadas pelas Assessorias com o atesto do Fiscal do Contrato;
+PROCESSO DE PAGAMENTO DE LOCA├ç├âO DE VE├ìCULOS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota
+fiscal e dados do prestador de servi├ºo;
+´éÀ Empenho assinado;
+´éÀ Ordem de Servi├ºo emi(cid:415)do pelo sistema;
+´éÀ C├│pia do Contrato e Adi(cid:415)vos vigentes;
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal, Estadual, FGTS, Receita Federal, Trabalhista e C├¡vel) e
+Consulta Optante do Simples Nacional;
+´éÀ Documento atualizado do ve├¡culo e CNH do respec(cid:415)vo motorista, no casos de loca├º├úo
+onde o motorista ├® por conta da contratada;
+
+===== PAGE 21 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Controle/Bole(cid:415)m de Quilometragem do ve├¡culo;
+´éÀ Rela├º├úo de Assinaturas dos usu├írios do transporte;
+´éÀ Nota Fiscal com Atesto, Assinaturas sob carimbo do Fiscal do Contrato/Liquidante (na
+NF e na Medi├º├úo/Rotas);
+PROCESSO DE PAGAMENTO DE OBRAS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, dados da nota fiscal
+e dados do prestador de servi├ºo;
+´éÀ Empenho assinado;
+´éÀ Ordem de Servi├ºo emi(cid:415)do pelo sistema;
+´éÀ C├│pia do Contrato e Adi(cid:415)vos;
+´éÀ ART'S (Projeto, Execu├º├úo e Fiscaliza├º├úo); CNO an(cid:415)go CEI (Cadastro Nacional de Obras) no
+processo de pagamento da 1┬║ Medi├º├úo;
+´éÀ Alvar├í de Constru├º├úo;
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal (Est├óncia e sede da empresa), Estadual, FGTS, Receita
+Federal, Trabalhista e C├¡vel) e Consulta Optante do Simples Nacional;
+´éÀ Licen├ºa Ambiental (se for o caso);
+´éÀ Medi├º├úo assinada sob carimbo pelo Engenheiro da Empresa e pelo Engenheiro
+Fiscal do Munic├¡pio bem como anexado o registro fotogr├ífico da evolu├º├úo da obra;
+´éÀ Nota Fiscal com Atesto, Assinatura do Fiscal do (Contrato/obras)/Liquidante
+(Iden(cid:415)ficados sob carimbo);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato/obras;
+´éÀ Declara├º├úo do Fiscal do Contrato reconhecendo que a documenta├º├úo foi analisada e
+est├í de acordo com a legisla├º├úo vigente em rela├º├úo a Folha de Pagamento dos
+funcion├írios da empresa que prestam servi├ºo na obra, apresenta├º├úo da GFIP - Guia de
+Recolhimento do FGTS paga e comprovante do recolhimento da Previd├¬ncia Social
+(prevenindo ├á administra├º├úo de futuros pagamentos e penaliza├º├Áes solid├írias);
+Protocolo de entrega de EPI's.
+´éÀ Na ├║l(cid:415)ma medi├º├úo exigir o Termo de Recebimento Defini(cid:415)vo da Obra, assinado pelo
+Engenheiro do Munic├¡pio e Ordenador de Despesas, bem como de termo de Habite-se
+(no caso de edifica├º├úo), quando cab├¡vel;
+PROCESSO DE PAGAMENTO DE LOCA├ç├âO DE IM├ôVEIS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, reten├º├Áes, objeto, refer├¬ncia do m├¬s e
+dados do credor devidamente assinado pelo Fiscal do Contrato;
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ C├│pia do Contrato e adi(cid:415)vo (quando houver);
+´éÀ Portaria de nomea├º├úo do Fiscal e Gestor do Contrato (quando houver);
+´éÀ Cer(cid:415)d├Áes atualizadas (Municipal e Imobili├íria, Estadual, FGTS, Receita Federal,
+Trabalhista e C├¡vel);
+
+===== PAGE 22 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+PROCESSO DE PAGAMENTO DE DI├üRIAS
+´éÀ Recibo de Pagamento contendo: secretaria, valor, objeto e dados do benefici├írio;
+´éÀ Solicita├º├úo de despesa assinada e devidamente autorizada pelo ├│rg├úo de controle;
+´éÀ Solicita├º├úo da di├íria devidamente preenchida e autorizada pelo gestor;
+´éÀ Documentos pessoais do servidor (RG, CPF, Comprovante de resid├¬ncia, Pis/Pasep);
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Documenta├º├úo acerca do deslocamento (curso, reuni├úo, evento e etc);
+´éÀ Portaria de nomea├º├úo do servidor;
+´éÀ Relat├│rio de viagem (quando retornar ao domic├¡lio);
+Obs.: Em at├® 05 (cinco) dias ├║teis ap├│s o retorno da viagem, o benefici├írio da di├íria deve
+encaminhar o Cer(cid:415)ficado de conclus├úo do curso, bem como o relat├│rio de viagem e
+comprovantes do deslocamento, quais sejam: nota fiscal da hospedagem, alimenta├º├úo,
+transportes e etc.
+Obs.: A presta├º├úo de contas da viagem ser├í analisada pela Controladoria e futuras
+concess├Áes s├úo condicionadas a sua aprova├º├úo.
+PROCESSO DE PAGAMENTO DE PREMIA├ç├òES
+´éÀ Recibo de Pagamento contendo: secretaria, valor, objeto e dados do credor;
+´éÀ Solicita├º├úo de despesa assinada e devidamente autorizada pelo ├│rg├úo de controle;
+´éÀ Documentos pessoais do servidor (RG, CPF, Comprovante de resid├¬ncia, Pis/Pasep);
+´éÀ Empenho assinado pelo ordenador de despesa;
+´éÀ Regulamento do evento;
+´éÀ Ficha de Inscri├º├úo do premiado;
+´éÀ S├║mulas dos jogos (nos casos de campeonatos espor(cid:415)vos), Notas dos jurados e resultado
+final da apura├º├úo (nos casos de concursos de poesia, juninos, carnavalescos, natalinos e
+etc);
+´éÀ Arquivo fotogr├ífico e mat├®rias jornal├¡s(cid:415)cas acerca do evento (quando houver).
+
+===== PAGE 23 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO VI - C HECK L IST DOCUMENTOS CONTRATA├ç├òES
+CHECKLIST DE DOCUMENTOS ÔÇô LEI N┬║ 14.133/2021
+PREG├âO/CONCORR├èNCIA
+ÔÿÉ Documento de Formaliza├º├úo da Demanda (DFD)┬╣
+ÔÿÉ Plano de Contrata├º├Áes Anual (PCA)┬▓
+ÔÿÉ Estudo T├®cnico Preliminar (ETP)┬│
+ÔÿÉ An├ílise/Mapa de RiscosÔü┤
+ÔÿÉ Termo de Refer├¬nciaÔüÁ ou Projeto B├ísico
+ÔÿÉ Pesquisa de Pre├ºosÔüÂ / Or├ºamento Es(cid:415)ma(cid:415)vo
+ÔÿÉ Declara├º├úo de Adequa├º├úo Or├ºament├íria
+ÔÿÉ Edital e anexos
+ÔÿÉ Portaria de designa├º├úo (pregoeiro/agente de contrata├º├úo)
+ÔÿÉ Minuta de contrato ou instrumento equivalente
+ÔÿÉ Parecer jur├¡dico
+ÔÿÉ Publica├º├ÁesÔüÀ (PNCP e demais publica├º├Áes legais)
+ÔÿÉ Parecer t├®cnico ap├│s realiza├º├úo da disputa e dos demais atos correlatos
+CHECKLIST DE DOCUMENTOS ÔÇô ART. 74 DA LEI N┬║ 14.133/2021
+INEXIGIBILIDADE DE LICITA├ç├âO
+ÔÿÉ DFD
+ÔÿÉ ETP ou jus(cid:415)fica(cid:415)va de dispensa
+ÔÿÉ Jus(cid:415)fica(cid:415)va de inviabilidade de compe(cid:415)├º├úo
+ÔÿÉ Jus(cid:415)fica(cid:415)va de pre├ºo
+ÔÿÉ Comprova├º├úo de exclusividade (quando aplic├ível)
+ÔÿÉ Termo de Refer├¬ncia
+ÔÿÉ Declara├º├úo or├ºament├íria
+ÔÿÉ Habilita├º├úo do contratado (regularidade fiscal, social e trabalhista, comprovada por meio das
+cer(cid:415)d├Áes nega(cid:415)vas junto ├ás fazendas municipal, estadual e federal; cer(cid:415)d├úo de d├®bitos
+trabalhistas e de regularidade com o FGTS, e cer(cid:415)d├úo judicial nega(cid:415)va de fal├¬ncia, concordata e
+recupera├º├úo judicial)
+ÔÿÉ Declara├º├Áes de inexist├¬ncia de fato impedi(cid:415)vo, de n├úo v├¡nculo com ├│rg├úo p├║blico municipal e
+que n├úo emprega menor de idade (salvo na condi├º├úo de aprendiz)
+ÔÿÉ Autoriza├º├úo da autoridade competente
+ÔÿÉ Minuta de contrato ou instrumento equivalente
+ÔÿÉ Parecer jur├¡dico
+ÔÿÉ Parecer t├®cnico
+
+===== PAGE 24 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+CHECKLIST DE DOCUMENTOS ÔÇô ART. 75 DA LEI N┬║ 14.133/2021
+DISPENSA DE LICITA├ç├âO
+ÔÿÉ DFD
+ÔÿÉ ETP ou jus(cid:415)fica(cid:415)va
+ÔÿÉ Pesquisa ou jus(cid:415)fica(cid:415)va de pre├ºo
+ÔÿÉ Termo de Refer├¬ncia
+ÔÿÉ Declara├º├úo or├ºament├íria
+ÔÿÉ Habilita├º├úo m├¡nima do contratado (regularidade fiscal, social e trabalhista, comprovada por
+meio das cer(cid:415)d├Áes nega(cid:415)vas junto ├ás fazendas municipal, estadual e federal; cer(cid:415)d├úo de d├®bitos
+trabalhistas e de regularidade com o FGTS, e cer(cid:415)d├úo judicial nega(cid:415)va de fal├¬ncia, concordata e
+recupera├º├úo judicial)
+ÔÿÉ Declara├º├Áes de inexist├¬ncia de fato impedi(cid:415)vo, de n├úo v├¡nculo com ├│rg├úo p├║blico municipal, e
+que n├úo emprega menor de idade (salvo na condi├º├úo de aprendiz)
+ÔÿÉ Autoriza├º├úo da autoridade competente
+ÔÿÉ Minuta de contrato ou instrumento equivalente
+ÔÿÉ Parecer jur├¡dico
+ÔÿÉ Publica├º├Áes (PNCP e demais publica├º├Áes legais)
+ÔÿÉ Parecer t├®cnico
+CHECKLIST DE DOCUMENTOS ÔÇô ART. 17 DO DECRETO MUNICIPAL N┬║ 9.117/2025
+DISPENSA DE PEQUENO VALOR
+ÔÿÉ DFD
+ÔÿÉ Pesquisa de pre├ºos
+ÔÿÉ Indica├º├úo or├ºament├íria
+ÔÿÉ Habilita├º├úo m├¡nima do contratado (regularidade fiscal, social e trabalhista, comprovada por
+meio das cer(cid:415)d├Áes nega(cid:415)vas junto ├ás fazendas municipal, estadual e federal; cer(cid:415)d├úo de d├®bitos
+trabalhistas e de regularidade com o FGTS)
+ÔÿÉ Declara├º├Áes de inexist├¬ncia de fato impedi(cid:415)vo, de n├úo v├¡nculo com ├│rg├úo p├║blico municipal, e
+que n├úo emprega menor de idade (salvo na condi├º├úo de aprendiz)
+ÔÿÉ Autoriza├º├úo da autoridade competente
+ÔÿÉ Contrato ou instrumento equivalente
+
+===== PAGE 25 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+CHECKLIST DE DOCUMENTOS ÔÇô LEI N┬║ 14.133/2021
+ADES├âO ├Ç ATA DE REGISTRO DE PRE├çOS
+Decreto n.┬║ 11.462/2023
+ÔÿÉ DFD
+ÔÿÉ ETP
+ÔÿÉ Jus(cid:415)fica(cid:415)va da vantagem da ades├úo
+ÔÿÉ Compa(cid:415)bilidade com PCA e or├ºamento/Pesquisa de pre├ºos
+ÔÿÉ Aceite do fornecedor
+ÔÿÉ Autoriza├º├úo do ├│rg├úo gerenciador
+ÔÿÉ Minuta de contrato ou instrumento equivalente
+ÔÿÉ Parecer jur├¡dico
+ÔÿÉ Documentos do certame (edital e anexos) e do fornecedor (regularidade fiscal, social e
+trabalhista, comprovada por meio das cer(cid:415)d├Áes nega(cid:415)vas junto ├ás fazendas municipal, estadual e
+federal; cer(cid:415)d├úo de d├®bitos trabalhistas e de regularidade com o FGTS, e cer(cid:415)d├úo judicial nega(cid:415)va
+de fal├¬ncia, concordata e recupera├º├úo judicial)
+ÔÿÉ Parecer t├®cnico
+
+===== PAGE 26 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO VI ÔÇô FLUXO DOS PROCESSOS ADMINISTRATIVOS
+Observa├º├úo: O Sistema Eletr├┤nico de Informa├º├Áes (SEI) est├í em fase de implanta├º├úo no munic├¡pio e
+quando es(cid:415)ver devidamente implantado alguns documentos manuais ser├úo subs(cid:415)tu├¡dos pela via
+digital.
+
+===== PAGE 27 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO VII ÔÇô FLUXOGRAMA DO SISTEMA CONTABILIS PARA AS CONTRATA├ç├òES P├ÜBLICAS
+FASE PREPARAT├ôRIA
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o
+processo (cid:304)sico.
+´éÀ Todas as contrata├º├Áes come├ºam na tela de inten├º├úo de abertura de processo.
+Quando se tratar de uma compra comum para todos os setores, o setor
+respons├ível por iniciar o processo envia uma comunica├º├úo aos demais setores,
+perguntando se desejam par(cid:415)cipar do processo.
+Observa├º├úo: h├í munic├¡pios em que as licita├º├Áes de bens comuns a todos
+possuem um setor respons├ível por iniciar o processo. Essa tela serve como um
+cat├ílogo de produtos, onde todos u(cid:415)lizam os mesmos itens para evitar
+duplicidades.)
+
+===== PAGE 28 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o
+processo (cid:304)sico.
+´éÀ Os setores devem responder ├á inten├º├úo de abertura de processo elaborando os
+DFD (Documentos de Formaliza├º├úo de Demanda). Na tela, h├í a op├º├úo de vincular
+a inten├º├úo existente, permi(cid:415)ndo que sejam u(cid:415)lizados os mesmos itens.
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o
+processo (cid:304)sico.
+´éÀ O setor respons├ível realiza a consolida├º├úo das demandas, a fim de obter os
+quan(cid:415)ta(cid:415)vos gerais que ser├úo u(cid:415)lizados na pesquisa de mercado.
+(Observa├º├úo: mesmo que a compra seja des(cid:415)nada a um ├║nico setor ou secretaria,
+├® necess├írio realizar a consolida├º├úo para efetuar a cota├º├úo dentro do sistema.)
+
+===== PAGE 29 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o
+processo (cid:304)sico.
+´éÀ A tela de ETP deve ser u(cid:415)lizada sempre que o procedimento for obrigat├│rio,
+devendo o registro ser feito no sistema para que o documento seja gerado antes da
+cota├º├úo defini(cid:415)va.
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o
+processo (cid:304)sico.
+´éÀ Na tela de cota├º├úo, deve-se vincular a consolida├º├úo para registrar as cota├º├Áes
+realizadas e obter as m├®dias de pre├ºos que servir├úo de base para as contrata├º├Áes.
+
+===== PAGE 30 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo
+(cid:304)sico.
+´éÀ Na tela de Solicita├º├úo de Despesa, ao preencher os campos, h├í o campo ÔÇ£Tipo da SDÔÇØ, que
+apresenta as op├º├Áes de dispensa, preg├úo, inexigibilidade e processo sem bloqueio de
+saldo e demais processos .
+´éÀ O (cid:415)po selecionado determinar├í o caminho que o processo seguir├í no sistema.
+
+===== PAGE 31 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo
+(cid:304)sico.
+´éÀ No (cid:415)po de Solicita├º├úo de Despesa ÔÇö Dispensa, existem as seguintes op├º├Áes:
+´éÀ Com disputa (tanto presencial quanto eletr├┤nica): deve ser marcada quando o processo
+envolver obten├º├úo de or├ºamentos para determinar o vencedor dos itens.
+´éÀ Quando se tratar de Registro de Pre├ºo, tamb├®m ├® necess├írio marcar a op├º├úo
+´éÀ ÔÇ£PlurianualÔÇØ, especialmente nos casos em que o processo se inicia em um ano e termina
+no outro.
+´éÀ Quando a op├º├úo ÔÇ£Com disputaÔÇØ n├úo for marcada, a solicita├º├úo se enquadra nas compras
+de pequeno valor, previstas no ar(cid:415)go 95 da Lei n┬║ 14.133/2021.
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo
+(cid:304)sico.
+´éÀ No (cid:415)po de Solicita├º├úo de Despesa ÔÇö Inexigibilidade.
+´éÀ Modalidade que permite contrata├º├úo direta onde ├® obrigado a preencher todos os
+campos
+TODAS AS OP├ç├òES NO CAMPO ABA DE DADOS COMPLEMENTARES A OP├ç├âO DE
+VINCULAR A DFD
+
+===== PAGE 32 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo (cid:304)sico.
+´éÀ No (cid:415)po de Solicita├º├úo de Despesa ÔÇö Preg├úo.
+´éÀ Existe a op├º├úo de registro de pre├ºo e a modalide no qual o sistema n├úo exige que seja
+colocada as dota├º├Áes or├ºamentarias
+´éÀ Existe a op├º├úo Plurianual quando um processo come├ºa em um ano e a execu├º├úo vai para o
+ano segunte que n├úo ├® registro de pre├ºos (quando n├úo marca a op├º├úo registro de pre├ºo
+ou execu├º├úo plurianual o sistema faz a reserva do or├ºamento exemplo de um dos
+processos que precisa da reserva do or├ºamento merenda escolar)
+´éÀ TODAS AS OP├ç├òES NO CAMPO ABA DE DADOS COMPLEMENTARES A OP├ç├âO DE
+VINCULAR A DFD
+
+===== PAGE 33 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo
+(cid:304)sico.
+´éÀ No (cid:415)po de Solicita├º├úo de Despesa ÔÇö Processo sem Bloqueio de Saldo.
+(ESSA OP├ç├âO N├âO PODE SER USADA SEMPRE S├ô EM CASOS ESPEC├ìFICOS)
+´éÀ Existe a op├º├úo de registro de pre├ºo e a modalidade no qual o sistema n├úo exige que seja
+colocada as dota├º├Áes or├ºamentarias
+´éÀ Existe a op├º├úo sem dota├º├úo s├úo para as licita├º├Áes que s├úo de capta├º├úo receita a (exemplo
+de preg├Áes de venda da folha de pagamento)
+TODAS AS OP├ç├òES NO CAMPO ABA DE DADOS COMPLEMENTARES A OP├ç├âO DE
+VINCULAR A DFD
+´éÀ Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo
+(cid:304)sico.
+´éÀ No (cid:415)po de Solicita├º├úo de Despesa ÔÇö Demais processos esse (cid:415)po de solicita├º├úo de
+despesa ├® para todas as modalidades menos preg├úo, inexigibilidade e dispensa.
+´éÀ Esse (cid:415)po de solicita├º├úo de despesa toda vez que (cid:415)ver um adi(cid:415)vo o (cid:415)po ├® demais processo
+vinculando o fornecedor
+´éÀ Quando for as demais modalidades n├úo ├® obrigado a colocar o fornecedor e tem as duas
+op├º├Áes de registro de pre├ºo e plurianual e quando a execu├º├úo ultrapassa o exerc├¡cio
+TODAS AS OP├ç├òES NO CAMPO ABA DE DADOS COMPLEMENTARES A OP├ç├âO DE
+VINCULAR A DFD
+
+===== PAGE 34 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+NA TELA DE APROVAR DESPESA
+Nessa op├º├úo ├® para realizar an├ílise das demandas e na sua conclus├úo fazer aprova├º├úo da
+solicita├º├úo de despesa, bem como pode reprovar ou pode colocar em ocorr├¬ncia
+Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo (cid:304)sico.
+NA TELA DE CADASTRO DE LICITA├ç├âO
+Na tela licita├º├úo cadastro onde o setor respons├ível por cadastrar os processos de contrata├º├úo
+conforme imagem acima nessa tela preenche todos os campos para poder gerar o documento
+que vai compor a minuta do edital para remeter ao setor jur├¡dico analisar e emi(cid:415)r o parecer.
+Todas as telas devem permi(cid:415)r a impress├úo dos documentos para compor o processo (cid:304)sico.
+
+===== PAGE 35 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+NA TELA DE CADASTRO DA LICITA├ç├âO
+Nos casos de cadastro de ades├Áes a atas nessa tela ├® necess├írio marcar a op├º├úo ades├úo e colocar
+as informa├º├Áes do ente que esta fazendo a ades├úo ano do processo e o n├║mero da licita├º├úo
+(NESSA TELA SEMPRE LEMBRA DE MARCAR O TIPO DE CONSUMO SE ELE VAI SER CONSUMIDO
+POR ITEM OU POR VALOR QUANDO FOR ITEM CONTROLA A QUANTIDADE LICITADA QUANDO
+FOR VALOR CONTROLA O VALOR DO PROCESSO IGNORANDO AS QUANTIDADES)
+NA TELA DE DIVIS├âO DE COTAS EPP/ME POR SD
+Essa op├º├úo de divis├úo de cotas por SD e quando houver no processo cotas reservadas de acordo
+com a Lei Complementar 123/2006, atualizada pela Lei Complementar n┬║ 147/2014.
+
+===== PAGE 36 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+NA TELA DE GEST├âO DE ATA
+Nessa tela permite que seja cadastrado todos os processos que s├úo do (cid:415)po Registro de pre├ºo
+possibilitando realizar a cria├º├úo de atas de forma global ou separada respeitando o planejamento
+realizado por cada secretaria
+NA TELA DE CADASTRO DE DISPENSA E INEXIGIBILIDADE
+Nessa tela onde realiza os cadastros dos processos administra(cid:415)vos
+
+===== PAGE 37 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+(NESSA TELA SEMPRE LEMBRA DE MARCAR TIPO DE CONSUMO SE ELE VAI SER
+CONSUMIDO POR ITEM OU POR VALOR QUANDO FOR ITEM CONTROLA A QUANTIDADE
+LICITADA QUANDO FOR VALOR CONTROLA O VALOR DO PROCESSO IGNORANDO AS
+QUANTIDADES)
+´éÀ Nessa tela onde vai enviar os processos para julgamento de forma eletr├┤nica
+´éÀ Nessa op├º├úo o sistema envia o cadastro para as empresas de preg├úo eletr├┤nicos ao
+finalizar o processo basta ir nessa tela e importar o resultado que o sistema vai preencher
+todos os campos restantes no sistema ficando faltando ser feita as atas quando houver e
+os lan├ºamentos dos contratos
+´éÀ J├í as propostas inicias das empresas, os lances e as reformuladas s├úo preenchidas de
+forma autom├í(cid:415)ca quando as licita├º├Áes por lote e global precisa fazer a reformulada
+
+===== PAGE 38 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+NA TELA DE PROPOSTA GERENCIAMENTO
+Essa tela vai ser u(cid:415)lizada para os processos que precisa ser realizado os preenchimentos de
+forma manual a exemplo das dispensas presenciais chamada publica da agricultura familiar
+credenciamentos e outros processos que n├úo sejam julgados em sistema de preg├úo eletr├┤nicos
+(REGISTRAR AS PROPOSTAS INICIAS DAS EMPRESAS)
+NA TELA DE GERENCIAMENTO DE PROCESSO
+
+===== PAGE 39 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Essa tela serve para religar o gerenciamento dos lances das empresas onde ├® informado ao
+sistema os seus valores dos lances para definir os ganhadores de cada item ou lote
+(ESSA TELA S├ô ├ë UTILIZADA PARA MEXER DE FORMA MANUAL QUANDO DE PROCESSOS QUE
+N├âO SEJA ENVIADOS PARA EMPRESAS DE PREG├âO ELETR├öNICOS)
+NA TELA DE PROPOSTA REFORMULADA
+Nessa tela o preenchimento da reformulada ├® feita manualmente quando de processos nos
+casos de processos presenciais os eletr├┤nicos que s├úo enviados para as empresas de preg├úo
+eletr├┤nicos n├úo precisa preencher ela quando o julgamento for por item
+(QUANDO O JULGAMENTO E POR LOTE OU GLOBAL PRECISA FAZER A REFORMULADA EM
+TODOS OS CASOS)
+NA TELA DE SOLICITA├ç├âO DE EMPENHO
+
+===== PAGE 40 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Todos os processos do (cid:415)po registro de pre├ºos apos as cria├º├Áes das atas no sistema as secretarias
+vem nessa tela para come├ºar a solicitar o consumo dessas atas onde o sistema via realizar todo o
+controle do quan(cid:415)ta(cid:415)vo licitado
+NA TELA DE ORDEM DE FORNECIMENTO/SERVI├çO
+Nessa tela as secretarias quando os empenhos forem realizado vem atrav├®s dessa tela realizar os
+pedidos para que as empresas entregue as mercadorias
+NA TELA DE CADASTRO DE CONTRATO
+
+===== PAGE 41 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Nessa tela todos os processos que ao final gerar um contrato o setor respons├ível precisa vim
+nessa tela para realizar o cadastro do contrato anexando o contrato assinado na aba de anexo
+NA TELA DE AJUSTE DE CONTRATO
+Nessa tela todos os contratos que sofrer qualquer (cid:415)po de adi(cid:415)vo precisa que o setor respons├ível
+fa├ºa o cadastro dele anexando o documento assinado
+TELA DE NOTA DE LIQUIDA├ç├âO
+
+===== PAGE 42 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+Obs.: Observar a Ordem Cronol├│gica.
+TELA DE NOTA DE PAGAMENTO
+Obs.: Verificar que existe duas formas de lan├ºamento: pagamento individual ou pagamento em
+lote (Internet banking).
+
+===== PAGE 43 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO VIII ÔÇô MODELO DFD
+DOCUMENTO DE FORMALIZA├ç├âO DE DEMANDA
+├ôrg├úo:
+Setor requisitante (Unidade/Setor/Departamento):
+Respons├ível pela Demanda:
+Matr├¡cula/CPF:
+E-mail:
+Telefone:
+1. Justificativa da necessidade da contrata├º├úo
+Quais as justificativas que ensejaram esta demanda, considerando o problema existente.
+2. Descri├º├úo sucinta da demanda
+Informar qual a demanda/necessidade a ser suprida.
+3. Quantidade a ser contratada
+O que precisa ser resolvido em termos quantitativos
+4. Estimativa preliminar do valor da contrata├º├úo
+Demonstrar a estimativa do valor da pretens├úo, de acordo com previs├úo no PCA e na LOA
+5. Indica├º├úo da data pretendida para a conclus├úo da contrata├º├úo
+Informar quando a necessidade dever├í estar efetivada, observado o Calend├írio Anual de Contrata├º├Áes do PCA
+6. Grau de prioridade
+Informar a prioridade, considerando a necessidade a ser satisfeita e o tempo dispon├¡vel
+7. Vincula├º├úo ou depend├¬ncia
+H├í necessidade de contrata├º├Áes/aquisi├º├Áes correlatas para satisfa├º├úo da demanda?
+Em conformidade com a legisla├º├úo que rege o tema, encaminhe-se ├á autoridade competente para an├ílise de
+conveni├¬ncia e oportunidade para a contrata├º├úo e demais provid├¬ncias cab├¡veis.
+______________, em ______ de __________ de 20___
+_______________________________________________
+(Setor Requisitante)
+
+===== PAGE 44 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO IX ÔÇô MODELO DFD DO SISTEMA CONTABILIS
+
+===== PAGE 45 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO X ÔÇô MODELO INTEN├ç├âO DE ABERTURA DE PROCESSO - CONTABILIS
+
+===== PAGE 46 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XI ÔÇô MODELO DECLARA├ç├âO SOBRE ESTIMATIVA DO IMPACTO OR├çAMENT├üRIO - CONTABILIS
+
+===== PAGE 47 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XII ÔÇô MODELO DECLARA├ç├âO SOBRE AUMENTO DE DESPESA - CONTABILIS
+
+===== PAGE 48 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XIII ÔÇô MODELO ETP
+ESTUDO T├ëCNICO PRELIMINAR
+INFORMA├ç├òES B├üSICAS:
+Breve Hist├│rico da Contrata├º├úo, informando normativos que disciplinam o objeto a ser contratado, de acordo
+com a sua natureza (legisla├º├úo, normas t├®cnicas, ac├│rd├úos e s├║mulas, portarias...) e especificando. Observar,
+ainda, se houve contrata├º├úo anterior e analisar as inconsist├¬ncias, a fim de prevenir a ocorr├¬ncia destas neste
+processo contendo, ainda, os seguintes dados:
+├ôrg├úo Solicitante:
+Setor requisitante (Unidade/Setor/Departamento):
+1. DESCRI├ç├âO DA NECESSIDADE DA CONTRATA├ç├âO (*Obrigat├│rio)
+Quais as justificativas e/ou motivos para esta contrata├º├úo, considerando o problema a ser resolvido, sob a
+perspectiva do interesse p├║blico.
+2. LEVANTAMENTO DE MERCADO
+Quais as solu├º├Áes dispon├¡veis no mercado para o atendimento da necessidade?
+Observar: contrata├º├Áes similares de outros ├│rg├úos; novas metodologias, tecnologias ou inova├º├Áes; compras,
+loca├º├Áes ou terceiriza├º├Áes, avaliando custos e benef├¡cios; considerar, ainda, outras op├º├Áes, como doa├º├Áes,
+cess├Áes ou manuten├º├Áes.
+3. DESCRI├ç├âO DA SOLU├ç├âO COMO UM TODO
+Descrever a solu├º├úo escolhida, com todos os elementos para que a contrata├º├úo produza os resultados
+pretendidos pela administra├º├úo.
+Descrever a solu├º├úo como um todo, inclusive as exig├¬ncias relacionadas ├á manuten├º├úo e ├á assist├¬ncia t├®cnica,
+quando for o caso, acompanhada das justificativas t├®cnica e econ├┤mica da escolha do tipo de solu├º├úo.
+4. REQUISITOS DA CONTRATA├ç├âO
+Quais os requisitos necess├írios ao atendimento da necessidade?
+Quais os padr├Áes m├¡nimos de qualidade, de forma a permitir a sele├º├úo da proposta mais vantajosa?
+Esta contrata├º├úo tem car├íter continuado? Justifique.
+Qual dever├í ser a dura├º├úo inicial do contrato? Justifique.
+5. ESTIMATIVA DAS QUANTIDADES A SEREM CONTRATADAS (*Obrigat├│rio)
+Qual a estimativa de quantidades? Descrever o m├®todo de levantamento da estimativa das quantidades a serem
+contratadas, incluindo mem├│ria de c├ílculo e documentos que lhe d├úo suporte (contratos anteriores,
+experi├¬ncias de outros ├│rg├úos, etc.), de modo a possibilitar a economia de escala.
+6. ESTIMATIVA DO VALOR DA CONTRATA├ç├âO (*Obrigat├│rio)
+Demonstrar a estimativa do valor da contrata├º├úo, acompanhada dos pre├ºos unit├írios referenciais, das mem├│rias
+de c├ílculo e documentos que lhe d├úo suporte, que poder├úo constar de anexo classificado, se a Administra├º├úo
+optar por preservar o seu sigilo at├® a conclus├úo da licita├º├úo.
+*Obs.: neste documento, a pesquisa pode ser breve, estimativa e referencial. O documento referente ├á
+pesquisa, conforme as diretrizes da IN SEGES/ME 65/2021 ser├í anexado, posteriormente, ao processo
+(incluindo anexos, como mapa comparativo e documentos comprobat├│rios - pesquisas).
+7. PARCELAMENTO DA CONTRATA├ç├âO (*Obrigat├│rio)
+O parcelamento da solu├º├úo ├® a regra, devendo a licita├º├úo ser realizada por item, sempre que o objeto for
+divis├¡vel, desde que se verifique n├úo haver preju├¡zo para o conjunto da solu├º├úo ou perda de economia de
+escala, visando propiciar a ampla participa├º├úo de licitantes, que embora n├úo disponham de capacidade para
+execu├º├úo da totalidade do objeto, possam faz├¬-lo com rela├º├úo a itens ou unidades aut├┤nomas.
+
+===== PAGE 49 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+A defini├º├úo e o m├®todo para avaliar se o objeto ├® divis├¡vel, deve levar em considera├º├úo o mercado fornecedor,
+podendo ser parcelado caso a contrata├º├úo nesses moldes assegure, concomitantemente:
+Ser t├®cnica e economicamente vi├ível;
+Que n├úo haver├í perda de escala; e
+Que haver├í melhor aproveitamento do mercado e amplia├º├úo da competitividade.
+Com base nos estudos acima, a licita├º├úo ser├í dividida em lotes ou em itens separados? Justificar.
+8. CONTRATA├ç├òES CORRELATAS E/OU INTERDEPENDENTES
+H├í necessidade de contrata├º├Áes/aquisi├º├Áes correlatas?
+Realizar levantamento de a├º├Áes necess├írias ├á adequa├º├úo do objeto para que a contrata├º├úo surta seus efeitos,
+com os respons├íveis por estes ajustes nos diversos setores (por exemplo: capacita├º├Áes necess├írias, aquisi├º├úo de
+materiais, reformas...). Caso haja a├º├Áes necess├írias, juntar o cronograma ao processo e incluir os riscos de a
+contrata├º├úo fracassar caso os ajustes n├úo ocorram em tempo.
+9. ALINHAMENTO ENTRE A CONTRATA├ç├âO E O PLANEJAMENTO
+Demonstra├º├úo do alinhamento entre a contrata├º├úo e o planejamento do ├│rg├úo, identificando a previs├úo no
+Plano de Contrata├º├Áes Anual (PCA) ou, se for o caso, justificando a aus├¬ncia de previs├úo.
+Se a contrata├º├úo n├úo estiver prevista no PCA, foi previamente alterado e aprovado pela autoridade
+competente?
+10. RESULTADOS PRETENDIDOS
+Quais resultados que se pretende alcan├ºar com esta contrata├º├úo, em termos de efetividade e, inclusive e se for
+o caso, de desenvolvimento nacional sustent├ível?
+11. PROVID├èNCIAS
+Havendo outro contrato vigente, ou j├í tendo havido contrata├º├úo anterior, para o mesmo objeto, quais as falhas
+detectadas e, ainda, h├í a necessidade de adapta├º├Áes no ambiente do ├│rg├úo, necessidade de obten├º├úo de
+licen├ºas, outorgas ou autoriza├º├Áes, observando-se, tamb├®m, a capacita├º├úo e a verifica├º├úo de fiscaliza├º├úo e
+gest├úo eficazes.
+12. IMPACTOS AMBIENTAIS
+H├í a possibilidade de inclus├úo de crit├®rios de sustentabilidade na contrata├º├úo, desde a especifica├º├úo t├®cnica at├®
+como obriga├º├Áes da contratada?
+Quais os poss├¡veis impactos ambientais decorrentes da contrata├º├úo?
+13. CONCLUS├âO (*Obrigat├│rio)
+Posicionamento conclusivo se a contrata├º├úo atende, ou n├úo, a necessidade a que se destina.
+______________, em ______ de __________ de 20___.
+Em conformidade com a legisla├º├úo que rege o tema, encaminhe-se ├á autoridade competente para an├ílise de
+conveni├¬ncia e oportunidade para a contrata├º├úo e demais provid├¬ncias cab├¡veis.
+_______________________________________________
+(Servidores Respons├íveis OU Equipe de Planejamento)
+
+===== PAGE 50 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XIV ÔÇô MODELO TR
+TERMO DE REFER├èNCIA
+1. OBJETO
+1.1. Definir o objeto, natureza (se compra, servi├ºo, etc.)
+1.2. Quantitativos (unidades)
+1.3. Prazo contratual (se continuado, parcelado ou imediato)
+1.4. Especifica├º├úo no Cat├ílogo de Padroniza├º├úo
+1.5. Entrega/execu├º├úo e garantia/assist├¬ncia t├®cnica, se for o caso.
+2. FUNDAMENTA├ç├âO DA CONTRATA├ç├âO
+2.1. Qual foi a demanda?
+2.2. Demonstra├º├úo da previs├úo no PCA
+2.3. Houve ETP? Justifique.
+3. DESCRI├ç├âO DA SOLU├ç├âO COMO UM TODO
+3.1. Informar a defini├º├úo constante do ETP, descrever a solu├º├úo escolhida, com todos os elementos para que a
+contrata├º├úo produza os resultados pretendidos pela administra├º├úo.
+3.2. Descrever a solu├º├úo como um todo, inclusive as exig├¬ncias relacionadas ├á manuten├º├úo e ├á assist├¬ncia
+t├®cnica, quando for o caso, acompanhada das justificativas t├®cnica e econ├┤mica da escolha do tipo de solu├º├úo.
+3.3. Descrever, ainda, o ciclo de vida de objeto, observando o seu tempo de vida ├║til, a sua taxa de deprecia├º├úo,
+a necessidade de poss├¡veis atualiza├º├Áes/substitui├º├Áes, etc.
+4. REQUISITOS DA CONTRATA├ç├âO
+4.1. Foram estabelecidos crit├®rios sustent├íveis na contrata├º├úo?
+4.2. Ser├í admitida subcontrata├º├úo?
+4.3. Ser├í exigido garantia?
+4.4. H├í a necessidade de vistoria?
+5. MODELO DE EXECU├ç├âO DO OBJETO
+5.1. Descrever as condi├º├Áes da execu├º├úo, a exemplo de m├®todos, rotinas, procedimentos, etc.
+5.2. Informar local e per├¡odo da presta├º├úo dos bens/servi├ºos.
+5.3. Descrever as condi├º├Áes dos bens/servi├ºos a serem disponibilizados.
+6. MODELO DE GEST├âO DO CONTRATO
+Informar, pormenorizadamente, todas as condi├º├Áes para a gest├úo e fiscaliza├º├úo do contrato.
+7. PAGAMENTO DA CONTRATA├ç├âO
+Informar a forma de pagamento, em especial:
+a) O recebimento dos servi├ºos;
+b) A liquida├º├úo da despesa;
+c) O prazo de pagamento; e
+d) A forma de pagamento.
+8. FORMA E CRIT├ëRIOS DE SELE├ç├âO DO FORNECEDOR
+Informar:
+a) Modalidade para o procedimento;
+b) Forma de realiza├º├úo;
+c) Crit├®rio de julgamento; e
+d) Exig├¬ncias de habilita├º├úo.
+
+===== PAGE 51 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+9. ESTIMATIVA DO VALOR DA CONTRATA├ç├âO
+Demonstrar a estimativa do valor da contrata├º├úo, acompanhada dos pre├ºos unit├írios referenciais, das mem├│rias
+de c├ílculo e documentos que lhe d├úo suporte, que poder├úo constar de anexo classificado, se a Administra├º├úo
+optar por preservar o seu sigilo at├® a conclus├úo da licita├º├úo.
+10. ADEQUA├ç├âO OR├çAMENT├üRIA
+Informar, pormenorizadamente, a classifica├º├úo or├ºament├íria por onde se dar├í a despesa.
+______________, em ______ de __________ de 20___.
+Em conformidade com a legisla├º├úo que rege o tema, encaminhe-se ├á autoridade competente para an├ílise de
+conveni├¬ncia e oportunidade para a contrata├º├úo e demais provid├¬ncias cab├¡veis.
+_______________________________________________
+(Servidores Respons├íveis OU Equipe de Planejamento)
+
+===== PAGE 52 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XV ÔÇô MODELO DE MATRIZ DE RISCO
+
+===== PAGE 53 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XVI ÔÇô MODELO DE PESQUISA DE PRE├çOS
+PESQUISA DE PRE├çOS
+- OBJETO
+´éÀ Descrever o objeto
+´éÀ Informar qual ser├í o procedimento para a contrata├º├úo, previsto no TR
+IDENTIFICA├ç├âO DO RESPONS├üVEL
+´éÀ Nome
+´éÀ Matr├¡cula
+´éÀ Lota├º├úo
+FONTES CONSULTADAS
+´éÀ Informar quais foram as fontes consultadas.
+* PRE├çOS COLETADOS
+´éÀ Informar de onde foram coletados, e quais foram priorizados, priorizando-se
+o Painel de Pre├ºos do Governo Federal e o Banco de Pre├ºos.
+´éÀ Informar se os fornecedores atenderam ├á solicita├º├úo e se houve
+pre├ºos desconsiderados.
+* METODOLOGIA
+´éÀ Informar qual a metodologia u(cid:415)lizada para a obten├º├úo do valor de refer├¬ncia: se
+m├®dia, mediana ou menor dos pre├ºos.
+JUSTIFICATIVAS PARA A METODOLOGIA
+Informar o porqu├¬ da escolha da metodologia u(cid:415)lizada para a obten├º├úo do valor
+de refer├¬ncia.
+MEM├ôRIA DE C├üLCULO
+Apresentar a demonstra├º├úo dos c├ílculos que levaram ao para a
+obten├º├úo do valor de refer├¬ncia.
+ESCOLHA DOS FORNECEDORES
+Se (cid:415)ver havido pesquisa com fornecedores, jus(cid:415)ficar o porqu├¬ da escolha dos que
+constam no processo.
+Declaramos, para todos os fins de direito, que realizamos a Pesquisa de Pre├ºos
+obje(cid:415)vando deflagra├º├úo de procedimento licitat├│rio para (inserir objeto), de acordo
+com as especifica├º├Áes enviadas pelo demandante, e nos moldes da IN SEGES/ME n┬║
+65/2021. Por ser a express├úo da verdade, firmo a presente declara├º├úo.
+, em de de 20 .
+(Servidor Respons├ível OU Equipe de Planejamento)
+
+===== PAGE 54 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XVII ÔÇô MODELO DE DECLARA├ç├âO DE N├âO UTILIZA├ç├âO DE M├âO DE OBRA INFANTIL:
+DECLARA├ç├âO ÔÇô N├âO UTILIZA├ç├âO DE M├âO DE OBRA INFANTIL
+Declara, por interm├®dio de seu representante legal o(a) Sr. (a) , portador(a) da Carteira de Iden(cid:415)dade
+n┬║. -----------, ├│rg├úo expedidor SSP/SE, e do CPF n┬║.---------------- DECLARA, para fins do disposto no
+inciso VI do art. 68 da Lei n┬║ 14.133, de 01 de abril de 2021, que n├úo emprega menor de 18 (dezoito)
+anos em trabalho noturno, perigoso ou insalubre e n├úo emprega menor de 16 (dezesseis) anos.
+Ressalva: emprega menor, a par(cid:415)r de 14 (quatorze) anos, na condi├º├úo de aprendiz ( )
+Observa├º├úo: em caso afirma(cid:415)vo, assinalar a ressalva acima.
+Est├óncia, ______ de _____________ de 20
+_________________________________________
+Nome:
+CPF:
+S├ôCIO ADMINISTRADOR
+
+===== PAGE 55 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XVIII ÔÇô MODELO DE DECLARA├ç├âO DE FATOS IMPEDITIVOS:
+DECLARA├ç├âO DE FATOS IMPEDITIVOS
+Eu ------------------------------------, inscrito no CPF/CNPJ n.┬║. -----------------------------, Residente ├á
+--------------------------------, declara, sob as penas da lei, que at├® a presente data inexistem fatos
+supervenientes, para sua habilita├º├úo no presente processo de contrato assim como est├í ciente da
+obrigatoriedade de declarar ocorr├¬ncias posteriores.
+Est├óncia, ________ de _________________ de 20
+_____________________________________________________
+Assinatura
+
+===== PAGE 56 =====
+ESTADO DE SERGIPE
+MUNIC├ìPIO DE EST├éNCIA
+CONTROLADORIA GERAL DO MUNIC├ìPIO
+ANEXO XIX ÔÇô MODELO DE DECLARA├ç├âO DE N├âO V├ìNCULO COM ├ôRG├âO P├ÜBLICO:
+Declara├º├úo de n├úo v├¡nculo com ├│rg├úo p├║blico
+Eu, --------------------------, portador do RG n┬║ ---------, ├│rg├úo expedidor SSP/SE, CPF n┬║ ------------------,
+Declaro para os fins, que n├úo possuo v├¡nculo direta ou indiretamente com a Administra├º├úo P├║blica
+FEDERAL, ESTADUAL ou MUNICIPAL, em conformidade com inciso XVI do ar(cid:415)go 37 da Cons(cid:415)tui├º├úo
+Federal.
+Data: ____/_____/______
+__________________________________
+Assinatura
+

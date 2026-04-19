@@ -5,36 +5,295 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Análise | Andre Fiscaliza</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/jspdf.umd.min.js"></script>
+    <style>
+      .analise-header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+      .analise-header .score-box { min-width:100px; text-align:center; padding:16px 24px; border-radius:12px; color:#fff; }
+      .analise-header .score-box h2 { margin:0; font-size:2.2em; }
+      .analise-header .score-box small { opacity:.85; }
+      .analise-header .info-box { flex:1; min-width:200px; }
+      .analise-header .info-box h1 { margin:0 0 4px; font-size:1.3em; }
+      .analise-header .info-box .meta { color:#888; font-size:.9em; }
+      .section-title { font-size:1.1em; margin:24px 0 8px; padding-bottom:6px; border-bottom:2px solid #e0e0e0; display:flex; align-items:center; gap:8px; }
+      .alerta-card { background:#f9f9fc; border-left:4px solid #ffc107; padding:10px 14px; margin-bottom:8px; border-radius:0 6px 6px 0; }
+      .alerta-card.alto { border-left-color:#dc3545; }
+      .alerta-card.medio { border-left-color:#ff9800; }
+      .alerta-card.baixo-alerta { border-left-color:#28a745; }
+      .alerta-card .alerta-titulo { font-weight:600; font-size:.95em; }
+      .alerta-card .alerta-pts { float:right; font-size:.85em; color:#dc3545; font-weight:600; }
+      .alerta-card .alerta-det { font-size:.82em; color:#666; margin-top:3px; }
+      .alerta-card .alerta-tipo { display:inline-block; background:#eee; padding:1px 6px; border-radius:3px; font-size:.75em; color:#555; margin-right:6px; }
+      .btn-group { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
+      .btn-group button, .btn-group a button { font-size:.9em; }
+      .btn-reanalisar { background:#6c63ff; color:#fff; border:none; cursor:pointer; padding:8px 16px; border-radius:6px; }
+      .btn-reanalisar:hover { background:#5a52d5; }
+      .texto-extraido { background:#f5f5f5; padding:12px; border-radius:6px; max-height:400px; overflow:auto; font-size:.85em; white-space:pre-wrap; word-break:break-word; font-family:monospace; }
+      .resumo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:12px; }
+      .resumo-grid .stat-card { background:#f0f0f5; padding:12px; border-radius:8px; text-align:center; }
+      .resumo-grid .stat-card h3 { margin:0; font-size:1.5em; color:#1a1a2e; }
+      .resumo-grid .stat-card small { color:#888; }
+    </style>
   </head>
   <body>
-    <main class="container card">
-      <h1>Resultado da Análise</h1>
-      <div class="score" id="score">0/100</div>
-      <div class="progress"><span id="score-bar" style="width:0%"></span></div>
-      <p><span id="nivel" class="badge baixo">BAIXO</span></p>
-      <h3>Alertas encontrados</h3>
-      <ul id="alertas"></ul>
-      <h3>Dados extraídos</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
-          <tbody id="dados-extraidos">
-            <tr><td>Documento</td><td>Não carregado</td></tr>
-          </tbody>
-        </table>
+    <div class="topbar">
+      <strong><img src="/assets/img/logo-af.svg" alt="AF" style="width:24px;vertical-align:middle" /> Andre Fiscaliza</strong>
+      <nav>
+        <a href="/dashboard.html">Início</a> |
+        <a href="/documentos.html">Documentos</a> |
+        <a href="/perfil.html">Perfil</a>
+      </nav>
+    </div>
+
+    <main class="container">
+      <div class="card" style="margin-top:16px;">
+        <!-- Cabeçalho com score -->
+        <div class="analise-header">
+          <div class="score-box" id="score-box" style="background:#28a745;">
+            <h2 id="score">0</h2>
+            <small>de 100</small>
+          </div>
+          <div class="info-box">
+            <h1 id="doc-titulo">Resultado da Análise</h1>
+            <p class="meta" id="doc-meta"></p>
+            <p><span id="nivel" class="badge baixo">BAIXO</span></p>
+          </div>
+        </div>
+        <div class="progress" style="margin-top:12px;"><span id="score-bar" style="width:0%"></span></div>
       </div>
-      <p style="display:flex;gap:8px;margin-top:16px;">
-        <button class="primary" onclick="window.print()">Baixar Relatório</button>
-        <a href="/documentos.html"><button>Voltar</button></a>
-      </p>
+
+      <!-- Resumo numérico -->
+      <div class="card" id="resumo-section" style="display:none;">
+        <h3 class="section-title">📊 Resumo da Análise</h3>
+        <div class="resumo-grid" id="resumo-stats"></div>
+      </div>
+
+      <!-- Alertas -->
+      <div class="card">
+        <h3 class="section-title">🚨 Alertas Encontrados <span id="alertas-count" style="font-size:.8em;color:#888;">(0)</span></h3>
+        <div id="alertas-vazio" style="color:#28a745;padding:12px;">Nenhum alerta encontrado.</div>
+        <div id="alertas"></div>
+      </div>
+
+      <!-- Dados do documento -->
+      <div class="card">
+        <h3 class="section-title">📄 Dados do Documento</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+            <tbody id="dados-extraidos">
+              <tr><td>Documento</td><td>Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Texto extraído (PDF) -->
+      <div class="card" id="texto-section" style="display:none;">
+        <h3 class="section-title">📝 Texto Extraído do Documento</h3>
+        <pre class="texto-extraido" id="texto-extraido"></pre>
+      </div>
+
+      <!-- Ações -->
+      <div class="btn-group">
+        <a href="/dashboard.html"><button class="primary">⬅ Dashboard</button></a>
+        <button id="btn-relatorio">📥 Baixar Relatório PDF</button>
+        <button id="btn-reanalisar" class="btn-reanalisar" style="display:none;">🔄 Reanalisar</button>
+        <a href="/documentos.html"><button>📂 Documentos</button></a>
+      </div>
     </main>
     <script>
+      let _docData = null;
+
+      function esc(t) { return String(t || ''); }
+
+      function baixarRelatorio() {
+        if (!_docData) return;
+        const d = _docData;
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const W = 210, H = 297, M = 15;
+        const maxW = W - 2 * M;
+        let y = M;
+
+        function checkPage(need) {
+          if (y + need > H - M) { pdf.addPage(); y = M; }
+        }
+
+        // --- CABEÇALHO ---
+        pdf.setFillColor(26, 26, 46);
+        pdf.rect(0, 0, W, 40, 'F');
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(20);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('ANDRE FISCALIZA', M, 18);
+        pdf.setFontSize(11);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text('Relatório de Análise de Despesas Públicas', M, 26);
+        pdf.setFontSize(9);
+        pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, M, 33);
+        y = 48;
+
+        // --- SCORE ---
+        const corScore = d.score >= 70 ? [220, 53, 69] : d.score >= 40 ? [255, 165, 0] : [40, 167, 69];
+        pdf.setFillColor(...corScore);
+        pdf.roundedRect(M, y, maxW, 28, 3, 3, 'F');
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(24);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(`${d.score}/100`, M + 8, y + 14);
+        pdf.setFontSize(14);
+        pdf.text(esc(d.nivel), M + 50, y + 14);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text('Score de Risco', M + 8, y + 22);
+        y += 35;
+
+        // --- DADOS DO DOCUMENTO ---
+        pdf.setTextColor(26, 26, 46);
+        pdf.setFontSize(13);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Dados do Documento', M, y);
+        y += 2;
+        pdf.setDrawColor(26, 26, 46);
+        pdf.setLineWidth(0.5);
+        pdf.line(M, y, M + maxW, y);
+        y += 6;
+
+        pdf.setFontSize(10);
+        const campos = [
+          ['Arquivo', d.nome_arquivo],
+          ['Tipo', d.tipo],
+          ['Tamanho', d.tamanho > 1024 ? (d.tamanho / 1024).toFixed(1) + ' KB' : d.tamanho + ' bytes'],
+          ['Data de Upload', d.data_upload]
+        ];
+        campos.forEach(([label, val]) => {
+          pdf.setFont('helvetica', 'bold');
+          pdf.text(`${label}:`, M, y);
+          pdf.setFont('helvetica', 'normal');
+          pdf.text(esc(val), M + 35, y);
+          y += 5.5;
+        });
+
+        const resumo = d.resumo || {};
+        if (resumo.totalRegistros) {
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Registros:', M, y);
+          pdf.setFont('helvetica', 'normal');
+          pdf.text(`${resumo.registrosAnalisados || resumo.totalRegistros} analisados de ${resumo.totalRegistros}`, M + 35, y);
+          y += 5.5;
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Valor Total:', M, y);
+          pdf.setFont('helvetica', 'normal');
+          pdf.text('R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }), M + 35, y);
+          y += 5.5;
+        }
+        y += 5;
+
+        // --- ALERTAS ---
+        const alertas = d.alertas || [];
+        checkPage(15);
+        pdf.setTextColor(26, 26, 46);
+        pdf.setFontSize(13);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(`Alertas Encontrados (${alertas.length})`, M, y);
+        y += 2;
+        pdf.line(M, y, M + maxW, y);
+        y += 6;
+
+        if (alertas.length === 0) {
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(40, 167, 69);
+          pdf.text('Nenhum alerta encontrado. Documento dentro dos parâmetros esperados.', M, y);
+          y += 8;
+        } else {
+          alertas.forEach((a, i) => {
+            checkPage(18);
+            // Faixa de fundo alternada
+            if (i % 2 === 0) {
+              pdf.setFillColor(245, 245, 250);
+              pdf.rect(M, y - 4, maxW, a.detalhes ? 14 : 9, 'F');
+            }
+            // Ícone de severidade
+            const corAlerta = a.pontuacao >= 15 ? [220, 53, 69] : a.pontuacao >= 8 ? [255, 165, 0] : [255, 193, 7];
+            pdf.setFillColor(...corAlerta);
+            pdf.circle(M + 3, y - 0.5, 2, 'F');
+
+            pdf.setTextColor(50, 50, 50);
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            const descLines = pdf.splitTextToSize(`${i + 1}. ${a.descricao}`, maxW - 30);
+            pdf.text(descLines, M + 8, y);
+
+            pdf.setTextColor(150, 50, 50);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`+${a.pontuacao} pts`, M + maxW - 18, y);
+
+            y += descLines.length * 4.5;
+
+            if (a.detalhes) {
+              pdf.setTextColor(120, 120, 120);
+              pdf.setFontSize(8.5);
+              const detLines = pdf.splitTextToSize(a.detalhes, maxW - 12);
+              detLines.slice(0, 3).forEach((line) => {
+                checkPage(5);
+                pdf.text(line, M + 8, y);
+                y += 3.8;
+              });
+            }
+            y += 3;
+          });
+        }
+        y += 4;
+
+        // --- TEXTO EXTRAÍDO ---
+        if (resumo.textoExtraido) {
+          checkPage(15);
+          pdf.setTextColor(26, 26, 46);
+          pdf.setFontSize(13);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Texto Extraído do Documento', M, y);
+          y += 2;
+          pdf.line(M, y, M + maxW, y);
+          y += 6;
+
+          pdf.setFontSize(8);
+          pdf.setFont('courier', 'normal');
+          pdf.setTextColor(60, 60, 60);
+          // Limpa caracteres nulos/controle
+          const textoLimpo = resumo.textoExtraido.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+          const linhasTexto = pdf.splitTextToSize(textoLimpo, maxW);
+          linhasTexto.forEach((line) => {
+            checkPage(5);
+            pdf.text(line, M, y);
+            y += 3.5;
+          });
+        }
+
+        // --- RODAPÉ em cada página ---
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let p = 1; p <= totalPages; p++) {
+          pdf.setPage(p);
+          pdf.setFillColor(240, 240, 245);
+          pdf.rect(0, H - 12, W, 12, 'F');
+          pdf.setFontSize(8);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(130, 130, 130);
+          pdf.text('Andre Fiscaliza - Sistema de Análise de Despesas Públicas', M, H - 5);
+          pdf.text(`Página ${p} de ${totalPages}`, W - M - 20, H - 5);
+        }
+
+        pdf.save(`relatorio_${(d.nome_arquivo || 'analise').replace(/\.[^.]+$/, '')}_${new Date().toISOString().slice(0, 10)}.pdf`);
+      }
+      document.getElementById('btn-relatorio').addEventListener('click', baixarRelatorio);
+
       (async function () {
         const id = new URLSearchParams(window.location.search).get('id');
         if (!id) return;
         const res = await fetch(`/api/documentos/${id}`);
         if (!res.ok) return;
         const doc = await res.json();
+        _docData = doc;
         document.getElementById('score').textContent = `${doc.score}/100`;
         document.getElementById('score-bar').style.width = `${doc.score}%`;
         const nivelEl = document.getElementById('nivel');
@@ -44,15 +303,63 @@
         alertas.innerHTML = '';
         (doc.alertas || []).forEach((a) => {
           const li = document.createElement('li');
-          li.textContent = `⚠️ ${a.descricao} (+${a.pontuacao})`;
+          const titulo = document.createElement('strong');
+          titulo.textContent = `⚠️ ${a.descricao} (+${a.pontuacao})`;
+          li.appendChild(titulo);
+          if (a.detalhes) {
+            const det = document.createElement('div');
+            det.style.cssText = 'font-size:0.85em;color:#666;margin-top:2px;';
+            det.textContent = a.detalhes;
+            li.appendChild(det);
+          }
           alertas.appendChild(li);
         });
-        document.getElementById('dados-extraidos').innerHTML = `
-          <tr><td>Nome do arquivo</td><td>${doc.nome_arquivo}</td></tr>
-          <tr><td>Tipo</td><td>${doc.tipo}</td></tr>
-          <tr><td>Tamanho</td><td>${doc.tamanho}</td></tr>
-          <tr><td>Upload</td><td>${doc.data_upload}</td></tr>
-        `;
+
+        const resumoEl = document.getElementById('resumo-stats');
+        const resumo = doc.resumo || (doc.alertas ? {} : null);
+        if (resumo && resumo.totalRegistros) {
+          resumoEl.innerHTML = '';
+          const items = [
+            { label: '📋 Registros', value: resumo.totalRegistros },
+            { label: '💰 Valor Total', value: 'R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) },
+            { label: '🔍 Analisados', value: resumo.registrosAnalisados }
+          ];
+          items.forEach((item) => {
+            const card = document.createElement('article');
+            card.className = 'card';
+            card.innerHTML = `${item.label} <h2>${item.value}</h2>`;
+            resumoEl.appendChild(card);
+          });
+        }
+
+        const dadosEl = document.getElementById('dados-extraidos');
+        dadosEl.innerHTML = '';
+        const campos = [
+          ['Nome do arquivo', doc.nome_arquivo],
+          ['Tipo', doc.tipo],
+          ['Tamanho', doc.tamanho > 1024 ? (doc.tamanho / 1024).toFixed(1) + ' KB' : doc.tamanho + ' bytes'],
+          ['Upload', doc.data_upload]
+        ];
+        campos.forEach(([label, value]) => {
+          const tr = document.createElement('tr');
+          const td1 = document.createElement('td'); td1.textContent = label;
+          const td2 = document.createElement('td'); td2.textContent = String(value);
+          tr.appendChild(td1); tr.appendChild(td2);
+          dadosEl.appendChild(tr);
+        });
+
+        // Mostra texto extraído do PDF, se houver
+        if (resumo && resumo.textoExtraido) {
+          const h3 = document.createElement('h3');
+          h3.textContent = 'Texto extraído do documento';
+          const pre = document.createElement('pre');
+          pre.style.cssText = 'background:#f5f5f5;padding:12px;border-radius:6px;max-height:400px;overflow:auto;font-size:0.85em;white-space:pre-wrap;word-break:break-word;';
+          pre.textContent = resumo.textoExtraido;
+          const container = document.querySelector('.container');
+          const lastP = container.querySelector('p:last-of-type');
+          container.insertBefore(h3, lastP);
+          container.insertBefore(pre, lastP);
+        }
       })();
     </script>
   </body>

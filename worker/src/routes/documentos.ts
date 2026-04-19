@@ -6,12 +6,15 @@ interface Env {
   BUCKET: R2Bucket;
 }
 
-function parseAlertas(alertas: string | null): unknown[] {
-  if (!alertas) return [];
+function parseAlertasData(alertas: string | null): { alertas: unknown[]; resumo?: unknown } {
+  if (!alertas) return { alertas: [] };
   try {
-    return JSON.parse(alertas);
+    const parsed = JSON.parse(alertas);
+    if (Array.isArray(parsed)) return { alertas: parsed };
+    if (parsed && Array.isArray(parsed.alertas)) return { alertas: parsed.alertas, resumo: parsed.resumo };
+    return { alertas: [] };
   } catch {
-    return [];
+    return { alertas: [] };
   }
 }
 
@@ -30,7 +33,10 @@ export async function listDocumentosRoute(request: Request, env: Env, username: 
 
   return Response.json({
     ...result,
-    items: result.items.map((item) => ({ ...item, alertas: parseAlertas(item.alertas) }))
+    items: result.items.map((item) => {
+      const data = parseAlertasData(item.alertas);
+      return { ...item, alertas: data.alertas, resumo: data.resumo };
+    })
   });
 }
 
@@ -38,7 +44,8 @@ export async function getDocumentoRoute(env: Env, username: string, id: number):
   const doc = await getDocumentoById(env.DB, id, username);
   if (!doc) return Response.json({ ok: false, message: "Documento não encontrado" }, { status: 404 });
 
-  return Response.json({ ...doc, alertas: parseAlertas(doc.alertas) });
+  const data = parseAlertasData(doc.alertas);
+  return Response.json({ ...doc, alertas: data.alertas, resumo: data.resumo });
 }
 
 export async function deleteDocumentoRoute(env: Env, username: string, id: number): Promise<Response> {
@@ -67,6 +74,7 @@ export async function downloadDocumentoRoute(request: Request, env: Env, usernam
 
   const headers = new Headers();
   headers.set("Content-Type", obj.httpMetadata?.contentType || "application/octet-stream");
-  headers.set("Content-Disposition", `attachment; filename="${doc.nome_arquivo}"`);
+  const safeName = doc.nome_arquivo.replace(/["\r\n]/g, "_");
+  headers.set("Content-Disposition", `attachment; filename="${safeName}"`);
   return new Response(obj.body, { headers });
 }

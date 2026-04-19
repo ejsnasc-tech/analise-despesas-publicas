@@ -6,7 +6,13 @@ const statsIds = {
 };
 
 async function carregarDashboard() {
-  const response = await fetch('/api/dashboard');
+  let response;
+  try {
+    response = await fetch('/api/dashboard');
+  } catch (err) {
+    console.error('Erro de rede ao carregar dashboard:', err);
+    return;
+  }
   if (response.status === 401) {
     window.location.href = '/login';
     return;
@@ -24,7 +30,23 @@ async function carregarDashboard() {
   lista.innerHTML = '';
   (data.recentes || []).forEach((item) => {
     const li = document.createElement('li');
-    li.innerHTML = `${item.nome_arquivo} <span class="badge ${String(item.nivel).toLowerCase()}">${item.nivel}</span> <a href="/analise.html?id=${item.id}">Ver Resultado</a>`;
+
+    const nomeText = document.createTextNode(item.nome_arquivo + ' ');
+    li.appendChild(nomeText);
+
+    const badge = document.createElement('span');
+    badge.className = 'badge ' + String(item.nivel).toLowerCase();
+    badge.textContent = item.nivel;
+    li.appendChild(badge);
+
+    const spacer = document.createTextNode(' ');
+    li.appendChild(spacer);
+
+    const link = document.createElement('a');
+    link.href = '/analise.html?id=' + encodeURIComponent(item.id);
+    link.textContent = 'Ver Resultado';
+    li.appendChild(link);
+
     lista.appendChild(li);
   });
 }
