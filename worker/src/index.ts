@@ -12,8 +12,6 @@ import { uploadRoute } from "./routes/upload";
 interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
-  ADMIN_USER: string;
-  ADMIN_PASSWORD_HASH: string;
   JWT_SECRET: string;
   ASSETS?: Fetcher;
 }

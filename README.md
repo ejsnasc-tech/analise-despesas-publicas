@@ -31,8 +31,8 @@ andre-fiscaliza/
 2. `wrangler d1 create andre-fiscaliza-db`
 3. `wrangler r2 bucket create andre-fiscaliza-docs`
 4. `wrangler d1 execute andre-fiscaliza-db --file=schema.sql`
-5. `wrangler secret put ADMIN_PASSWORD_HASH` (valor: `c4776115426be5e3e1a8b79c7adaa7d6af3fc916681881363342b3b5406a6c9c`)
-6. `wrangler secret put JWT_SECRET` (valor: segredo aleatório forte)
+5. Defina `JWT_SECRET` no `wrangler.toml` para desenvolvimento local
+6. Em produção, use `wrangler secret put JWT_SECRET` com um valor forte e exclusivo
 7. `wrangler deploy`
 
 ## Credenciais padrão

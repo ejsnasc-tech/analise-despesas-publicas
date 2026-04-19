@@ -2,8 +2,6 @@ import { authenticateUser, buildSessionCookie, clearSessionCookie, generateToken
 
 interface Env {
   DB: D1Database;
-  ADMIN_USER: string;
-  ADMIN_PASSWORD_HASH: string;
   JWT_SECRET: string;
 }
 
@@ -24,7 +22,7 @@ export async function loginRoute(request: Request, env: Env): Promise<Response> 
     password = String(body.get("password") ?? "");
   }
 
-  const user = await authenticateUser(env.DB, username, password, env.ADMIN_USER, env.ADMIN_PASSWORD_HASH);
+  const user = await authenticateUser(env.DB, username, password);
   if (!user) {
     return Response.json({ ok: false, message: "Credenciais inválidas" }, { status: 401 });
   }
