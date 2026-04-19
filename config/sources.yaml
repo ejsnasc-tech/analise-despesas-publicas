@@ -1,0 +1,25 @@
+federal:
+  portal_transparencia:
+    base_url: https://portaldatransparencia.gov.br/api-de-dados
+    format: json
+    update_frequency: daily
+  pncp:
+    base_url: https://pncp.gov.br/api/pncp/v1
+    format: json
+    update_frequency: daily
+estadual:
+  sp:
+    base_url: https://www.fazenda.sp.gov.br/siafem
+    format: csv
+  rj:
+    base_url: https://www.transparencia.rj.gov.br
+    format: json
+municipal:
+  sao_paulo_sp:
+    base_url: https://dados.prefeitura.sp.gov.br
+    format: csv
+referencias:
+  receitaws:
+    base_url: https://receitaws.com.br/v1
+  ibge:
+    base_url: https://servicodados.ibge.gov.br/api/v1
