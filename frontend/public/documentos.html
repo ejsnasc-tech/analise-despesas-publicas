@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentos | Andre Fiscaliza</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/documentos.js" defer></script>
+  </head>
+  <body onload="AFDocumentos.carregarDocumentos()">
+    <main class="container card">
+      <h1>Documentos</h1>
+      <div class="grid-2">
+        <label class="field">Status <select id="f-status"><option value="">Todos</option><option value="concluido">Concluído</option><option value="analisando">Analisando</option></select></label>
+        <label class="field">Tipo <input id="f-tipo" placeholder="pdf, csv..." /></label>
+        <label class="field">Busca <input id="f-busca" placeholder="Nome do arquivo" /></label>
+        <label class="field">Período <input type="date" /></label>
+      </div>
+      <button class="primary" onclick="AFDocumentos.carregarDocumentos()">Filtrar</button>
+      <div class="table-wrap" style="margin-top:12px;">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Arquivo</th><th>Tipo</th><th>Status</th><th>Score</th><th>Nível</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="documentos-body"></tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>

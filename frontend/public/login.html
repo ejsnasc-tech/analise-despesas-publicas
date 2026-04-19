@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Andre Fiscaliza</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/auth.js" defer></script>
+  </head>
+  <body class="login-page" onload="AFAuth.bindLogin()">
+    <main class="card login-card">
+      <div class="brand">
+        <img src="/assets/img/logo-af.svg" alt="Logo AF" />
+        <h1>Andre Fiscaliza</h1>
+        <p>Sistema de Análise de Despesas Públicas</p>
+      </div>
+      <form id="login-form">
+        <label class="field">
+          <span>👤 Usuário</span>
+          <input id="username" name="username" required autocomplete="username" />
+        </label>
+        <label class="field">
+          <span>🔒 Senha</span>
+          <input id="password" name="password" type="password" required autocomplete="current-password" />
+        </label>
+        <button class="primary" type="submit">Entrar</button>
+      </form>
+      <p class="footer">Andre de Jesus Oliveira © 2026</p>
+    </main>
+  </body>
+</html>

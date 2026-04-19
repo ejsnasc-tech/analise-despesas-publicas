@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Análise | Andre Fiscaliza</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+  </head>
+  <body>
+    <main class="container card">
+      <h1>Resultado da Análise</h1>
+      <div class="score" id="score">0/100</div>
+      <div class="progress"><span id="score-bar" style="width:0%"></span></div>
+      <p><span id="nivel" class="badge baixo">BAIXO</span></p>
+      <h3>Alertas encontrados</h3>
+      <ul id="alertas"></ul>
+      <h3>Dados extraídos</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+          <tbody id="dados-extraidos">
+            <tr><td>Documento</td><td>Não carregado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="display:flex;gap:8px;margin-top:16px;">
+        <button class="primary" onclick="window.print()">Baixar Relatório</button>
+        <a href="/documentos.html"><button>Voltar</button></a>
+      </p>
+    </main>
+    <script>
+      (async function () {
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (!id) return;
+        const res = await fetch(`/api/documentos/${id}`);
+        if (!res.ok) return;
+        const doc = await res.json();
+        document.getElementById('score').textContent = `${doc.score}/100`;
+        document.getElementById('score-bar').style.width = `${doc.score}%`;
+        const nivelEl = document.getElementById('nivel');
+        nivelEl.textContent = doc.nivel;
+        nivelEl.className = `badge ${String(doc.nivel).toLowerCase()}`;
+        const alertas = document.getElementById('alertas');
+        alertas.innerHTML = '';
+        (doc.alertas || []).forEach((a) => {
+          const li = document.createElement('li');
+          li.textContent = `⚠️ ${a.descricao} (+${a.pontuacao})`;
+          alertas.appendChild(li);
+        });
+        document.getElementById('dados-extraidos').innerHTML = `
+          <tr><td>Nome do arquivo</td><td>${doc.nome_arquivo}</td></tr>
+          <tr><td>Tipo</td><td>${doc.tipo}</td></tr>
+          <tr><td>Tamanho</td><td>${doc.tamanho}</td></tr>
+          <tr><td>Upload</td><td>${doc.data_upload}</td></tr>
+        `;
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Andre Fiscaliza</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/auth.js" defer></script>
+    <script src="/assets/js/upload.js" defer></script>
+    <script src="/assets/js/dashboard.js" defer></script>
+  </head>
+  <body onload="AFDashboard.carregarDashboard();AFUpload.bindUpload()">
+    <div class="topbar">
+      <strong><img src="/assets/img/logo-af.svg" alt="AF" style="width:24px;vertical-align:middle" /> Andre Fiscaliza</strong>
+      <nav>
+        <a href="/dashboard.html">Início</a> |
+        <a href="/documentos.html">Documentos</a> |
+        <a href="/perfil.html">Perfil</a>
+      </nav>
+      <div>AJ · Andre de Jesus Oliveira <button onclick="AFAuth.logout()">Sair</button></div>
+    </div>
+
+    <main class="container">
+      <section class="stats">
+        <article class="card">📊 Total Analisados <h2 id="stat-total">0</h2></article>
+        <article class="card">🚨 Com Alertas <h2 id="stat-alertas">0</h2></article>
+        <article class="card">✅ Sem Irregularidades <h2 id="stat-ok">0</h2></article>
+        <article class="card">⚠️ Em Análise <h2 id="stat-analise">0</h2></article>
+      </section>
+
+      <section class="grid-2">
+        <article class="card">
+          <h3>Upload</h3>
+          <form id="upload-form">
+            <div class="upload-zone">
+              <p>📤 Arraste seu documento aqui ou clique para selecionar</p>
+              <p>Formatos: PDF, CSV, XLSX, XML, JSON</p>
+              <input id="arquivo" type="file" accept=".pdf,.csv,.xlsx,.xml,.json" required />
+            </div>
+            <div class="progress" style="margin:12px 0;"><span></span></div>
+            <button class="primary" type="submit">Analisar Documento</button>
+          </form>
+          <p id="upload-resultado"></p>
+        </article>
+
+        <article class="card">
+          <h3>Recentes</h3>
+          <ul id="recentes-lista"></ul>
+          <a href="/documentos.html">Ver todos os documentos →</a>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
