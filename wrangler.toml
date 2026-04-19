@@ -14,5 +14,6 @@ bucket_name = "andre-fiscaliza-docs"
 [vars]
 ADMIN_USER = "andre"
 
-[site]
-bucket = "./frontend/public"
+[assets]
+directory = "./frontend/public"
+binding = "ASSETS"
