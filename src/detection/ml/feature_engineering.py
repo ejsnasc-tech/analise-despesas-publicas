@@ -1,5 +1,7 @@
 """Engenharia de features para modelos de anomalia."""
 
+import math
+
 
 class FeatureEngineering:
     """Cria vetores simples de características de despesas."""
@@ -12,7 +14,7 @@ class FeatureEngineering:
             transformed.append(
                 {
                     "valor": value,
-                    "valor_log": 0 if value <= 0 else value,
+                    "valor_log": 0 if value <= 0 else math.log(value),
                     "tem_dispensa": 1 if row.get("modalidade") == "DISPENSA" else 0,
                 }
             )
