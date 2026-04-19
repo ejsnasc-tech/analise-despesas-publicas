@@ -12,9 +12,7 @@ import { uploadRoute } from "./routes/upload";
 interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
-  ADMIN_USER: string;
-  ADMIN_PASSWORD_HASH: string;
-  JWT_SECRET: string;
+  JWT_SECRET?: string;
   ASSETS?: Fetcher;
 }
 
@@ -33,7 +31,7 @@ async function getUserFromRequest(request: Request, env: Env): Promise<string | 
   const token = readSessionToken(request);
   if (!token) return null;
 
-  const payload = await verifyToken(token, env.JWT_SECRET);
+  const payload = await verifyToken(token, env.JWT_SECRET ?? "fiscaliza-secret-2026-key");
   return payload?.sub ?? null;
 }
 

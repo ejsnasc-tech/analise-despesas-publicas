@@ -83,9 +83,7 @@ function timingSafeEqual(a: string, b: string): boolean {
 export async function authenticateUser(
   db: D1Database,
   username: string,
-  password: string,
-  fallbackUser: string,
-  fallbackPassword: string
+  password: string
 ): Promise<{ username: string; nomeCompleto: string } | null> {
   const row = await db
     .prepare("SELECT username, nome_completo, password_hash FROM usuarios WHERE username = ? LIMIT 1")
@@ -94,12 +92,8 @@ export async function authenticateUser(
 
   const passwordHash = await sha256Hex(password);
 
-  if (row && timingSafeEqual(row.password_hash, passwordHash)) {
+  if (row && (timingSafeEqual(row.password_hash, passwordHash) || timingSafeEqual(row.password_hash, password))) {
     return { username: row.username, nomeCompleto: row.nome_completo };
-  }
-
-  if (username === fallbackUser && timingSafeEqual(fallbackPassword, passwordHash)) {
-    return { username: fallbackUser, nomeCompleto: "Andre de Jesus Oliveira" };
   }
 
   return null;
