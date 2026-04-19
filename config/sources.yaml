@@ -1,0 +1,39 @@
+estadual:
+  se:
+    principal: true
+    portal_transparencia: https://www.transparencia.se.gov.br/
+    sagres_tce: https://sagres.tce.se.gov.br/
+    siga: https://www.siga.se.gov.br/
+    portal_compras: https://www.comprasnet.se.gov.br/
+  sp:
+    principal: true
+    portal_transparencia: https://www.transparencia.sp.gov.br/
+  rj:
+    principal: true
+    portal_transparencia: https://www.transparencia.rj.gov.br/
+  mg:
+    principal: true
+    portal_transparencia: https://www.transparencia.mg.gov.br/
+  rs:
+    principal: true
+    portal_transparencia: https://transparencia.rs.gov.br/
+  pr:
+    principal: true
+    portal_transparencia: https://www.transparencia.pr.gov.br/
+  ba:
+    principal: true
+    portal_transparencia: https://www.transparencia.ba.gov.br/
+  outros_estados:
+    principal: false
+    agregador_generico: https://dados.gov.br/
+
+referencias:
+  nota_fiscal:
+    nfe_nacional: https://www.nfe.fazenda.gov.br/
+    nfse_abrasf: https://abrasf.org.br/
+    sefaz_sergipe: https://www.sefaz.se.gov.br/
+  cartao_cnpj:
+    receita_federal: https://www.gov.br/receitafederal/pt-br
+    brasilapi: https://brasilapi.com.br/api/cnpj/v1/{cnpj}
+    receitaws: https://receitaws.com.br/v1/cnpj/{cnpj}
+    cnpjws: https://publica.cnpj.ws/cnpj/{cnpj}
