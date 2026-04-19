@@ -5,7 +5,7 @@ compatibility_date = "2026-04-19"
 [[d1_databases]]
 binding = "DB"
 database_name = "andre-fiscaliza-db"
-database_id = "YOUR_DATABASE_ID"
+database_id = "2247ec50-7ca7-46bb-955e-195bc521462b"
 
 [[r2_buckets]]
 binding = "BUCKET"
