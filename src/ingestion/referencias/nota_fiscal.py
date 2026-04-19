@@ -31,7 +31,7 @@ class NotaFiscalReferencia:
     def cruzar_notas_com_despesas(self, despesas: Any) -> Any:
         try:
             import pandas as pd  # type: ignore
-        except Exception:  # pragma: no cover
+        except ImportError:  # pragma: no cover
             pd = None
 
         if pd is not None and hasattr(despesas, "copy"):

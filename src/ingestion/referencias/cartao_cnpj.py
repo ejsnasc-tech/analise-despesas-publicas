@@ -4,6 +4,7 @@ import json
 import sqlite3
 import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import URLError
@@ -13,6 +14,7 @@ from urllib.request import urlopen
 @dataclass
 class CartaoCNPJReferencia:
     cache_path: str = "data/reference/cnpj_cache.sqlite"
+    lote_delay_segundos: float = 0.2
 
     receita_federal_url: str = "https://www.gov.br/receitafederal/pt-br"
     brasilapi_url: str = "https://brasilapi.com.br/api/cnpj/v1/{cnpj}"
@@ -43,6 +45,16 @@ class CartaoCNPJReferencia:
             payload = response.read().decode("utf-8")
         data = json.loads(payload)
         return data if isinstance(data, dict) else {}
+
+    @staticmethod
+    def _extract_cnae_principal(data: dict[str, Any]) -> str:
+        cnae = data.get("cnae_fiscal_descricao")
+        if cnae:
+            return str(cnae)
+        atividade_principal = data.get("atividade_principal")
+        if isinstance(atividade_principal, list) and atividade_principal:
+            return str(atividade_principal[0].get("text", ""))
+        return str(data.get("cnae_principal", ""))
 
     def _get_cache(self, cnpj: str) -> dict[str, Any] | None:
         with sqlite3.connect(self.cache_path) as conn:
@@ -81,7 +93,7 @@ class CartaoCNPJReferencia:
                         "nome_fantasia": data.get("nome_fantasia") or data.get("fantasia") or "",
                         "situacao_cadastral": data.get("descricao_situacao_cadastral") or data.get("situacao") or data.get("status", ""),
                         "data_abertura": data.get("data_inicio_atividade") or data.get("abertura") or "",
-                        "cnae_principal": data.get("cnae_fiscal_descricao") or data.get("atividade_principal", [{}])[0].get("text", "") if isinstance(data.get("atividade_principal"), list) else data.get("cnae_principal", ""),
+                        "cnae_principal": self._extract_cnae_principal(data),
                         "cnaes_secundarios": data.get("cnaes_secundarios") or data.get("atividade_secundaria") or [],
                         "endereco": {
                             "logradouro": data.get("logradouro", ""),
@@ -132,7 +144,7 @@ class CartaoCNPJReferencia:
         dados = self.consultar_cnpj(cnpj)
         indicadores = {
             "cnpj": dados.get("cnpj", cnpj),
-            "cnae_incompativel": "SERV" not in str(dados.get("cnae_principal", "")).upper() and "COM" not in str(dados.get("cnae_principal", "")).upper(),
+            "cnae_incompativel": self._cnae_incompativel(str(dados.get("cnae_principal", ""))),
             "capital_social_baixo": float(dados.get("capital_social", 0)) < 10_000,
             "empresa_muito_recente": self._empresa_muito_recente(dados.get("data_abertura", "")),
             "socios_com_restricoes": bool(dados.get("socios_com_restricoes", False)),
@@ -143,6 +155,27 @@ class CartaoCNPJReferencia:
         return indicadores
 
     @staticmethod
+    def _cnae_incompativel(cnae_principal: str) -> bool:
+        descricao = cnae_principal.upper()
+        if not descricao:
+            return True
+        categorias_aceitaveis = (
+            "SERV",
+            "COM",
+            "IND",
+            "CONSTR",
+            "TRANSP",
+            "SAUDE",
+            "EDUC",
+            "TECNO",
+            "ADMIN",
+            "ENGENH",
+            "CONSULT",
+            "MANUT",
+        )
+        return not any(token in descricao for token in categorias_aceitaveis)
+
+    @staticmethod
     def _empresa_muito_recente(data_abertura: str) -> bool:
         if not data_abertura:
             return False
@@ -150,9 +183,11 @@ class CartaoCNPJReferencia:
         formatos = ("%Y-%m-%d", "%d-%m-%Y")
         for fmt in formatos:
             try:
-                abertura = time.strptime(normalizada, fmt)
-                now = time.gmtime()
-                meses = (now.tm_year - abertura.tm_year) * 12 + (now.tm_mon - abertura.tm_mon)
+                abertura = datetime.strptime(normalizada, fmt).date()
+                hoje = datetime.now(timezone.utc).date()
+                meses = (hoje.year - abertura.year) * 12 + (hoje.month - abertura.month)
+                if hoje.day < abertura.day:
+                    meses -= 1
                 return meses < 6
             except ValueError:
                 continue
@@ -162,11 +197,11 @@ class CartaoCNPJReferencia:
         resultados = []
         for cnpj in cnpjs:
             resultados.append(self.consultar_cnpj(cnpj))
-            time.sleep(0.01)
+            time.sleep(max(self.lote_delay_segundos, 0))
 
         try:
             import pandas as pd  # type: ignore
 
             return pd.DataFrame(resultados)
-        except Exception:  # pragma: no cover
+        except ImportError:  # pragma: no cover
             return resultados
