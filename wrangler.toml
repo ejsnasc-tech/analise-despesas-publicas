@@ -13,7 +13,7 @@ bucket_name = "andre-fiscaliza-docs"
 
 [vars]
 ADMIN_USER = "andre"
-JWT_SECRET = "dev-only-change-me"
+JWT_SECRET = "dev-9f7e1f61c3b64843af5f4e2fbb9c17e7d8f7d7a7d8c84e6f8b1a9c0f2d3e4b5a"
 
 [assets]
 directory = "./frontend/public"
