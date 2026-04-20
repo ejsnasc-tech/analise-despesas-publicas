@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leitura do Documento | Andre Fiscaliza</title>
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/auth.js" defer></script>
+    <style>
+      .leitura-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .documento-viewer {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .viewer-header {
+        background: var(--gray-50);
+        border-bottom: 1px solid var(--gray-200);
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: .9rem;
+        color: var(--gray-700);
+      }
+
+      .viewer-header .file-icon { font-size: 1.3rem; }
+
+      .viewer-body {
+        padding: 24px;
+        max-height: 75vh;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        font-size: .82rem;
+        line-height: 1.7;
+        color: var(--gray-700);
+        white-space: pre-wrap;
+        word-break: break-word;
+        position: relative;
+      }
+
+      .viewer-body .cursor-blink {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        background: var(--accent);
+        animation: blink 1s step-end infinite;
+        vertical-align: text-bottom;
+        margin-left: 1px;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      .viewer-body .highlight-line {
+        background: rgba(59, 130, 246, .08);
+        border-left: 3px solid var(--accent);
+        margin: 0 -24px;
+        padding: 2px 24px 2px 21px;
+        display: inline-block;
+        width: calc(100% + 48px);
+      }
+
+      .viewer-line-numbers {
+        position: absolute;
+        left: 0;
+        top: 24px;
+        width: 40px;
+        text-align: right;
+        font-size: .72rem;
+        color: var(--gray-300);
+        user-select: none;
+        padding-right: 8px;
+      }
+
+      /* Painel lateral de verificação */
+      .verificacao-panel {
+        position: sticky;
+        top: 80px;
+      }
+
+      .check-progress {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: var(--gray-50);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gray-200);
+      }
+
+      .check-progress .spinner {
+        width: 20px; height: 20px;
+        border: 3px solid var(--gray-200);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin .8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .check-progress .progress-text {
+        font-size: .85rem;
+        color: var(--gray-600);
+        font-weight: 500;
+      }
+
+      .check-progress.done .spinner {
+        border-color: var(--success);
+        border-top-color: var(--success);
+        animation: none;
+      }
+
+      .check-progress.done .spinner::after {
+        content: '✓';
+        display: block;
+        text-align: center;
+        color: var(--success);
+        font-size: .75rem;
+        font-weight: 800;
+        line-height: 14px;
+      }
+
+      .check-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 4px;
+        font-size: .82rem;
+        color: var(--gray-500);
+        transition: all .3s ease;
+        opacity: .5;
+      }
+
+      .check-item.active {
+        opacity: 1;
+        background: #eff6ff;
+        color: var(--gray-700);
+      }
+
+      .check-item.done {
+        opacity: 1;
+        color: var(--gray-600);
+      }
+
+      .check-item.found {
+        opacity: 1;
+        background: #fef2f2;
+        color: var(--danger);
+      }
+
+      .check-icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        font-size: .8rem;
+      }
+
+      .check-item.active .check-icon { color: var(--accent); }
+      .check-item.done .check-icon { color: var(--success); }
+      .check-item.found .check-icon { color: var(--danger); }
+
+      .check-label { flex: 1; line-height: 1.3; }
+      .check-detail { font-size: .72rem; color: var(--gray-400); margin-top: 2px; }
+      .check-item.found .check-detail { color: var(--danger); opacity: .8; }
+
+      /* Score result */
+      .resultado-final {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: var(--radius);
+        text-align: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all .5s ease;
+      }
+
+      .resultado-final.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .resultado-score {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .resultado-nivel {
+        margin-top: 6px;
+        font-size: .85rem;
+        font-weight: 600;
+      }
+
+      .resultado-final .btn-ver {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 10px 24px;
+        background: var(--white);
+        color: var(--gray-800);
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: .85rem;
+        transition: var(--transition);
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,.3);
+      }
+
+      .resultado-final .btn-ver:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      /* Stats bar */
+      .leitura-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .leitura-stat {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        text-align: center;
+      }
+
+      .leitura-stat .val { font-size: 1.2rem; font-weight: 800; color: var(--gray-900); }
+      .leitura-stat .label { font-size: .7rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+
+      @media (max-width: 1024px) {
+        .leitura-grid { grid-template-columns: 1fr; }
+        .verificacao-panel { position: static; }
+        .leitura-stats { grid-template-columns: repeat(2, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img src="/assets/img/logo-af.svg" alt="AF" />
+          <span>Andre Fiscaliza</span>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">Menu</div>
+          <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="/documentos.html"><span class="nav-icon">📁</span> Documentos</a>
+          <div class="sidebar-section">Configurações</div>
+          <a href="/perfil.html"><span class="nav-icon">👤</span> Perfil</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-avatar">AJ</div>
+          <div class="sidebar-user">
+            <strong>Andre de Jesus</strong>
+            <small>@andre</small>
+          </div>
+          <button onclick="AFAuth.logout()" title="Sair">🚪</button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main-area">
+        <header class="topbar">
+          <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+          <span class="topbar-title">📖 Leitura do Documento</span>
+          <div class="topbar-right"></div>
+        </header>
+
+        <main class="container">
+          <!-- Stats -->
+          <div class="leitura-stats fade-in">
+            <div class="leitura-stat">
+              <div class="val" id="stat-chars">—</div>
+              <div class="label">Caracteres lidos</div>
+            </div>
+            <div class="leitura-stat">
+              <div class="val" id="stat-lines">—</div>
+              <div class="label">Linhas</div>
+            </div>
+            <div class="leitura-stat">
+              <div class="val" id="stat-values">—</div>
+              <div class="label">Valores R$</div>
+            </div>
+            <div class="leitura-stat">
+              <div class="val" id="stat-cnpjs">—</div>
+              <div class="label">CNPJs</div>
+            </div>
+          </div>
+
+          <!-- Main grid -->
+          <div class="leitura-grid">
+            <!-- Document viewer -->
+            <div class="documento-viewer fade-in">
+              <div class="viewer-header">
+                <span class="file-icon">📄</span>
+                <span id="doc-nome">Carregando documento...</span>
+              </div>
+              <div class="viewer-body" id="viewer-body">
+                <span class="cursor-blink"></span>
+              </div>
+            </div>
+
+            <!-- Verification panel -->
+            <div class="verificacao-panel fade-in">
+              <div class="card" style="padding:16px;">
+                <div class="card-header" style="margin-bottom:12px;">
+                  <h3>🔍 Conferência ao Vivo</h3>
+                </div>
+
+                <div class="check-progress" id="check-progress">
+                  <div class="spinner"></div>
+                  <span class="progress-text" id="progress-text">Lendo documento...</span>
+                </div>
+
+                <ul class="check-list" id="check-list"></ul>
+
+                <div class="resultado-final" id="resultado-final">
+                  <div class="resultado-score" id="res-score">0/100</div>
+                  <div class="resultado-nivel" id="res-nivel"></div>
+                  <a id="res-link" href="#" class="btn-ver">Ver Análise Completa →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const REGRAS_CONFERENCIA = [
+        { id: 'leitura', nome: 'Extraindo texto do documento', icon: '📖' },
+        { id: 'valores', nome: 'Identificando valores monetários', icon: '💰' },
+        { id: 'cnpj', nome: 'Localizando CNPJs/CPFs', icon: '🔢' },
+        { id: 'classificacao', nome: 'Verificando classificação da despesa', icon: '📋' },
+        { id: 'nd', nome: 'Validando Natureza da Despesa (ND)', icon: '🏷️' },
+        { id: 'subelemento', nome: 'Conferindo subelemento vs. tipo de ato', icon: '🔗' },
+        { id: 'portaria448', nome: 'Portaria STN 448/2002 — códigos', icon: '📜' },
+        { id: 'rescisao', nome: 'Verificando verbas rescisórias', icon: '📝' },
+        { id: 'licitacao', nome: 'Analisando modalidade de licitação', icon: '⚖️' },
+        { id: 'dispensa', nome: 'Verificando limites de dispensa', icon: '🚫' },
+        { id: 'duplicidade', nome: 'Checando pagamentos duplicados', icon: '🔄' },
+        { id: 'superfaturamento', nome: 'Analisando preços praticados', icon: '📈' },
+        { id: 'fracionamento', nome: 'Detectando fracionamento de despesa', icon: '✂️' },
+        { id: 'fornecedor', nome: 'Verificando situação do fornecedor', icon: '🏢' },
+        { id: 'temporal', nome: 'Análise temporal e cronológica', icon: '📅' },
+        { id: 'resolucoes', nome: 'Confrontando com resoluções TCE', icon: '⚡' },
+        { id: 'score', nome: 'Calculando score de risco', icon: '🎯' },
+      ];
+
+      let docData = null;
+
+      function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+      }
+
+      function initCheckList() {
+        const list = document.getElementById('check-list');
+        list.innerHTML = '';
+        REGRAS_CONFERENCIA.forEach(r => {
+          const li = document.createElement('li');
+          li.className = 'check-item';
+          li.id = 'check-' + r.id;
+          li.innerHTML =
+            '<span class="check-icon">⏳</span>' +
+            '<div class="check-label">' + r.icon + ' ' + r.nome + '<div class="check-detail" id="detail-' + r.id + '"></div></div>';
+          list.appendChild(li);
+        });
+      }
+
+      function setCheckState(id, state, detail) {
+        const el = document.getElementById('check-' + id);
+        if (!el) return;
+        el.className = 'check-item ' + state;
+        const iconEl = el.querySelector('.check-icon');
+        if (state === 'active') iconEl.textContent = '⏳';
+        else if (state === 'done') iconEl.textContent = '✅';
+        else if (state === 'found') iconEl.textContent = '🚨';
+        if (detail) {
+          document.getElementById('detail-' + id).textContent = detail;
+        }
+      }
+
+      function sleep(ms) {
+        return new Promise(r => setTimeout(r, ms));
+      }
+
+      async function typeText(container, text, speed) {
+        // Remove cursor
+        const cursor = container.querySelector('.cursor-blink');
+
+        // Limita texto para performance
+        const maxChars = 8000;
+        const displayText = text.length > maxChars ? text.substring(0, maxChars) + '\n\n... [restante do texto: ' + (text.length - maxChars) + ' caracteres adicionais]' : text;
+
+        const chars = displayText.split('');
+        let buffer = '';
+        let charCount = 0;
+        const totalChars = chars.length;
+        const chunkSize = Math.max(1, Math.floor(totalChars / 200)); // ~200 steps
+
+        for (let i = 0; i < totalChars; i += chunkSize) {
+          const chunk = chars.slice(i, Math.min(i + chunkSize, totalChars)).join('');
+          buffer += chunk;
+          charCount += chunk.length;
+
+          // Update display
+          const textNode = document.createTextNode('');
+          container.textContent = buffer;
+          container.appendChild(cursor);
+
+          // Update stat
+          document.getElementById('stat-chars').textContent = charCount.toLocaleString('pt-BR');
+
+          // Count lines
+          const lineCount = (buffer.match(/\n/g) || []).length + 1;
+          document.getElementById('stat-lines').textContent = lineCount.toLocaleString('pt-BR');
+
+          // Auto-scroll
+          container.scrollTop = container.scrollHeight;
+
+          await sleep(speed);
+        }
+
+        // Remove cursor when done
+        if (cursor && cursor.parentNode) cursor.remove();
+      }
+
+      async function runConferencia(alertas, resumo) {
+        const texto = resumo?.textoExtraido || '';
+
+        // Conta valores R$ no texto
+        const valoresR = texto.match(/R\$\s*[\d.,]+/g) || [];
+        // Conta CNPJs
+        const cnpjs = texto.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/g) || [];
+
+        for (let i = 0; i < REGRAS_CONFERENCIA.length; i++) {
+          const regra = REGRAS_CONFERENCIA[i];
+          setCheckState(regra.id, 'active');
+          document.getElementById('progress-text').textContent = regra.nome + '...';
+
+          // Delay para simular verificação
+          await sleep(400 + Math.random() * 300);
+
+          // Check if any alert matches this rule category
+          let found = false;
+          let foundDetail = '';
+
+          switch (regra.id) {
+            case 'leitura':
+              setCheckState(regra.id, 'done', texto.length + ' caracteres extraídos');
+              break;
+            case 'valores':
+              document.getElementById('stat-values').textContent = valoresR.length.toString();
+              if (resumo?.valorTotal > 0) {
+                setCheckState(regra.id, 'done', 'R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' total');
+              } else {
+                setCheckState(regra.id, 'done', valoresR.length + ' valores encontrados');
+              }
+              break;
+            case 'cnpj':
+              document.getElementById('stat-cnpjs').textContent = cnpjs.length.toString();
+              setCheckState(regra.id, 'done', cnpjs.length + ' CNPJs identificados');
+              break;
+            case 'classificacao':
+              found = alertas.some(a => a.tipo && (a.tipo.includes('CLASSIFICACAO') || a.tipo.includes('NATUREZA')));
+              if (found) {
+                const a = alertas.find(a => a.tipo && (a.tipo.includes('CLASSIFICACAO') || a.tipo.includes('NATUREZA')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Classificação conforme');
+              }
+              break;
+            case 'nd':
+              found = alertas.some(a => a.tipo && a.tipo.includes('SUBELEMENTO'));
+              if (found) {
+                const a = alertas.find(a => a.tipo && a.tipo.includes('SUBELEMENTO'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'ND dentro do esperado');
+              }
+              break;
+            case 'subelemento':
+              found = alertas.some(a => a.descricao && a.descricao.toLowerCase().includes('subelemento'));
+              if (found) {
+                const a = alertas.find(a => a.descricao && a.descricao.toLowerCase().includes('subelemento'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Subelementos válidos');
+              }
+              break;
+            case 'portaria448':
+              found = alertas.some(a => a.detalhes && a.detalhes.includes('448'));
+              if (found) {
+                const a = alertas.find(a => a.detalhes && a.detalhes.includes('448'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Conforme Portaria 448');
+              }
+              break;
+            case 'rescisao':
+              found = alertas.some(a => a.tipo && a.tipo.includes('RESCISAO'));
+              if (found) {
+                const a = alertas.find(a => a.tipo && a.tipo.includes('RESCISAO'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Verbas rescisórias OK');
+              }
+              break;
+            case 'licitacao':
+              found = alertas.some(a => a.tipo && (a.tipo.includes('LICITACAO') || a.tipo.includes('CONTRATO')));
+              if (found) {
+                const a = alertas.find(a => a.tipo && (a.tipo.includes('LICITACAO') || a.tipo.includes('CONTRATO')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Licitação regular');
+              }
+              break;
+            case 'dispensa':
+              found = alertas.some(a => a.tipo && a.tipo.includes('DISPENSA'));
+              if (found) {
+                const a = alertas.find(a => a.tipo && a.tipo.includes('DISPENSA'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Limites de dispensa OK');
+              }
+              break;
+            case 'duplicidade':
+              found = alertas.some(a => a.tipo && a.tipo.includes('DUPLICA'));
+              if (found) {
+                const a = alertas.find(a => a.tipo && a.tipo.includes('DUPLICA'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Sem duplicidades');
+              }
+              break;
+            case 'superfaturamento':
+              found = alertas.some(a => a.tipo && (a.tipo.includes('PRECO') || a.tipo.includes('VALOR')));
+              if (found) {
+                const a = alertas.find(a => a.tipo && (a.tipo.includes('PRECO') || a.tipo.includes('VALOR')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Preços dentro da faixa');
+              }
+              break;
+            case 'fracionamento':
+              found = alertas.some(a => a.tipo && a.tipo.includes('FRACION'));
+              if (found) {
+                const a = alertas.find(a => a.tipo && a.tipo.includes('FRACION'));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Sem fracionamento');
+              }
+              break;
+            case 'fornecedor':
+              found = alertas.some(a => a.tipo && (a.tipo.includes('CNPJ') || a.tipo.includes('FORNEC') || a.tipo.includes('EMPRESA')));
+              if (found) {
+                const a = alertas.find(a => a.tipo && (a.tipo.includes('CNPJ') || a.tipo.includes('FORNEC') || a.tipo.includes('EMPRESA')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Fornecedor regular');
+              }
+              break;
+            case 'temporal':
+              found = alertas.some(a => a.tipo && (a.tipo.includes('CRONOLOG') || a.tipo.includes('TEMPORAL') || a.tipo.includes('FIM_ANO')));
+              if (found) {
+                const a = alertas.find(a => a.tipo && (a.tipo.includes('CRONOLOG') || a.tipo.includes('TEMPORAL') || a.tipo.includes('FIM_ANO')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Cronologia OK');
+              }
+              break;
+            case 'resolucoes':
+              found = alertas.some(a => a.detalhes && (a.detalhes.includes('Res.') || a.detalhes.includes('TCE')));
+              if (found) {
+                const a = alertas.find(a => a.detalhes && (a.detalhes.includes('Res.') || a.detalhes.includes('TCE')));
+                setCheckState(regra.id, 'found', a.descricao);
+              } else {
+                setCheckState(regra.id, 'done', 'Conforme resoluções TCE');
+              }
+              break;
+            case 'score':
+              await sleep(300);
+              setCheckState(regra.id, 'done', 'Score: ' + docData.score + '/100 — ' + docData.nivel);
+              break;
+          }
+        }
+
+        // Done
+        document.getElementById('check-progress').className = 'check-progress done';
+        document.getElementById('progress-text').textContent = 'Conferência concluída!';
+
+        // Show result
+        await sleep(500);
+        const resEl = document.getElementById('resultado-final');
+        const corBg = docData.score >= 70 ? 'linear-gradient(135deg, #dc2626, #b91c1c)' :
+                      docData.score >= 40 ? 'linear-gradient(135deg, #d97706, #b45309)' :
+                      'linear-gradient(135deg, #059669, #047857)';
+        resEl.style.background = corBg;
+        resEl.style.color = '#fff';
+        document.getElementById('res-score').textContent = docData.score + '/100';
+        document.getElementById('res-nivel').textContent = docData.nivel;
+        document.getElementById('res-link').href = '/analise.html?id=' + docData.id;
+        resEl.className = 'resultado-final show';
+      }
+
+      (async function main() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (!id) {
+          document.getElementById('viewer-body').textContent = 'ID do documento não informado.';
+          return;
+        }
+
+        // Fetch document data
+        const res = await fetch('/api/documentos/' + encodeURIComponent(id));
+        if (!res.ok) {
+          document.getElementById('viewer-body').textContent = 'Erro ao carregar documento.';
+          return;
+        }
+
+        const doc = await res.json();
+        docData = doc;
+
+        // Set header
+        document.getElementById('doc-nome').textContent = doc.nome_arquivo || 'Documento';
+
+        const texto = doc.resumo?.textoExtraido || '';
+        const alertas = doc.alertas || [];
+
+        initCheckList();
+
+        if (texto.length === 0) {
+          // No extracted text - still run checks
+          document.getElementById('viewer-body').innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><p>Texto não disponível para este tipo de documento</p><p style="font-size:.8em;color:var(--gray-400);">A análise foi feita sobre os dados estruturados (CSV/XLSX)</p></div>';
+          document.getElementById('stat-chars').textContent = '0';
+          document.getElementById('stat-lines').textContent = '0';
+          document.getElementById('stat-values').textContent = '—';
+          document.getElementById('stat-cnpjs').textContent = '—';
+          await runConferencia(alertas, doc.resumo);
+        } else {
+          // Type out the text
+          const viewer = document.getElementById('viewer-body');
+          await typeText(viewer, texto, 15);
+          await sleep(400);
+
+          // Run verification checks
+          await runConferencia(alertas, doc.resumo);
+        }
+      })();
+    </script>
+  </body>
+</html>

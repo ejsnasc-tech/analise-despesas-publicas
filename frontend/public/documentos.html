@@ -5,26 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Documentos | Andre Fiscaliza</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/auth.js" defer></script>
     <script src="/assets/js/documentos.js" defer></script>
   </head>
   <body onload="AFDocumentos.carregarDocumentos()">
-    <main class="container card">
-      <h1>Documentos</h1>
-      <div class="grid-2">
-        <label class="field">Status <select id="f-status"><option value="">Todos</option><option value="concluido">Concluído</option><option value="analisando">Analisando</option></select></label>
-        <label class="field">Tipo <input id="f-tipo" placeholder="pdf, csv..." /></label>
-        <label class="field">Busca <input id="f-busca" placeholder="Nome do arquivo" /></label>
-        <label class="field">Período <input type="date" /></label>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img src="/assets/img/logo-af.svg" alt="AF" />
+          <span>Andre Fiscaliza</span>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">Menu</div>
+          <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="/documentos.html" class="active"><span class="nav-icon">📁</span> Documentos</a>
+          <div class="sidebar-section">Configurações</div>
+          <a href="/perfil.html"><span class="nav-icon">👤</span> Perfil</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-avatar">AJ</div>
+          <div class="sidebar-user">
+            <strong>Andre de Jesus</strong>
+            <small>@andre</small>
+          </div>
+          <button onclick="AFAuth.logout()" title="Sair">🚪</button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main-area">
+        <header class="topbar">
+          <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+          <span class="topbar-title">Documentos</span>
+          <div class="topbar-right"></div>
+        </header>
+
+        <main class="container">
+          <div class="card fade-in">
+            <div class="card-header">
+              <h3>📁 Todos os Documentos</h3>
+            </div>
+            <div class="grid-2" style="margin-bottom:16px;">
+              <label class="field">Status
+                <select id="f-status">
+                  <option value="">Todos</option>
+                  <option value="concluido">Concluído</option>
+                  <option value="analisando">Analisando</option>
+                </select>
+              </label>
+              <label class="field">Busca
+                <input id="f-busca" placeholder="Nome do arquivo" />
+              </label>
+            </div>
+            <button class="primary" onclick="AFDocumentos.carregarDocumentos()" style="margin-bottom:16px;">🔍 Filtrar</button>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Arquivo</th><th>Tipo</th><th>Status</th><th>Score</th><th>Nível</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="documentos-body">
+                  <tr><td colspan="6" style="text-align:center;color:var(--gray-400);padding:32px;">Carregando documentos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+
+        <footer class="footer">
+          Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas
+        </footer>
       </div>
-      <button class="primary" onclick="AFDocumentos.carregarDocumentos()">Filtrar</button>
-      <div class="table-wrap" style="margin-top:12px;">
-        <table>
-          <thead>
-            <tr><th>ID</th><th>Arquivo</th><th>Tipo</th><th>Status</th><th>Score</th><th>Nível</th><th>Ações</th></tr>
-          </thead>
-          <tbody id="documentos-body"></tbody>
-        </table>
-      </div>
-    </main>
+    </div>
   </body>
 </html>

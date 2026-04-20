@@ -11,6 +11,10 @@ database_id = "2247ec50-7ca7-46bb-955e-195bc521462b"
 binding = "BUCKET"
 bucket_name = "andre-fiscaliza-docs"
 
+# [ai]
+# binding = "AI"
+# Nota: AI requer autenticação Cloudflare. Descomente para uso em produção (deploy).
+
 [vars]
 ADMIN_USER = "andre"
 JWT_SECRET = "dev-9f7e1f61c3b64843af5f4e2fbb9c17e7d8f7d7a7d8c84e6f8b1a9c0f2d3e4b5a"

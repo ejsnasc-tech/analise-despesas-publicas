@@ -8,7 +8,7 @@
     <script src="/assets/js/auth.js" defer></script>
   </head>
   <body class="login-page" onload="AFAuth.bindLogin()">
-    <main class="card login-card">
+    <main class="card login-card fade-in">
       <div class="brand">
         <img src="/assets/img/logo-af.svg" alt="Logo AF" />
         <h1>Andre Fiscaliza</h1>
@@ -16,16 +16,16 @@
       </div>
       <form id="login-form">
         <label class="field">
-          <span>👤 Usuário</span>
-          <input id="username" name="username" required autocomplete="username" />
+          <span>Usuário</span>
+          <input id="username" name="username" required autocomplete="username" placeholder="Seu usuário" />
         </label>
         <label class="field">
-          <span>🔒 Senha</span>
-          <input id="password" name="password" type="password" required autocomplete="current-password" />
+          <span>Senha</span>
+          <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Sua senha" />
         </label>
-        <button class="primary" type="submit">Entrar</button>
+        <button class="primary" type="submit" style="width:100%;margin-top:4px;">Entrar</button>
       </form>
-      <p class="footer">Andre de Jesus Oliveira © 2026</p>
+      <p class="footer" style="margin-top:20px;">Andre de Jesus Oliveira © 2026</p>
     </main>
   </body>
 </html>

@@ -29,6 +29,77 @@ const ZSCORE_THRESHOLD = 3.0;
 const JANELA_FRACIONAMENTO_DIAS = 30;
 const LIMITE_MEI = 81000;
 
+/* ── Classificação de Natureza da Despesa / Subelemento ─────────
+ *  Portaria STN nº 448/2002 + Resolução TCE/SE nº 267/2011
+ *  Formato: CDMMEESS  (Cat.Grupo.Mod.Elemento.Subelemento)
+ *  Exemplo: 31901101 = 3.1.90.11.01 = Vencimento servidor efetivo
+ * ─────────────────────────────────────────────────────────────── */
+
+type VinculoServidor = "EFETIVO" | "COMISSIONADO" | "TEMPORARIO" | "TODOS";
+
+interface ClassificacaoDespesa {
+  codigo: string;       // Elemento (6 dígitos) ou Elemento+Sub (8 dígitos)
+  descricao: string;
+  vinculos: VinculoServidor[];
+}
+
+interface RegraClassificacaoDB {
+  tipo_ato: string;
+  vinculo_servidor: string;
+  codigo_completo: string;
+  descricao: string;
+  fundamentacao: string;
+}
+
+/**
+ * Tabela de classificação da despesa de pessoal conforme
+ * Portaria STN 448/2002 e Resolução TCE/SE 267/2011.
+ * Cada entrada mapeia um código de natureza/subelemento aos vínculos válidos.
+ */
+const CLASSIFICACAO_PESSOAL: ClassificacaoDespesa[] = [
+  // ── 3.1.90.04 – Contratação por Tempo Determinado ──────────────
+  { codigo: "319004",   descricao: "Contratação por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
+  { codigo: "31900401", descricao: "Contratação por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
+
+  // ── 3.1.90.11 – Vencimentos e Vantagens Fixas – Pessoal Civil ──
+  { codigo: "319011",   descricao: "Vencimentos e Vantagens Fixas",              vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901101", descricao: "Vencimento",                                 vinculos: ["EFETIVO"] },
+  { codigo: "31901102", descricao: "Soldo",                                      vinculos: ["EFETIVO"] },
+  { codigo: "31901103", descricao: "Subsídio",                                   vinculos: ["COMISSIONADO", "EFETIVO"] },
+  { codigo: "31901113", descricao: "Gratificação por exercício de cargo",         vinculos: ["COMISSIONADO"] },
+  { codigo: "31901122", descricao: "Gratificação de tempo de serviço",            vinculos: ["EFETIVO"] },
+  { codigo: "31901130", descricao: "Vencimentos de cargo em comissão",            vinculos: ["COMISSIONADO"] },
+  { codigo: "31901134", descricao: "Gratificação natalina (13º)",                 vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901140", descricao: "Salário-família",                             vinculos: ["EFETIVO"] },
+  { codigo: "31901141", descricao: "Férias – abono constitucional",               vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901144", descricao: "Férias indenizadas",                          vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901146", descricao: "Auxílio-alimentação",                         vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901199", descricao: "Outras vantagens fixas – pessoal civil",      vinculos: ["EFETIVO"] },
+
+  // ── 3.1.90.13 – Obrigações Patronais ───────────────────────────
+  { codigo: "319013",   descricao: "Obrigações Patronais",                       vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+
+  // ── 3.1.90.16 – Outras Despesas Variáveis – Pessoal Civil ─────
+  { codigo: "319016",   descricao: "Outras Despesas Variáveis – Pessoal Civil",  vinculos: ["EFETIVO"] },
+  { codigo: "31901601", descricao: "Horas-extras",                               vinculos: ["EFETIVO"] },
+
+  // ── 3.1.90.91 – Sentenças Judiciais ───────────────────────────
+  { codigo: "319091",   descricao: "Sentenças Judiciais",                        vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+
+  // ── 3.1.90.92 – Despesas de Exercícios Anteriores ─────────────
+  { codigo: "319092",   descricao: "Despesas de Exercícios Anteriores",          vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+
+  // ── 3.1.90.94 – Indenizações e Restituições Trabalhistas ──────
+  { codigo: "319094",   descricao: "Indenizações e Restituições Trabalhistas",   vinculos: ["EFETIVO"] },
+  { codigo: "31909401", descricao: "Indenizações Trabalhistas – servidor efetivo", vinculos: ["EFETIVO"] },
+
+  // ── 3.1.91.13 – Obrigações Patronais – Intra-OFSS ─────────────
+  { codigo: "319113",   descricao: "Obrigações Patronais – Intra-OFSS (RPPS)",   vinculos: ["EFETIVO"] },
+
+  // ── 3.1.90.96 – Ressarcimento de Desp. de Pessoal Requisitado ─
+  { codigo: "319096",   descricao: "Ressarcimento de Pessoal Requisitado",       vinculos: ["EFETIVO"] },
+];
+
 /* ── Parser CSV simples ─────────────────────────────────────────── */
 function parseCsv(text: string): RegistroEmpenho[] {
   const lines = text.split(/\r?\n/).filter((l) => l.trim());
@@ -462,6 +533,193 @@ function regraFracionamentoSubelemento(rows: RegistroEmpenho[]): Alerta[] {
   return alertas;
 }
 
+/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 – Subelemento incorreto para o vínculo do servidor */
+function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: ClassificacaoDespesa[]): Alerta[] {
+  const alertas: Alerta[] = [];
+
+  for (const row of rows) {
+    // Identifica o vínculo do servidor
+    const vinculoRaw = campo(row, "vinculo", "vínculo", "tipo_vinculo", "regime", "tipo_servidor", "tipo_contratacao", "categoria")
+      .toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    if (!vinculoRaw) continue;
+
+    let vinculo: VinculoServidor | null = null;
+    if (/EFETIVO|ESTATUT|CONCURSADO|ESTAVEL|PERMANENTE/.test(vinculoRaw)) {
+      vinculo = "EFETIVO";
+    } else if (/COMISSION|COMISSAO|CC[- ]|DAS[- ]|CARGO EM COMISS|LIVRE NOMEAC|LIVRE PROVIMENTO/.test(vinculoRaw)) {
+      vinculo = "COMISSIONADO";
+    } else if (/TEMPORAR|TEMPO DETERMINADO|ACT |CONTRATO TEMP|PROCESSO SELETIVO|SELETIVO SIMPLIF/.test(vinculoRaw)) {
+      vinculo = "TEMPORARIO";
+    }
+
+    if (!vinculo) continue;
+
+    // Identifica o código de natureza/subelemento
+    const natureza = campo(row, "natureza", "nat_despesa", "nd", "natureza_despesa", "classificacao_despesa");
+    const subelemento = campo(row, "subelemento", "sub_elemento", "sub-elemento", "subelemento_despesa");
+    const elemento = campo(row, "elemento", "elemento_despesa", "ed");
+
+    // Monta o código completo (remove pontos/separadores)
+    let codigoCompleto = "";
+    if (natureza) {
+      codigoCompleto = natureza.replace(/[.\-\/\s]/g, "");
+    } else if (elemento && subelemento) {
+      codigoCompleto = (elemento + subelemento).replace(/[.\-\/\s]/g, "");
+    } else if (elemento) {
+      codigoCompleto = elemento.replace(/[.\-\/\s]/g, "");
+    }
+
+    if (!codigoCompleto || codigoCompleto.length < 6) continue;
+
+    // Verifica se é despesa de pessoal (categoria 3, grupo 1)
+    if (!codigoCompleto.startsWith("31")) continue;
+
+    // Procura o código na tabela de classificações
+    // Tenta primeiro com subelemento (8 dígitos), depois só elemento (6 dígitos)
+    const codigoElemento = codigoCompleto.substring(0, 6);
+    const codigoFull = codigoCompleto.substring(0, 8);
+
+    const classificacao = classificacoes.find(c => c.codigo === codigoFull)
+      || classificacoes.find(c => c.codigo === codigoElemento);
+
+    if (!classificacao) continue;
+
+    // Verifica se o vínculo do servidor é compatível com a classificação
+    if (!classificacao.vinculos.includes(vinculo)) {
+      // Encontra as classificações corretas para este vínculo
+      const corretas = classificacoes
+        .filter(c => c.vinculos.includes(vinculo) && c.codigo.length >= 6)
+        .map(c => `${c.codigo} (${c.descricao})`)
+        .slice(0, 3)
+        .join("; ");
+
+      alertas.push({
+        tipo: "SUBELEMENTO_INCORRETO",
+        descricao: `Subelemento de despesa incompatível com vínculo do servidor (Res. TCE/SE 267/2011 + Portaria STN 448/2002)`,
+        pontuacao: 20,
+        detalhes: `Servidor: ${campo(row, "nome", "servidor", "credor", "beneficiario") || "N/D"} | Vínculo: ${vinculo} | Classificação usada: ${codigoCompleto} (${classificacao.descricao}) | Vínculos válidos p/ esta classificação: ${classificacao.vinculos.join(", ")} | Classificações corretas p/ ${vinculo}: ${corretas}`
+      });
+    }
+  }
+  return alertas;
+}
+
+/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 – Detecção em PDF de subelemento incorreto */
+function regraSubelementoIncorretoPdf(texto: string, classificacoes: ClassificacaoDespesa[], regrasDb: RegraClassificacaoDB[]): Alerta[] {
+  const alertas: Alerta[] = [];
+  const textoLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // ── 1. Detecta menções a vínculo de servidor ──────────────────
+  const temEfetivo = /servidor\s+efetivo|cargo\s+efetivo|estatut[aá]rio|concursado|efetivo/i.test(texto);
+  const temComissionado = /comission|cargo\s+em\s+comiss|comissao|livre\s+nomea/i.test(texto);
+  const temTemporario = /contrata[cç][aã]o.*tempo\s+determinado|temporar|contrato\s+temp|seletivo\s+simplif/i.test(texto);
+
+  // ── 2. Detecta tipo de documento/ato de pessoal ───────────────
+  const temRescisao = /rescis[aã]o|rescisao|rescindir|rescindido/i.test(texto);
+  const temServidor = /servidor|servidora|funcionario|funcionaria/i.test(texto);
+  const temSolicitacaoDespesa = /solicita[cç][aã]o\s+de\s+despesa|solicitacao de despesa/i.test(texto);
+
+  // ── 3. Extrai códigos de natureza da despesa do texto ─────────
+  const codigosNd = new Set<string>();
+  const regexPontuado = /\b3\.1\.9[01]\.\d{2}(?:\.\d{2})?\b/g;
+  for (const m of texto.matchAll(regexPontuado)) {
+    codigosNd.add(m[0].replace(/\./g, ""));
+  }
+  const regexContinuo = /\b31(?:90|91)\d{2,4}\b/g;
+  for (const m of texto.matchAll(regexContinuo)) {
+    if (m[0].length >= 6) codigosNd.add(m[0]);
+  }
+
+  // ── 4. Validação cruzada: código ND + vínculo detectado ───────
+  for (const codigo of codigosNd) {
+    const codigoElemento = codigo.substring(0, 6);
+    const codigoFull = codigo.length >= 8 ? codigo.substring(0, 8) : codigo;
+
+    const classificacao = classificacoes.find(c => c.codigo === codigoFull)
+      || classificacoes.find(c => c.codigo === codigoElemento);
+
+    if (!classificacao) continue;
+
+    if (temEfetivo && !classificacao.vinculos.includes("EFETIVO") && classificacao.vinculos.includes("TEMPORARIO")) {
+      alertas.push({
+        tipo: "SUBELEMENTO_INCORRETO",
+        descricao: "Servidor efetivo com classificação de despesa de temporário (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        pontuacao: 20,
+        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: EFETIVO | Classificação esperada: 31909401 (Indenizações) ou 31901101 (Vencimento)`
+      });
+    }
+
+    if (temTemporario && !classificacao.vinculos.includes("TEMPORARIO") && classificacao.vinculos.includes("EFETIVO")) {
+      alertas.push({
+        tipo: "SUBELEMENTO_INCORRETO",
+        descricao: "Servidor temporário com classificação de despesa de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        pontuacao: 20,
+        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: TEMPORARIO | Classificação esperada: 319004/31900401 (Contratação por Tempo Determinado)`
+      });
+    }
+
+    if (temComissionado && !classificacao.vinculos.includes("COMISSIONADO") && classificacao.vinculos.includes("EFETIVO") && !classificacao.vinculos.includes("TEMPORARIO")) {
+      alertas.push({
+        tipo: "SUBELEMENTO_INCORRETO",
+        descricao: "Servidor comissionado com classificação de despesa exclusiva de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        pontuacao: 20,
+        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: COMISSIONADO | Classificação esperada: 31901130 (Venc. cargo em comissão) ou 31901113 (Gratificação)`
+      });
+    }
+  }
+
+  // ── 5. Detecção de rescisão de servidor ────────────────────────
+  // Quando o documento trata de rescisão de servidor, alerta sobre a 
+  // classificação obrigatória conforme Res. TCE/SE 267/2011
+  if (temRescisao && temServidor) {
+// Monta detalhes usando regras do DB quando disponível
+      let detalhesRescisao = "Rescisão de servidor efetivo: classificação correta é 3.1.90.94.01 (Indenizações e Restituições Trabalhistas). " +
+        "Rescisão de servidor temporário: classificação correta é 3.1.90.04.01 (Contratação por Tempo Determinado). " +
+        "Verificar se o subelemento de despesa está correto conforme o vínculo do servidor.";
+
+      if (regrasDb.length > 0) {
+        const regrasRescisao = regrasDb.filter(r => r.tipo_ato === "RESCISAO");
+        if (regrasRescisao.length > 0) {
+          detalhesRescisao = regrasRescisao
+            .map(r => `${r.vinculo_servidor}: ${r.codigo_completo} (${r.descricao}) — ${r.fundamentacao}`)
+            .join(" | ");
+        }
+      }
+
+      alertas.push({
+        tipo: "VERIFICAR_CLASSIFICACAO_RESCISAO",
+        descricao: "Documento de rescisão de servidor — verificar classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        pontuacao: 15,
+        detalhes: detalhesRescisao
+    });
+
+    // Se também menciona Solicitação de Despesa, reforça o alerta
+    if (temSolicitacaoDespesa) {
+      alertas.push({
+        tipo: "RESCISAO_SOLICITA_DESPESA",
+        descricao: "Rescisão com Solicitação de Despesa — conferir natureza da despesa e subelemento",
+        pontuacao: 10,
+        detalhes: "A Solicitação de Despesa (SD) para rescisão deve conter o subelemento correto: " +
+          "31909401 para servidor efetivo, 31900401 para temporário. " +
+          "Conferir se o empenho foi classificado corretamente no Sistema Contabilis."
+      });
+    }
+  }
+
+  // ── 6. Detecção direta de termos de irregularidade ─────────────
+  if (textoLower.includes("subelemento incorreto") || textoLower.includes("sub-elemento incorreto") || textoLower.includes("natureza da despesa incorreta")) {
+    alertas.push({
+      tipo: "SUBELEMENTO_INCORRETO",
+      descricao: "Documento menciona subelemento ou natureza da despesa incorreta",
+      pontuacao: 15,
+      detalhes: "Verificar classificação conforme Res. TCE/SE 267/2011 e Portaria STN 448/2002"
+    });
+  }
+
+  return alertas;
+}
+
 /** Manual §2.9 - Ordem cronológica de pagamentos */
 function regraOrdemCronologica(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
@@ -874,6 +1132,12 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
     { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Ausência de Matriz de Risco (Art. 6º, XXVII, Lei 14.133)", pts: 10 },
     // Controle patrimonial
     { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10 },
+    // Classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)
+    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20 },
+    { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
+    { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
+    { termo: "classificação econômica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classificação econômica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20 },
+    { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20 },
   ];
 
   const tiposJaAdicionados = new Set<string>();
@@ -958,11 +1222,33 @@ export async function analisarDocumento(input: {
   conteudo?: string;
   conteudoPdf?: ArrayBuffer;
   apiKeyTransparencia?: string;
+  db?: D1Database;
+  ai?: Ai;
 }): Promise<ResultadoAnalise> {
   const alertas: Alerta[] = [];
   let totalRegistros = 0;
   let valorTotal = 0;
   let textoExtraido: string | undefined;
+
+  // Carrega classificações do banco se disponível, senão usa hardcoded
+  let classificacoes = CLASSIFICACAO_PESSOAL;
+  let regrasDb: RegraClassificacaoDB[] = [];
+  if (input.db) {
+    try {
+      const [elemRes, regrasRes] = await Promise.all([
+        input.db.prepare("SELECT codigo, descricao, vinculos FROM elementos_despesa").all<{codigo: string; descricao: string; vinculos: string}>(),
+        input.db.prepare("SELECT tipo_ato, vinculo_servidor, codigo_completo, descricao, fundamentacao FROM regras_classificacao").all<RegraClassificacaoDB>(),
+      ]);
+      if (elemRes.results.length > 0) {
+        classificacoes = elemRes.results.map(r => ({
+          codigo: r.codigo,
+          descricao: r.descricao,
+          vinculos: JSON.parse(r.vinculos) as VinculoServidor[],
+        }));
+      }
+      regrasDb = regrasRes.results;
+    } catch { /* DB indisponível — usa dados locais */ }
+  }
 
   if (input.conteudo && (input.tipo.includes("csv") || input.tipo.includes("text"))) {
     // ── Análise CSV estruturada ───────────────────────────────────
@@ -986,7 +1272,8 @@ export async function analisarDocumento(input: {
       ...regraNFAnteriorEmpenho(rows),
       ...regraEmpSemDotacao(rows),
       ...regraFracionamentoSubelemento(rows),
-      ...regraOrdemCronologica(rows)
+      ...regraOrdemCronologica(rows),
+      ...regraSubelementoIncorreto(rows, classificacoes)
     );
 
     // Regras com consulta a APIs públicas (BrasilAPI + Portal da Transparência)
@@ -1009,8 +1296,32 @@ export async function analisarDocumento(input: {
     }
   } else if (input.conteudoPdf && input.tipo.includes("pdf")) {
     // ── Análise PDF ───────────────────────────────────────────────
-    const { extrairTextoPdf } = await import("./pdf_extractor");
+    const { extrairTextoPdf, extrairImagensPdf } = await import("./pdf_extractor");
     textoExtraido = await extrairTextoPdf(input.conteudoPdf);
+
+    // ── OCR: extrai texto de imagens escaneadas via Workers AI ───
+    if (input.ai) {
+      try {
+        const imagens = extrairImagensPdf(input.conteudoPdf);
+        if (imagens.length > 0) {
+          const ocrPromises = imagens.slice(0, 10).map(async (img) => {
+            try {
+              const result = await input.ai!.run("@cf/llava-hf/llava-1.5-7b-hf", {
+                image: [...new Uint8Array(img.data)],
+                prompt: "Extract ALL text from this scanned document image. Include every word, number, date, and code you can see. Output the raw text only, no descriptions.",
+                max_tokens: 2048,
+              }) as { description?: string };
+              return result?.description || "";
+            } catch { return ""; }
+          });
+          const ocrTextos = await Promise.all(ocrPromises);
+          const textoOcr = ocrTextos.filter(t => t.length > 10).join("\n");
+          if (textoOcr.length > 0) {
+            textoExtraido = (textoExtraido || "") + "\n\n--- TEXTO OCR (imagens escaneadas) ---\n" + textoOcr;
+          }
+        }
+      } catch { /* OCR indisponível — continua com texto digital */ }
+    }
 
     if (textoExtraido.trim().length > 0) {
       const dados = parseTextoLivre(textoExtraido);
@@ -1019,6 +1330,9 @@ export async function analisarDocumento(input: {
 
       // Regras de texto livre
       alertas.push(...regrasTextoLivre(textoExtraido, dados));
+
+      // Regra de subelemento incorreto por análise de texto (Res. TCE/SE 267 + Portaria STN 448/2002)
+      alertas.push(...regraSubelementoIncorretoPdf(textoExtraido, classificacoes, regrasDb));
 
       // Se encontrou CNPJs, aplica regras de CNPJ nos registros sintéticos
       if (dados.rows.length > 0) {

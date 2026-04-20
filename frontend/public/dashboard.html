@@ -10,45 +10,126 @@
     <script src="/assets/js/dashboard.js" defer></script>
   </head>
   <body onload="AFDashboard.carregarDashboard();AFUpload.bindUpload()">
-    <div class="topbar">
-      <strong><img src="/assets/img/logo-af.svg" alt="AF" style="width:24px;vertical-align:middle" /> Andre Fiscaliza</strong>
-      <nav>
-        <a href="/dashboard.html">Início</a> |
-        <a href="/documentos.html">Documentos</a> |
-        <a href="/perfil.html">Perfil</a>
-      </nav>
-      <div>AJ · Andre de Jesus Oliveira <button onclick="AFAuth.logout()">Sair</button></div>
-    </div>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img src="/assets/img/logo-af.svg" alt="AF" />
+          <span>Andre Fiscaliza</span>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">Menu</div>
+          <a href="/dashboard.html" class="active"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="/documentos.html"><span class="nav-icon">📁</span> Documentos</a>
+          <div class="sidebar-section">Configurações</div>
+          <a href="/perfil.html"><span class="nav-icon">👤</span> Perfil</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-avatar">AJ</div>
+          <div class="sidebar-user">
+            <strong>Andre de Jesus</strong>
+            <small>@andre</small>
+          </div>
+          <button onclick="AFAuth.logout()" title="Sair">🚪</button>
+        </div>
+      </aside>
 
-    <main class="container">
-      <section class="stats">
-        <article class="card">📊 Total Analisados <h2 id="stat-total">0</h2></article>
-        <article class="card">🚨 Com Alertas <h2 id="stat-alertas">0</h2></article>
-        <article class="card">✅ Sem Irregularidades <h2 id="stat-ok">0</h2></article>
-        <article class="card">⚠️ Em Análise <h2 id="stat-analise">0</h2></article>
-      </section>
-
-      <section class="grid-2">
-        <article class="card">
-          <h3>Upload</h3>
-          <form id="upload-form">
-            <div class="upload-zone">
-              <p>📤 Arraste seu documento aqui ou clique para selecionar</p>
-              <p>Formatos: PDF, CSV, XLSX, XML, JSON</p>
-              <input id="arquivo" type="file" accept=".pdf,.csv,.xlsx,.xml,.json" required />
+      <!-- Main -->
+      <div class="main-area">
+        <header class="topbar">
+          <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+          <span class="topbar-title">Dashboard</span>
+          <div class="topbar-right">
+            <div class="topbar-search">
+              <span>🔍</span>
+              <input type="text" placeholder="Buscar documentos..." />
             </div>
-            <div class="progress" style="margin:12px 0;"><span></span></div>
-            <button class="primary" type="submit">Analisar Documento</button>
-          </form>
-          <p id="upload-resultado"></p>
-        </article>
+          </div>
+        </header>
 
-        <article class="card">
-          <h3>Recentes</h3>
-          <ul id="recentes-lista"></ul>
-          <a href="/documentos.html">Ver todos os documentos →</a>
-        </article>
-      </section>
-    </main>
+        <main class="container">
+          <!-- Welcome -->
+          <div class="welcome-banner fade-in">
+            <h2>Bem-vindo de volta, Andre 👋</h2>
+            <p>Acompanhe a análise das despesas públicas e identifique irregularidades.</p>
+          </div>
+
+          <!-- Stats -->
+          <section class="stats">
+            <div class="stat-card fade-in">
+              <div class="stat-icon blue">📊</div>
+              <div class="stat-info">
+                <h4>Total Analisados</h4>
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-sub">documentos processados</div>
+              </div>
+            </div>
+            <div class="stat-card fade-in">
+              <div class="stat-icon red">🚨</div>
+              <div class="stat-info">
+                <h4>Com Alertas</h4>
+                <div class="stat-value" id="stat-alertas">0</div>
+                <div class="stat-sub">precisam de atenção</div>
+              </div>
+            </div>
+            <div class="stat-card fade-in">
+              <div class="stat-icon green">✅</div>
+              <div class="stat-info">
+                <h4>Sem Irregularidades</h4>
+                <div class="stat-value" id="stat-ok">0</div>
+                <div class="stat-sub">conformes</div>
+              </div>
+            </div>
+            <div class="stat-card fade-in">
+              <div class="stat-icon amber">⏳</div>
+              <div class="stat-info">
+                <h4>Em Análise</h4>
+                <div class="stat-value" id="stat-analise">0</div>
+                <div class="stat-sub">em processamento</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Content Grid -->
+          <div class="grid-2">
+            <!-- Upload Card -->
+            <div class="card fade-in">
+              <div class="card-header">
+                <h3>📤 Upload de Documento</h3>
+              </div>
+              <form id="upload-form">
+                <div class="upload-zone">
+                  <div class="upload-icon">📄</div>
+                  <p>Arraste seu documento aqui ou clique para selecionar</p>
+                  <p>PDF, CSV, XLSX, XML, JSON</p>
+                  <input id="arquivo" type="file" accept=".pdf,.csv,.xlsx,.xml,.json" required />
+                </div>
+                <div class="progress" style="margin:16px 0;"><span></span></div>
+                <button class="primary" type="submit" style="width:100%;">Analisar Documento</button>
+              </form>
+              <p id="upload-resultado" style="margin-top:8px;font-size:.85rem;color:var(--gray-500);"></p>
+            </div>
+
+            <!-- Recent Documents -->
+            <div class="card fade-in">
+              <div class="card-header">
+                <h3>🕐 Documentos Recentes</h3>
+                <a class="card-action" href="/documentos.html">Ver todos →</a>
+              </div>
+              <ul class="recent-list" id="recentes-lista">
+                <li class="empty-state">
+                  <div class="empty-icon">📭</div>
+                  <p>Nenhum documento analisado ainda</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </main>
+
+        <footer class="footer">
+          Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas
+        </footer>
+      </div>
+    </div>
   </body>
 </html>

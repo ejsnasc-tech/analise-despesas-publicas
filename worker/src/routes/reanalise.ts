@@ -3,6 +3,7 @@ import { analisarDocumento } from "../analise";
 interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
+  AI?: Ai;
 }
 
 export async function reanaliseRoute(env: Env, username: string, id: number): Promise<Response> {
@@ -36,6 +37,8 @@ export async function reanaliseRoute(env: Env, username: string, id: number): Pr
     tamanho: doc.tamanho,
     conteudo,
     conteudoPdf,
+    db: env.DB,
+    ai: env.AI,
   });
 
   await env.DB

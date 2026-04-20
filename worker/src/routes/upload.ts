@@ -4,6 +4,7 @@ import { deletarArquivo, salvarArquivo } from "../r2";
 interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
+  AI?: Ai;
 }
 
 export async function uploadRoute(request: Request, env: Env, username: string): Promise<Response> {
@@ -43,7 +44,7 @@ export async function uploadRoute(request: Request, env: Env, username: string):
       conteudoPdf = await file.arrayBuffer();
     }
 
-    const resultado = await analisarDocumento({ nomeArquivo: file.name, tipo: fileType, tamanho: file.size, conteudo, conteudoPdf });
+    const resultado = await analisarDocumento({ nomeArquivo: file.name, tipo: fileType, tamanho: file.size, conteudo, conteudoPdf, db: env.DB, ai: env.AI });
 
     const insert = await env.DB
       .prepare(

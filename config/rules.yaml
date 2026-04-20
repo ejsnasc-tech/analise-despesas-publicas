@@ -5,9 +5,17 @@ rules:
   price_zscore_threshold: 3.0
   bid_splitting_days_window: 30
   temporal_end_of_year_months: [11, 12]
+  # Resolução TCE/SE 267/2011 + Portaria STN 448/2002
+  classificacao_despesa:
+    validar_subelemento_vinculo: true
+    referencias:
+      - "Resolução TCE/SE nº 267, de 25 de agosto de 2011"
+      - "Portaria STN nº 448, de 13 de setembro de 2002"
 weights:
   cnpj_invalido: 15
   empresa_inidonea: 30
   pagamento_duplicado: 20
   sem_licitacao_acima_limite: 25
   valor_invalido: 10
+  subelemento_incorreto: 20
+  natureza_despesa_incorreta: 20

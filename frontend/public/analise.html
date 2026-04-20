@@ -6,43 +6,67 @@
     <title>Análise | Andre Fiscaliza</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
     <script src="/assets/js/jspdf.umd.min.js"></script>
+    <script src="/assets/js/auth.js" defer></script>
     <style>
-      .analise-header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-      .analise-header .score-box { min-width:100px; text-align:center; padding:16px 24px; border-radius:12px; color:#fff; }
-      .analise-header .score-box h2 { margin:0; font-size:2.2em; }
-      .analise-header .score-box small { opacity:.85; }
+      .analise-header { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+      .analise-header .score-box { min-width:100px; text-align:center; padding:20px 28px; border-radius:var(--radius); color:#fff; }
+      .analise-header .score-box h2 { margin:0; font-size:2.4em; font-weight:800; }
+      .analise-header .score-box small { opacity:.8; font-size:.85em; }
       .analise-header .info-box { flex:1; min-width:200px; }
-      .analise-header .info-box h1 { margin:0 0 4px; font-size:1.3em; }
-      .analise-header .info-box .meta { color:#888; font-size:.9em; }
-      .section-title { font-size:1.1em; margin:24px 0 8px; padding-bottom:6px; border-bottom:2px solid #e0e0e0; display:flex; align-items:center; gap:8px; }
-      .alerta-card { background:#f9f9fc; border-left:4px solid #ffc107; padding:10px 14px; margin-bottom:8px; border-radius:0 6px 6px 0; }
-      .alerta-card.alto { border-left-color:#dc3545; }
-      .alerta-card.medio { border-left-color:#ff9800; }
-      .alerta-card.baixo-alerta { border-left-color:#28a745; }
-      .alerta-card .alerta-titulo { font-weight:600; font-size:.95em; }
-      .alerta-card .alerta-pts { float:right; font-size:.85em; color:#dc3545; font-weight:600; }
-      .alerta-card .alerta-det { font-size:.82em; color:#666; margin-top:3px; }
-      .alerta-card .alerta-tipo { display:inline-block; background:#eee; padding:1px 6px; border-radius:3px; font-size:.75em; color:#555; margin-right:6px; }
-      .btn-group { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
-      .btn-group button, .btn-group a button { font-size:.9em; }
-      .btn-reanalisar { background:#6c63ff; color:#fff; border:none; cursor:pointer; padding:8px 16px; border-radius:6px; }
-      .btn-reanalisar:hover { background:#5a52d5; }
-      .texto-extraido { background:#f5f5f5; padding:12px; border-radius:6px; max-height:400px; overflow:auto; font-size:.85em; white-space:pre-wrap; word-break:break-word; font-family:monospace; }
-      .resumo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:12px; }
-      .resumo-grid .stat-card { background:#f0f0f5; padding:12px; border-radius:8px; text-align:center; }
-      .resumo-grid .stat-card h3 { margin:0; font-size:1.5em; color:#1a1a2e; }
-      .resumo-grid .stat-card small { color:#888; }
+      .analise-header .info-box h1 { margin:0 0 4px; font-size:1.25em; color:var(--gray-900); }
+      .analise-header .info-box .meta { color:var(--gray-500); font-size:.85em; }
+      .section-title { font-size:1rem; font-weight:600; margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid var(--gray-200); display:flex; align-items:center; gap:8px; color:var(--gray-800); }
+      .alerta-card { background:var(--gray-50); border-left:4px solid var(--warning); padding:12px 16px; margin-bottom:10px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; transition:var(--transition); }
+      .alerta-card:hover { box-shadow:var(--shadow-sm); }
+      .alerta-card.alto { border-left-color:var(--danger); }
+      .alerta-card.medio { border-left-color:var(--warning); }
+      .alerta-card.baixo-alerta { border-left-color:var(--success); }
+      .alerta-card .alerta-titulo { font-weight:600; font-size:.9em; color:var(--gray-800); }
+      .alerta-card .alerta-pts { float:right; font-size:.8em; color:var(--danger); font-weight:700; }
+      .alerta-card .alerta-det { font-size:.8em; color:var(--gray-500); margin-top:4px; line-height:1.4; }
+      .alerta-card .alerta-tipo { display:inline-block; background:var(--gray-200); padding:2px 8px; border-radius:4px; font-size:.7em; color:var(--gray-600); margin-right:6px; font-weight:500; }
+      .btn-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+      .btn-reanalisar { background:var(--accent); color:#fff; border:none; cursor:pointer; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; transition:var(--transition); }
+      .btn-reanalisar:hover { background:var(--accent-hover); transform:translateY(-1px); }
+      .texto-extraido { background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); max-height:400px; overflow:auto; font-size:.82em; white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; border:1px solid var(--gray-200); line-height:1.6; }
+      .resumo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
+      .resumo-grid .stat-card { background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--gray-200); }
+      .resumo-grid .stat-card h3 { margin:0; font-size:1.4em; color:var(--gray-900); font-weight:800; }
+      .resumo-grid .stat-card small { color:var(--gray-500); font-size:.8em; }
     </style>
   </head>
   <body>
-    <div class="topbar">
-      <strong><img src="/assets/img/logo-af.svg" alt="AF" style="width:24px;vertical-align:middle" /> Andre Fiscaliza</strong>
-      <nav>
-        <a href="/dashboard.html">Início</a> |
-        <a href="/documentos.html">Documentos</a> |
-        <a href="/perfil.html">Perfil</a>
-      </nav>
-    </div>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img src="/assets/img/logo-af.svg" alt="AF" />
+          <span>Andre Fiscaliza</span>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">Menu</div>
+          <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="/documentos.html"><span class="nav-icon">📁</span> Documentos</a>
+          <div class="sidebar-section">Configurações</div>
+          <a href="/perfil.html"><span class="nav-icon">👤</span> Perfil</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-avatar">AJ</div>
+          <div class="sidebar-user">
+            <strong>Andre de Jesus</strong>
+            <small>@andre</small>
+          </div>
+          <button onclick="AFAuth.logout()" title="Sair">🚪</button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main-area">
+        <header class="topbar">
+          <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+          <span class="topbar-title">Resultado da Análise</span>
+          <div class="topbar-right"></div>
+        </header>
 
     <main class="container">
       <div class="card" style="margin-top:16px;">
@@ -362,5 +386,10 @@
         }
       })();
     </script>
+        <footer class="footer">
+          Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas
+        </footer>
+      </div>
+    </div>
   </body>
 </html>

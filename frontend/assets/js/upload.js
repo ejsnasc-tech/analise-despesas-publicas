@@ -35,9 +35,9 @@ async function enviarArquivo(event) {
     return;
   }
 
-  // Redireciona para a página de análise completa
+  // Redireciona para a página de leitura ao vivo
   if (payload.documentoId) {
-    window.location.href = '/analise.html?id=' + encodeURIComponent(payload.documentoId);
+    window.location.href = '/leitura.html?id=' + encodeURIComponent(payload.documentoId);
   } else {
     resultado.textContent = 'Documento analisado com score ' + payload.resultado.score + '/100 - ' + payload.resultado.nivel;
   }

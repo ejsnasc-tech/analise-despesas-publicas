@@ -5,26 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Perfil | Andre Fiscaliza</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
+    <script src="/assets/js/auth.js" defer></script>
   </head>
   <body>
-    <main class="container card" style="max-width:720px;">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#1a237e;color:#fff;font-weight:800;font-size:24px;">AJ</div>
-        <div>
-          <h1 style="margin:0;">Andre de Jesus Oliveira</h1>
-          <p style="margin:4px 0;color:#616161;">@andre</p>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img src="/assets/img/logo-af.svg" alt="AF" />
+          <span>Andre Fiscaliza</span>
         </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">Menu</div>
+          <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+          <a href="/documentos.html"><span class="nav-icon">📁</span> Documentos</a>
+          <div class="sidebar-section">Configurações</div>
+          <a href="/perfil.html" class="active"><span class="nav-icon">👤</span> Perfil</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-avatar">AJ</div>
+          <div class="sidebar-user">
+            <strong>Andre de Jesus</strong>
+            <small>@andre</small>
+          </div>
+          <button onclick="AFAuth.logout()" title="Sair">🚪</button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main-area">
+        <header class="topbar">
+          <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+          <span class="topbar-title">Perfil</span>
+          <div class="topbar-right"></div>
+        </header>
+
+        <main class="container" style="max-width:800px;">
+          <!-- Profile Header -->
+          <div class="card fade-in" style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:20px;">
+              <div style="width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:800;font-size:1.5rem;flex-shrink:0;">AJ</div>
+              <div>
+                <h2 style="margin:0;font-size:1.3rem;">Andre de Jesus Oliveira</h2>
+                <p style="margin:4px 0 0;color:var(--gray-500);font-size:.9rem;">@andre · Analista Fiscal</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats" style="grid-template-columns:1fr 1fr;">
+            <div class="stat-card fade-in">
+              <div class="stat-icon blue">📊</div>
+              <div class="stat-info">
+                <h4>Documentos Analisados</h4>
+                <div class="stat-value">0</div>
+              </div>
+            </div>
+            <div class="stat-card fade-in">
+              <div class="stat-icon red">🚨</div>
+              <div class="stat-info">
+                <h4>Alertas Gerados</h4>
+                <div class="stat-value">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Profile -->
+          <div class="card fade-in">
+            <div class="card-header">
+              <h3>✏️ Editar Perfil</h3>
+            </div>
+            <label class="field">
+              <span>Email</span>
+              <input placeholder="seu-email@exemplo.com" type="email" />
+            </label>
+            <div style="display:flex;gap:10px;margin-top:8px;">
+              <button class="primary">Salvar Email</button>
+              <button class="secondary">Alterar Senha</button>
+            </div>
+          </div>
+        </main>
+
+        <footer class="footer">
+          Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas
+        </footer>
       </div>
-      <section class="stats" style="margin-top:16px;">
-        <article class="card">Documentos analisados <h2>0</h2></article>
-        <article class="card">Alertas gerados <h2>0</h2></article>
-      </section>
-      <h3>Editar perfil</h3>
-      <label class="field">Email <input placeholder="seu-email@exemplo.com" /></label>
-      <div style="display:flex;gap:8px;">
-        <button class="primary">Salvar email</button>
-        <button>Alterar senha</button>
-      </div>
-    </main>
+    </div>
   </body>
 </html>

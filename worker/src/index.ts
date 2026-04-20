@@ -15,6 +15,7 @@ interface Env {
   BUCKET: R2Bucket;
   JWT_SECRET: string;
   ASSETS?: Fetcher;
+  AI?: Ai;
 }
 
 function isPublicPath(pathname: string): boolean {
