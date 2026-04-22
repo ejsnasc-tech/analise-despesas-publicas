@@ -64,7 +64,6 @@ function parseCMap(cmapText: string): CMapTable {
     for (const e of entries) {
       const srcCode = parseInt(e[1], 16);
       const dstHex = e[2];
-      // Dst pode ser multi-byte Unicode (ex: <006100620063> = "abc")
       let dstStr = "";
       for (let i = 0; i < dstHex.length; i += 4) {
         const chunk = dstHex.substring(i, Math.min(i + 4, dstHex.length));
@@ -114,6 +113,28 @@ function parseCMap(cmapText: string): CMapTable {
           table.set(code, dstStr);
         }
         dstStart++;
+      }
+    }
+  }
+
+  /* Preenche lacunas no CMap por interpolação sequencial.
+   * Se 0x44→'a', 0x45→'b', ..., 0x4A→'g', 0x4C→'i', infere 0x4B→'h'. */
+  if (table.size >= 3) {
+    const sorted = [...table.entries()]
+      .filter(([, v]) => v.length === 1)
+      .sort((a, b) => a[0] - b[0]);
+    for (let i = 1; i < sorted.length; i++) {
+      const [prevCode, prevChar] = sorted[i - 1];
+      const [curCode, curChar] = sorted[i];
+      const codeDiff = curCode - prevCode;
+      const charDiff = curChar.codePointAt(0)! - prevChar.codePointAt(0)!;
+      if (codeDiff > 1 && codeDiff <= 4 && codeDiff === charDiff) {
+        for (let gap = 1; gap < codeDiff; gap++) {
+          const gapCode = prevCode + gap;
+          if (!table.has(gapCode)) {
+            table.set(gapCode, String.fromCodePoint(prevChar.codePointAt(0)! + gap));
+          }
+        }
       }
     }
   }
@@ -296,8 +317,8 @@ function extractTextFromContent(content: string, fontCMaps: Map<string, CMapTabl
   const contentLines = content.split(/\r?\n/);
   for (const line of contentLines) {
     const trimmed = line.trim();
-    if (trimmed === "BT") { inBT = true; continue; }
-    if (trimmed === "ET") {
+    if (/\bBT\b/.test(trimmed)) { inBT = true; }
+    if (/\bET\b/.test(trimmed)) {
       inBT = false;
       if (currentLine.trim()) lines.push(currentLine.trim());
       currentLine = "";
@@ -313,12 +334,16 @@ function extractTextFromContent(content: string, fontCMaps: Map<string, CMapTabl
 
     // Operadores de posicionamento que indicam nova linha
     if (/^.*\bTd\b/.test(trimmed) || /^.*\bTD\b/.test(trimmed) || /^.*\bT\*\b/.test(trimmed)) {
-      const tdMatch = trimmed.match(/(-?[\d.]+)\s+(-?[\d.]+)\s+Td/);
+      const tdMatch = trimmed.match(/(-?[\d.]+)\s+(-?[\d.]+)\s+T[dD]/);
       if (tdMatch) {
+        const tx = Math.abs(parseFloat(tdMatch[1]));
         const ty = parseFloat(tdMatch[2]);
         if (Math.abs(ty) > 1) {
           if (currentLine.trim()) lines.push(currentLine.trim());
           currentLine = "";
+        } else if (tx > 2 && currentLine.length > 0) {
+          // Movimento horizontal significativo → adiciona espaço
+          currentLine += " ";
         }
       }
     }
@@ -431,25 +456,23 @@ async function extractAllStreams(bytes: Uint8Array): Promise<StreamInfo[]> {
   return streams;
 }
 
-/**
- * Extrai texto de um arquivo PDF (ArrayBuffer).
- * Funciona em Cloudflare Workers sem dependências externas.
- * Suporta ToUnicode CMap para fontes com encoding customizado.
- */
-export async function extrairTextoPdf(buffer: ArrayBuffer): Promise<string> {
-  const bytes = new Uint8Array(buffer);
-  const allTexts: string[] = [];
+/* ── Infraestrutura compartilhada para extração de texto ──────── */
 
-  // Texto bruto do PDF (para parsear estrutura de fontes)
+interface PdfInfra {
+  streams: StreamInfo[];
+  streamByObjNum: Map<number, StreamInfo>;
+  fontCMaps: Map<string, CMapTable>;
+  defaultCMap: CMapTable | undefined;
+  pdfRawText: string;
+}
+
+/** Constrói toda a infraestrutura de fontes/CMaps necessária para decodificar texto */
+async function buildPdfInfra(bytes: Uint8Array): Promise<PdfInfra> {
   const pdfRawText = new TextDecoder("latin1").decode(bytes);
-
-  // Extrai e descomprime todos os streams
   const streams = await extractAllStreams(bytes);
 
-  // Fase 1: Mapeia número de objeto → stream (extraído do header)
-  const streamByObjNum = new Map<number, { header: string; data: string }>();
+  const streamByObjNum = new Map<number, StreamInfo>();
   for (const s of streams) {
-    // O header pode conter vários "N 0 obj" — pega o ÚLTIMO (mais próximo do stream)
     const allMatches = [...s.header.matchAll(/(\d+)\s+0\s+obj/g)];
     if (allMatches.length > 0) {
       const lastMatch = allMatches[allMatches.length - 1];
@@ -457,111 +480,278 @@ export async function extrairTextoPdf(buffer: ArrayBuffer): Promise<string> {
     }
   }
 
-  // Fase 2: Associa fontes aos CMaps via estrutura de objetos do PDF
   const fontCMaps = new Map<string, CMapTable>();
 
-  // Passo 2a: Encontra objetos de fonte com /ToUnicode X 0 R
-  // Usa regex que não cruza limites de endobj
-  const fontObjToUnicode = new Map<number, number>(); // obj_id → toUnicode_obj_id
+  /* 1. Mapeia obj_id → toUnicode_obj_id para todos os objetos que têm /ToUnicode */
+  const fontObjToUnicode = new Map<number, number>();
   const fontObjMatches = pdfRawText.matchAll(/(\d+)\s+0\s+obj\b((?:(?!endobj)[\s\S])*?)\/ToUnicode\s+(\d+)\s+0\s+R/g);
   for (const m of fontObjMatches) {
     fontObjToUnicode.set(parseInt(m[1]), parseInt(m[3]));
   }
 
-  // Passo 2b: Encontra /Font resources que mapeiam nomes (/F10, /F11) a objetos
-  const fontNameToObj = new Map<string, number>();
-  const fontRefMatches = pdfRawText.matchAll(/\/(F\d+)\s+(\d+)\s+0\s+R/g);
-  for (const m of fontRefMatches) {
-    fontNameToObj.set(m[1], parseInt(m[2]));
-  }
-
-  // Passo 2c: Parseia CMap de cada ToUnicode object diretamente pelo número do objeto
+  /* 2. Parseia todas as ToUnicode CMap streams encontradas */
   const toUnicodeObjToTable = new Map<number, CMapTable>();
   for (const [, toUnicodeObjId] of fontObjToUnicode) {
+    if (toUnicodeObjToTable.has(toUnicodeObjId)) continue;
     const stream = streamByObjNum.get(toUnicodeObjId);
     if (stream && isCMapStream(stream.data)) {
       const table = parseCMap(stream.data);
-      if (table.size > 0) {
-        toUnicodeObjToTable.set(toUnicodeObjId, table);
-      }
+      if (table.size > 0) toUnicodeObjToTable.set(toUnicodeObjId, table);
     }
   }
 
-  // Passo 2d: Associa nomes de fonte → CMap
-  for (const [fontName, fontObjId] of fontNameToObj) {
-    // Caso 1: O objeto da fonte tem /ToUnicode diretamente
-    const toUnicodeObjId = fontObjToUnicode.get(fontObjId);
-    if (toUnicodeObjId !== undefined) {
-      const table = toUnicodeObjToTable.get(toUnicodeObjId);
-      if (table) {
-        fontCMaps.set(fontName, table);
-        continue;
-      }
-    }
-    // Caso 2: Segue a referência do objeto da fonte para encontrar /ToUnicode
-    const fontObjPattern = new RegExp(`\\b${fontObjId}\\s+0\\s+obj\\b[\\s\\S]*?endobj`);
-    const fontObjMatch = pdfRawText.match(fontObjPattern);
-    if (fontObjMatch) {
-      const toUMatch = fontObjMatch[0].match(/\/ToUnicode\s+(\d+)\s+0\s+R/);
-      if (toUMatch) {
-        const tuId = parseInt(toUMatch[1]);
-        // Tenta pegar da tabela já parseada
-        let table = toUnicodeObjToTable.get(tuId);
+  /* 3. Coleta TODAS as referências /Fxx N 0 R do PDF
+   *    Para cada nome de fonte, guarda todas as possíveis obj IDs */
+  const fontNameAllRefs = new Map<string, Set<number>>();
+  const fontRefMatches = pdfRawText.matchAll(/\/(F\d+)\s+(\d+)\s+0\s+R/g);
+  for (const m of fontRefMatches) {
+    const name = m[1];
+    const objId = parseInt(m[2]);
+    if (!fontNameAllRefs.has(name)) fontNameAllRefs.set(name, new Set());
+    fontNameAllRefs.get(name)!.add(objId);
+  }
+
+  /* 4. Para cada nome de fonte, escolhe a melhor ref (com ToUnicode) */
+  for (const [fontName, objIds] of fontNameAllRefs) {
+    // Primeiro tenta encontrar uma ref que tenha ToUnicode CMap
+    let bestTable: CMapTable | undefined;
+    for (const objId of objIds) {
+      const tuObjId = fontObjToUnicode.get(objId);
+      if (tuObjId !== undefined) {
+        let table = toUnicodeObjToTable.get(tuObjId);
         if (!table) {
-          // Parseia sob demanda
-          const stream = streamByObjNum.get(tuId);
+          const stream = streamByObjNum.get(tuObjId);
           if (stream && isCMapStream(stream.data)) {
             table = parseCMap(stream.data);
-            if (table && table.size > 0) {
-              toUnicodeObjToTable.set(tuId, table);
+            if (table && table.size > 0) toUnicodeObjToTable.set(tuObjId, table);
+          }
+        }
+        if (table && (!bestTable || table.size > bestTable.size)) {
+          bestTable = table;
+        }
+      }
+    }
+    // Se não achou pela ref direta, procura no corpo do objeto de fonte
+    if (!bestTable) {
+      for (const objId of objIds) {
+        const objPattern = new RegExp(`\\b${objId}\\s+0\\s+obj\\b[\\s\\S]*?endobj`);
+        const objMatch = pdfRawText.match(objPattern);
+        if (objMatch) {
+          const tuMatch = objMatch[0].match(/\/ToUnicode\s+(\d+)\s+0\s+R/);
+          if (tuMatch) {
+            const tuId = parseInt(tuMatch[1]);
+            let table = toUnicodeObjToTable.get(tuId);
+            if (!table) {
+              const stream = streamByObjNum.get(tuId);
+              if (stream && isCMapStream(stream.data)) {
+                table = parseCMap(stream.data);
+                if (table && table.size > 0) toUnicodeObjToTable.set(tuId, table);
+              }
+            }
+            if (table && (!bestTable || table.size > bestTable.size)) {
+              bestTable = table;
             }
           }
         }
-        if (table) {
-          fontCMaps.set(fontName, table);
-        }
       }
     }
+    if (bestTable) fontCMaps.set(fontName, bestTable);
   }
 
-  // Fallback: se nenhum mapeamento encontrado, usa o maior CMap para tudo
+  /* 5. SEMPRE encontra o melhor defaultCMap como fallback universal */
   let defaultCMap: CMapTable | undefined;
-  if (fontCMaps.size === 0) {
-    // Parseia todos os CMap streams disponíveis e usa o maior
-    let bestSize = 0;
+  let bestCMapSize = 0;
+
+  // De ToUnicode streams
+  for (const [, table] of toUnicodeObjToTable) {
+    if (table.size > bestCMapSize) { bestCMapSize = table.size; defaultCMap = table; }
+  }
+
+  // De quaisquer CMap streams no PDF
+  if (!defaultCMap) {
     for (const s of streams) {
       if (isCMapStream(s.data)) {
         const table = parseCMap(s.data);
-        if (table.size > bestSize) { bestSize = table.size; defaultCMap = table; }
+        if (table.size > bestCMapSize) { bestCMapSize = table.size; defaultCMap = table; }
       }
     }
   }
 
-  // Também tenta Differences encoding
+  // De Differences encoding
   const diffBlocks = pdfRawText.matchAll(/\/Differences\s*\[([^\]]+)\]/g);
   for (const m of diffBlocks) {
     const diffTable = parseDifferences(m[1]);
     if (diffTable.size > 0 && !defaultCMap) defaultCMap = diffTable;
   }
 
-  // Fase 3: Extrai texto de content streams
-  for (const s of streams) {
-    if (s.data.includes("BT") && (s.data.includes("Tj") || s.data.includes("TJ"))) {
-      const text = extractTextFromContent(s.data, fontCMaps, defaultCMap);
-      if (text.trim()) {
-        const cleanText = text
-          .split("\n")
-          .filter(line => {
-            const printable = line.replace(/[\x00-\x1F\x7F-\x9F]/g, "").trim();
-            return printable.length > 0 && printable.length >= line.trim().length * 0.3;
-          })
-          .join("\n");
-        if (cleanText.trim()) allTexts.push(cleanText);
-      }
+  return { streams, streamByObjNum, fontCMaps, defaultCMap, pdfRawText };
+}
+
+/** Limpa texto extraído removendo linhas com proporção alta de chars não-imprimíveis */
+function cleanExtractedText(text: string): string {
+  return text.split("\n").filter(line => {
+    const printable = line.replace(/[\x00-\x1F\x7F-\x9F]/g, "").trim();
+    return printable.length > 0 && printable.length >= line.trim().length * 0.3;
+  }).join("\n");
+}
+
+/** Extrai texto de um stream usando a infraestrutura de fontes */
+function extractTextFromStream(s: StreamInfo, infra: PdfInfra): string {
+  if (!s.data.includes("BT") || (!s.data.includes("Tj") && !s.data.includes("TJ"))) return "";
+  const text = extractTextFromContent(s.data, infra.fontCMaps, infra.defaultCMap);
+  if (!text.trim()) return "";
+  return cleanExtractedText(text);
+}
+
+/* ── Resolução da árvore de páginas do PDF ───────────────────── */
+
+/** Resolve a árvore /Pages → /Page e retorna os obj IDs das páginas em ordem */
+function resolvePageTree(pdfRawText: string): number[] {
+  // Mapeia obj_num → kids[] para objetos /Pages
+  const pagesKids = new Map<number, number[]>();
+  const pagesRegex = /(\d+)\s+0\s+obj\b((?:(?!endobj)[\s\S])*?\/Type\s*\/Pages\b(?:(?!endobj)[\s\S])*?)endobj/g;
+  for (const m of pdfRawText.matchAll(pagesRegex)) {
+    const objNum = parseInt(m[1]);
+    const body = m[2];
+    const kidsMatch = body.match(/\/Kids\s*\[([^\]]+)\]/);
+    if (kidsMatch) {
+      const kids: number[] = [];
+      for (const ref of kidsMatch[1].matchAll(/(\d+)\s+0\s+R/g)) kids.push(parseInt(ref[1]));
+      pagesKids.set(objNum, kids);
     }
   }
 
-  return allTexts.join("\n\n");
+  if (pagesKids.size === 0) return [];
+
+  // Encontra o root /Pages via /Catalog
+  const catalogMatch = pdfRawText.match(/\/Pages\s+(\d+)\s+0\s+R/);
+  let rootId = catalogMatch ? parseInt(catalogMatch[1]) : 0;
+
+  const resolved: number[] = [];
+  const resolve = (kids: number[], depth: number) => {
+    if (depth > 6) return;
+    for (const kid of kids) {
+      const subKids = pagesKids.get(kid);
+      if (subKids) resolve(subKids, depth + 1); // /Pages intermediário
+      else resolved.push(kid); // /Page folha
+    }
+  };
+
+  const rootKids = pagesKids.get(rootId);
+  if (rootKids) {
+    resolve(rootKids, 0);
+  } else {
+    // Fallback: tenta todos os /Pages
+    for (const [, kids] of pagesKids) resolve(kids, 0);
+  }
+  return resolved;
+}
+
+/** Obtém as referências de /Contents de um objeto /Page */
+function getPageContentsRefs(pdfRawText: string, pageObjNum: number): number[] {
+  const objRegex = new RegExp(`\\b${pageObjNum}\\s+0\\s+obj\\b([\\s\\S]*?)endobj`);
+  const m = pdfRawText.match(objRegex);
+  if (!m) return [];
+
+  const body = m[1];
+  const refs: number[] = [];
+
+  // Array: /Contents [N 0 R M 0 R ...]
+  const arrayMatch = body.match(/\/Contents\s*\[([^\]]+)\]/);
+  if (arrayMatch) {
+    for (const ref of arrayMatch[1].matchAll(/(\d+)\s+0\s+R/g)) refs.push(parseInt(ref[1]));
+    return refs;
+  }
+
+  // Single: /Contents N 0 R
+  const singleMatch = body.match(/\/Contents\s+(\d+)\s+0\s+R/);
+  if (singleMatch) refs.push(parseInt(singleMatch[1]));
+
+  return refs;
+}
+
+/* ── Tipos exportados para extração por página ───────────────── */
+
+export interface PaginaPdf {
+  pagina: number;
+  texto: string;
+}
+
+export interface ResultadoPdfPaginas {
+  totalPaginas: number;
+  paginas: PaginaPdf[];
+  textoCompleto: string;
+}
+
+/**
+ * Extrai texto de um PDF organizando por página.
+ * Resolve a árvore de páginas do PDF para associar conteúdo a cada página.
+ * Fallback: trata cada content stream como uma "página" separada.
+ */
+export async function extrairTextoPdfPorPagina(buffer: ArrayBuffer): Promise<ResultadoPdfPaginas> {
+  const bytes = new Uint8Array(buffer);
+  const infra = await buildPdfInfra(bytes);
+
+  // Tenta extrair o total de páginas do /Pages /Count
+  const countMatch = infra.pdfRawText.match(/\/Type\s*\/Pages\b[^]*?\/Count\s+(\d+)/);
+  const declaredPages = countMatch ? parseInt(countMatch[1]) : 0;
+
+  // Resolve árvore de páginas para obter IDs em ordem
+  const pageObjIds = resolvePageTree(infra.pdfRawText);
+  const paginas: PaginaPdf[] = [];
+
+  if (pageObjIds.length > 0) {
+    // Extração por página usando a estrutura do PDF
+    for (let i = 0; i < pageObjIds.length; i++) {
+      const contentsRefs = getPageContentsRefs(infra.pdfRawText, pageObjIds[i]);
+      let pageText = "";
+
+      for (const ref of contentsRefs) {
+        const stream = infra.streamByObjNum.get(ref);
+        if (stream) {
+          const text = extractTextFromStream(stream, infra);
+          if (text.trim()) pageText += (pageText ? "\n" : "") + text;
+        }
+      }
+
+      paginas.push({ pagina: i + 1, texto: pageText.trim() });
+    }
+  }
+
+  // Fallback: se a extração por página não funcionou, usa todos os content streams
+  const totalTextoPaginas = paginas.reduce((s, p) => s + p.texto.length, 0);
+  if (totalTextoPaginas === 0) {
+    let pageNum = 0;
+    for (const s of infra.streams) {
+      const text = extractTextFromStream(s, infra);
+      if (text.trim()) {
+        pageNum++;
+        paginas.push({ pagina: pageNum, texto: text.trim() });
+      }
+    }
+    // Se não tinha páginas antes, limpa o array
+    if (pageNum > 0 && paginas[0]?.texto === "") {
+      paginas.splice(0, paginas.length - pageNum);
+    }
+  }
+
+  // Remove páginas vazias duplicadas no fim (mantém intermediárias vazias para o usuário ver)
+  while (paginas.length > 1 && paginas[paginas.length - 1].texto === "") paginas.pop();
+
+  const textoCompleto = paginas.map(p => p.texto).filter(t => t.length > 0).join("\n\n");
+  const totalPaginas = Math.max(declaredPages, paginas.length);
+
+  return { totalPaginas, paginas, textoCompleto };
+}
+
+/**
+ * Extrai texto de um arquivo PDF (ArrayBuffer).
+ * Funciona em Cloudflare Workers sem dependências externas.
+ * Suporta ToUnicode CMap para fontes com encoding customizado.
+ */
+export async function extrairTextoPdf(buffer: ArrayBuffer): Promise<string> {
+  const result = await extrairTextoPdfPorPagina(buffer);
+  return result.textoCompleto;
 }
 
 /** Extrai imagens embutidas em um PDF (JPEG/PNG).

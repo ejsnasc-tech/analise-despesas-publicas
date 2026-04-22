@@ -3,6 +3,7 @@ export interface Alerta {
   descricao: string;
   pontuacao: number;
   detalhes?: string;
+  fundamentacao?: string; // Lei, artigo, decreto, portaria, etc
 }
 
 export interface RegistroEmpenho {
@@ -18,6 +19,26 @@ export interface ResultadoAnalise {
     valorTotal: number;
     registrosAnalisados: number;
     textoExtraido?: string;
+    totalPaginas?: number;
+    paginas?: { pagina: number; texto: string }[];
+  };
+  detalhesExtraidos?: {
+    cnpjs?: Array<{
+      cnpj: string;
+      razao_social?: string;
+      situacao?: string;
+      data_abertura?: string;
+      porte?: string;
+      natureza_juridica?: string;
+      capital_social?: number;
+      cnae_principal?: string;
+      socios?: Array<{ nome: string; qualificacao: string }>;
+    }>;
+    valores?: number[];
+    datas?: string[];
+    empenhos?: string[];
+    nds?: string[];
+    termos?: string[];
   };
 }
 
@@ -244,7 +265,8 @@ function regraValorInvalido(rows: RegistroEmpenho[]): Alerta[] {
         tipo: "VALOR_ZERADO_OU_NEGATIVO",
         descricao: "Empenho com valor zerado ou negativo",
         pontuacao: 5,
-        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Valor: ${valor}`
+        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Valor: ${valor}`,
+        fundamentacao: "Art. 62, Lei 4.320/64"
       });
     }
   }
@@ -261,7 +283,8 @@ function regraDispensaSemLicitacao(rows: RegistroEmpenho[]): Alerta[] {
         tipo: "CONTRATO_SEM_LICITACAO_INDEVIDO",
         descricao: `Dispensa/inexigibilidade acima do limite (R$ ${LIMITE_DISPENSA_SERVICOS.toLocaleString("pt-BR")})`,
         pontuacao: 15,
-        detalhes: `Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Modalidade: ${modalidade} | Fornecedor: ${campo(row, "fornecedor", "credor", "razao", "nome")}`
+        detalhes: `Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Modalidade: ${modalidade} | Fornecedor: ${campo(row, "fornecedor", "credor", "razao", "nome")}`,
+        fundamentacao: "Art. 75, Lei 14.133/2021; Decreto 12.343/2024"
       });
     }
   }
@@ -287,7 +310,8 @@ function regraPagamentoDuplicado(rows: RegistroEmpenho[]): Alerta[] {
         tipo: "PAGAMENTO_DUPLICADO",
         descricao: "Possível pagamento duplicado detectado",
         pontuacao: 20,
-        detalhes: `Fornecedor: ${fornecedor} | Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Data: ${data}`
+        detalhes: `Fornecedor: ${fornecedor} | Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Data: ${data}`,
+        fundamentacao: "Art. 63, Lei 4.320/64"
       });
     }
   }
@@ -1077,67 +1101,67 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
   const textoLower = texto.toLowerCase();
 
   // Detecta termos de irregularidade no documento (Manual CGM Estância + Lei 14.133/2021)
-  const termosRisco: { termo: string; tipo: string; desc: string; pts: number }[] = [
+  const termosRisco: { termo: string; tipo: string; desc: string; pts: number; fundamentacao?: string }[] = [
     // Modalidades e contratação
-    { termo: "dispensa de licitação", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licitação", pts: 5 },
-    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licitação", pts: 5 },
-    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contratação emergencial", pts: 10 },
-    { termo: "sem licitação", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contratação sem licitação", pts: 10 },
-    { termo: "sigilo", tipo: "MENCAO_SIGILO", desc: "Documento menciona sigilo", pts: 10 },
+    { termo: "dispensa de licitação", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licitação", pts: 5, fundamentacao: "Lei 14.133/2021, art. 75" },
+    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licitação", pts: 5, fundamentacao: "Lei 14.133/2021, art. 74" },
+    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contratação emergencial", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75, VIII" },
+    { termo: "sem licitação", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contratação sem licitação", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75" },
+    { termo: "sigilo", tipo: "MENCAO_SIGILO", desc: "Documento menciona sigilo", pts: 10, fundamentacao: "Lei 14.133/2021, art. 24" },
     // Documentos obrigatórios (Manual §DFD/ETP/TR)
-    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica ausência de Documento de Formalização da Demanda (DFD)", pts: 15 },
-    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica ausência de Estudo Técnico Preliminar (ETP)", pts: 15 },
-    { termo: "sem termo de referência", tipo: "AUSENCIA_TR", desc: "Indica ausência de Termo de Referência", pts: 15 },
-    { termo: "sem projeto básico", tipo: "AUSENCIA_PB", desc: "Indica ausência de Projeto Básico", pts: 15 },
+    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica ausência de Documento de Formalização da Demanda (DFD)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica ausência de Estudo Técnico Preliminar (ETP)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem termo de referência", tipo: "AUSENCIA_TR", desc: "Indica ausência de Termo de Referência", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem projeto básico", tipo: "AUSENCIA_PB", desc: "Indica ausência de Projeto Básico", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
     // Empenho e liquidação (Manual §2.6, §2.8)
-    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa (Art. 60 Lei 4.320/64)", pts: 20 },
-    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa", pts: 20 },
-    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho prévio", pts: 25 },
-    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "Liquidação sem atesto do fiscal/responsável (Manual §2.8)", pts: 15 },
-    { termo: "sem fiscal", tipo: "SEM_FISCAL_CONTRATO", desc: "Contrato sem fiscal designado (Art. 117 Lei 14.133/2021)", pts: 15 },
-    { termo: "sem gestor", tipo: "SEM_GESTOR_CONTRATO", desc: "Contrato sem gestor designado", pts: 10 },
+    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa (Art. 60 Lei 4.320/64)", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho prévio", pts: 25, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "Liquidação sem atesto do fiscal/responsável (Manual §2.8)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
+    { termo: "sem fiscal", tipo: "SEM_FISCAL_CONTRATO", desc: "Contrato sem fiscal designado (Art. 117 Lei 14.133/2021)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
+    { termo: "sem gestor", tipo: "SEM_GESTOR_CONTRATO", desc: "Contrato sem gestor designado", pts: 10, fundamentacao: "Lei 14.133/2021, art. 117" },
     // Aditivos (Manual §2.5)
-    { termo: "aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona aditivo contratual", pts: 5 },
-    { termo: "termo aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona termo aditivo", pts: 5 },
-    { termo: "acréscimo de 25%", tipo: "ADITIVO_LIMITE", desc: "Referência ao limite de 25% de acréscimo em aditivos (Art. 125 Lei 14.133)", pts: 10 },
+    { termo: "aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona aditivo contratual", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
+    { termo: "termo aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona termo aditivo", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
+    { termo: "acréscimo de 25%", tipo: "ADITIVO_LIMITE", desc: "Referência ao limite de 25% de acréscimo em aditivos (Art. 125 Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 125" },
     // Certidões (Manual Check Lists)
-    { termo: "certidão vencida", tipo: "CERTIDAO_VENCIDA", desc: "Certidão com validade expirada", pts: 15 },
+    { termo: "certidão vencida", tipo: "CERTIDAO_VENCIDA", desc: "Certidão com validade expirada", pts: 15, fundamentacao: "Lei 14.133/2021, art. 69" },
     { termo: "certidão negativa", tipo: "INFO_CERTIDAO", desc: "Documento menciona certidão negativa", pts: 0 },
     { termo: "cnd", tipo: "INFO_CERTIDAO", desc: "Referência a CND (Certidão Negativa de Débitos)", pts: 0 },
     // Retenções tributárias (Manual §2.9/§2.12)
-    { termo: "sem retenção", tipo: "AUSENCIA_RETENCAO", desc: "Possível ausência de retenção tributária obrigatória", pts: 10 },
-    { termo: "sem retenção de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "Ausência de retenção de Imposto de Renda (IN RFB 1.234/2012)", pts: 15 },
-    { termo: "sem retenção de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "Ausência de retenção de ISS", pts: 10 },
-    { termo: "sem retenção previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "Ausência de retenção previdenciária (IN RFB 2.110/2022)", pts: 15 },
+    { termo: "sem retenção", tipo: "AUSENCIA_RETENCAO", desc: "Possível ausência de retenção tributária obrigatória", pts: 10, fundamentacao: "Lei 14.133/2021, art. 122" },
+    { termo: "sem retenção de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "Ausência de retenção de Imposto de Renda (IN RFB 1.234/2012)", pts: 15, fundamentacao: "IN RFB 1.234/2012" },
+    { termo: "sem retenção de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "Ausência de retenção de ISS", pts: 10, fundamentacao: "Lei Complementar 116/2003" },
+    { termo: "sem retenção previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "Ausência de retenção previdenciária (IN RFB 2.110/2022)", pts: 15, fundamentacao: "IN RFB 2.110/2022" },
     // Ordem cronológica (Manual §2.9)
-    { termo: "ordem cronológica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "Referência à ordem cronológica de pagamentos (Art. 141 Lei 14.133)", pts: 0 },
-    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronológica", pts: 15 },
+    { termo: "ordem cronológica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "Referência à ordem cronológica de pagamentos (Art. 141 Lei 14.133)", pts: 0, fundamentacao: "Lei 14.133/2021, art. 141" },
+    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronológica", pts: 15, fundamentacao: "Lei 14.133/2021, art. 141" },
     // Cotação (Manual §2.4)
-    { termo: "cotação única", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cotação de preços (mínimo 3 obrigatório - IN SEGES/ME 65/2021)", pts: 15 },
-    { termo: "pesquisa de preço insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de preços insuficiente", pts: 15 },
+    { termo: "cotação única", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cotação de preços (mínimo 3 obrigatório - IN SEGES/ME 65/2021)", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
+    { termo: "pesquisa de preço insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de preços insuficiente", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
     // Obras (Manual Check Lists)
-    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (Anotação de Responsabilidade Técnica)", pts: 15 },
-    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade Técnica)", pts: 15 },
-    { termo: "sem cno", tipo: "AUSENCIA_CNO", desc: "Obra sem CNO (Cadastro Nacional de Obras)", pts: 10 },
-    { termo: "sem alvará", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvará de construção", pts: 15 },
-    { termo: "sem medição", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem medição/boletim de medição", pts: 15 },
+    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (Anotação de Responsabilidade Técnica)", pts: 15, fundamentacao: "Lei 6.496/1977" },
+    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade Técnica)", pts: 15, fundamentacao: "Resolução CAU/BR 51/2013" },
+    { termo: "sem cno", tipo: "AUSENCIA_CNO", desc: "Obra sem CNO (Cadastro Nacional de Obras)", pts: 10, fundamentacao: "IN RFB 1.845/2018" },
+    { termo: "sem alvará", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvará de construção", pts: 15, fundamentacao: "Lei 14.133/2021, art. 8º" },
+    { termo: "sem medição", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem medição/boletim de medição", pts: 15, fundamentacao: "Lei 14.133/2021, art. 140" },
     // Diárias (Manual Check Lists)
-    { termo: "sem relatório de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "Diária sem relatório de viagem (prazo: 5 dias úteis)", pts: 10 },
+    { termo: "sem relatório de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "Diária sem relatório de viagem (prazo: 5 dias úteis)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 74" },
     { termo: "diária", tipo: "INFO_DIARIA", desc: "Documento menciona diárias", pts: 0 },
     // Fracionamento
-    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10 },
-    { termo: "sobrepreço", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepreço", pts: 15 },
-    { termo: "superfaturamento", tipo: "MENCAO_SUPERFATURAMENTO", desc: "Documento menciona superfaturamento", pts: 15 },
+    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10, fundamentacao: "Lei 14.133/2021, art. 23, §5º" },
+    { termo: "sobrepreço", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepreço", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
+    { termo: "superfaturamento", tipo: "MENCAO_SUPERFATURAMENTO", desc: "Documento menciona superfaturamento", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
     // Matriz de risco
-    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Ausência de Matriz de Risco (Art. 6º, XXVII, Lei 14.133)", pts: 10 },
+    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Ausência de Matriz de Risco (Art. 6º, XXVII, Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 6º, XXVII" },
     // Controle patrimonial
-    { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10 },
+    { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10, fundamentacao: "Lei 4.320/64, art. 94" },
     // Classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)
-    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20 },
-    { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
-    { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
-    { termo: "classificação econômica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classificação econômica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20 },
-    { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20 },
+    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolução TCE/SE 267/2011" },
+    { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
+    { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
+    { termo: "classificação econômica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classificação econômica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolução TCE/SE 267/2011" },
+    { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
   ];
 
   const tiposJaAdicionados = new Set<string>();
@@ -1146,7 +1170,7 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
     if (tiposJaAdicionados.has(tr.tipo)) continue; // evita duplicatas do mesmo tipo
     if (textoLower.includes(tr.termo)) {
       tiposJaAdicionados.add(tr.tipo);
-      alertas.push({ tipo: tr.tipo, descricao: tr.desc, pontuacao: tr.pts });
+      alertas.push({ tipo: tr.tipo, descricao: tr.desc, pontuacao: tr.pts, fundamentacao: tr.fundamentacao });
     }
   }
 
@@ -1157,7 +1181,8 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
         tipo: "VALOR_ELEVADO_DOCUMENTO",
         descricao: "Valor elevado encontrado no documento (acima de R$ 500 mil)",
         pontuacao: 5,
-        detalhes: `Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+        detalhes: `Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+        fundamentacao: "Lei 14.133/2021, art. 23, §1º"
       });
     }
   }
@@ -1170,7 +1195,8 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
           tipo: "DISPENSA_ACIMA_LIMITE",
           descricao: `Valor acima do limite de dispensa por pequeno valor (R$ ${LIMITE_DISPENSA_PEQUENO_VALOR.toLocaleString("pt-BR", { minimumFractionDigits: 2 })})`,
           pontuacao: 20,
-          detalhes: `Valor encontrado: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Art. 75, II, Lei 14.133/2021`
+          detalhes: `Valor encontrado: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Art. 75, II, Lei 14.133/2021`,
+          fundamentacao: "Lei 14.133/2021, art. 75, II; Decreto 12.343/2024"
         });
         break;
       }
@@ -1196,7 +1222,8 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
             tipo: "NF_ANTERIOR_EMPENHO_PDF",
             descricao: "Possível NF emitida antes do empenho detectada no documento (Art. 60 Lei 4.320/64)",
             pontuacao: 15,
-            detalhes: `Data anterior: ${datesParsed[0].str} | Data posterior: ${datesParsed[1].str}`
+            detalhes: `Data anterior: ${datesParsed[0].str} | Data posterior: ${datesParsed[1].str}`,
+            fundamentacao: "Art. 60, Lei 4.320/64"
           });
         }
       }
@@ -1229,6 +1256,8 @@ export async function analisarDocumento(input: {
   let totalRegistros = 0;
   let valorTotal = 0;
   let textoExtraido: string | undefined;
+  let totalPaginas = 0;
+  let paginasExtraidas: { pagina: number; texto: string }[] = [];
 
   // Carrega classificações do banco se disponível, senão usa hardcoded
   let classificacoes = CLASSIFICACAO_PESSOAL;
@@ -1250,6 +1279,7 @@ export async function analisarDocumento(input: {
     } catch { /* DB indisponível — usa dados locais */ }
   }
 
+  let detalhesExtraidos: ResultadoAnalise["detalhesExtraidos"] = {};
   if (input.conteudo && (input.tipo.includes("csv") || input.tipo.includes("text"))) {
     // ── Análise CSV estruturada ───────────────────────────────────
     const rows = parseCsv(input.conteudo);
@@ -1284,6 +1314,22 @@ export async function analisarDocumento(input: {
         consultarSancoesCGU(cnpjs, input.apiKeyTransparencia),
       ]);
 
+      // Monta detalhes dos CNPJs
+      detalhesExtraidos.cnpjs = cnpjs.map(cnpj => {
+        const info = dadosCnpj.get(cnpj);
+        return {
+          cnpj,
+          razao_social: info?.razao_social,
+          situacao: info?.descricao_situacao_cadastral,
+          data_abertura: info?.data_inicio_atividade,
+          porte: info?.porte,
+          natureza_juridica: info?.natureza_juridica,
+          capital_social: info?.capital_social,
+          cnae_principal: info?.cnae_fiscal_descricao,
+          socios: info?.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+        };
+      });
+
       alertas.push(
         ...regraEmpresaRecenteCriada(rows, dadosCnpj),
         ...regraSituacaoIrregular(rows, dadosCnpj),
@@ -1294,10 +1340,18 @@ export async function analisarDocumento(input: {
         ...regraCnaeIncompativel(rows, dadosCnpj)
       );
     }
+    // Outros dados extraídos
+    detalhesExtraidos.valores = rows.map(r => valorNumerico(r, "valor", "vlr", "montante", "total")).filter(v => v > 0);
+    detalhesExtraidos.datas = rows.map(r => campo(r, "data", "dt_empenho", "emissao", "dt_pagamento")).filter(Boolean);
+    detalhesExtraidos.empenhos = rows.map(r => campo(r, "empenho", "numero", "nota", "id")).filter(Boolean);
+    detalhesExtraidos.nds = rows.map(r => campo(r, "natureza", "nd", "natureza_despesa", "classificacao_despesa")).filter(Boolean);
   } else if (input.conteudoPdf && input.tipo.includes("pdf")) {
     // ── Análise PDF ───────────────────────────────────────────────
-    const { extrairTextoPdf, extrairImagensPdf } = await import("./pdf_extractor");
-    textoExtraido = await extrairTextoPdf(input.conteudoPdf);
+    const { extrairTextoPdfPorPagina, extrairImagensPdf } = await import("./pdf_extractor");
+    const resultadoPdf = await extrairTextoPdfPorPagina(input.conteudoPdf);
+    textoExtraido = resultadoPdf.textoCompleto;
+    totalPaginas = resultadoPdf.totalPaginas;
+    paginasExtraidas = resultadoPdf.paginas;
 
     // ── OCR: extrai texto de imagens escaneadas via Workers AI ───
     if (input.ai) {
@@ -1348,6 +1402,21 @@ export async function analisarDocumento(input: {
             consultarSancoesCGU(dados.cnpjs, input.apiKeyTransparencia),
           ]);
 
+          detalhesExtraidos.cnpjs = dados.cnpjs.map(cnpj => {
+            const info = dadosCnpj.get(cnpj);
+            return {
+              cnpj,
+              razao_social: info?.razao_social,
+              situacao: info?.descricao_situacao_cadastral,
+              data_abertura: info?.data_inicio_atividade,
+              porte: info?.porte,
+              natureza_juridica: info?.natureza_juridica,
+              capital_social: info?.capital_social,
+              cnae_principal: info?.cnae_fiscal_descricao,
+              socios: info?.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+            };
+          });
+
           alertas.push(
             ...regraEmpresaRecenteCriada(dados.rows, dadosCnpj),
             ...regraSituacaoIrregular(dados.rows, dadosCnpj),
@@ -1358,6 +1427,12 @@ export async function analisarDocumento(input: {
             ...regraCnaeIncompativel(dados.rows, dadosCnpj)
           );
         }
+        // Outros dados extraídos
+        detalhesExtraidos.valores = dados.valores;
+        detalhesExtraidos.datas = dados.datas;
+        detalhesExtraidos.empenhos = dados.empenhos;
+        detalhesExtraidos.nds = dados.nds;
+        detalhesExtraidos.termos = dados.termos;
       }
     }
   }
@@ -1382,7 +1457,15 @@ export async function analisarDocumento(input: {
       totalRegistros,
       valorTotal,
       registrosAnalisados: totalRegistros,
-      ...(textoExtraido ? { textoExtraido: textoExtraido.substring(0, 5000) } : {})
-    }
+      ...(textoExtraido ? { textoExtraido: textoExtraido.substring(0, 15000) } : {}),
+      ...(totalPaginas > 0 ? { totalPaginas } : {}),
+      ...(paginasExtraidas.length > 0 ? {
+        paginas: paginasExtraidas.map(p => ({
+          pagina: p.pagina,
+          texto: p.texto.substring(0, 5000),
+        }))
+      } : {}),
+    },
+    ...(Object.keys(detalhesExtraidos).length > 0 ? { detalhesExtraidos } : {})
   };
 }

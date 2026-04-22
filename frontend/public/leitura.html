@@ -35,6 +35,39 @@
 
       .viewer-header .file-icon { font-size: 1.3rem; }
 
+      /* Page indicator in header */
+      .page-indicator {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: .8rem;
+        font-weight: 500;
+        color: var(--gray-500);
+      }
+
+      .page-indicator .page-badge {
+        background: var(--accent);
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: .75rem;
+      }
+
+      .page-progress-bar {
+        height: 3px;
+        background: var(--gray-200);
+        width: 100%;
+      }
+
+      .page-progress-bar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), #6366f1);
+        transition: width .4s ease;
+        border-radius: 2px;
+      }
+
       .viewer-body {
         padding: 24px;
         max-height: 75vh;
@@ -63,32 +96,44 @@
         50% { opacity: 0; }
       }
 
-      .viewer-body .highlight-line {
-        background: rgba(59, 130, 246, .08);
-        border-left: 3px solid var(--accent);
-        margin: 0 -24px;
-        padding: 2px 24px 2px 21px;
-        display: inline-block;
-        width: calc(100% + 48px);
+      .page-separator {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 20px 0;
+        color: var(--accent);
+        font-weight: 700;
+        font-size: .8rem;
+        font-family: 'Inter', sans-serif;
       }
 
-      .viewer-line-numbers {
-        position: absolute;
-        left: 0;
-        top: 24px;
-        width: 40px;
-        text-align: right;
-        font-size: .72rem;
-        color: var(--gray-300);
-        user-select: none;
-        padding-right: 8px;
+      .page-separator::before,
+      .page-separator::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), transparent);
       }
 
-      /* Painel lateral de verificação */
-      .verificacao-panel {
-        position: sticky;
-        top: 80px;
+      .page-separator::after {
+        background: linear-gradient(90deg, transparent, var(--accent));
       }
+
+      .page-empty-notice {
+        display: block;
+        padding: 8px 14px;
+        margin: 4px 0;
+        background: #fef3c7;
+        border: 1px solid #fde68a;
+        border-radius: 6px;
+        color: #92400e;
+        font-size: .78rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+      }
+
+      /* Verificação panel */
+      .verificacao-panel { position: sticky; top: 80px; }
 
       .check-progress {
         display: flex;
@@ -109,15 +154,7 @@
         animation: spin .8s linear infinite;
       }
 
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
-      .check-progress .progress-text {
-        font-size: .85rem;
-        color: var(--gray-600);
-        font-weight: 500;
-      }
+      @keyframes spin { to { transform: rotate(360deg); } }
 
       .check-progress.done .spinner {
         border-color: var(--success);
@@ -135,11 +172,14 @@
         line-height: 14px;
       }
 
-      .check-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+      .check-progress .progress-text {
+        font-size: .85rem;
+        color: var(--gray-600);
+        font-weight: 500;
+        flex: 1;
       }
+
+      .check-list { list-style: none; padding: 0; margin: 0; }
 
       .check-item {
         display: flex;
@@ -154,32 +194,11 @@
         opacity: .5;
       }
 
-      .check-item.active {
-        opacity: 1;
-        background: #eff6ff;
-        color: var(--gray-700);
-      }
+      .check-item.active { opacity: 1; background: #eff6ff; color: var(--gray-700); }
+      .check-item.done { opacity: 1; color: var(--gray-600); }
+      .check-item.found { opacity: 1; background: #fef2f2; color: var(--danger); }
 
-      .check-item.done {
-        opacity: 1;
-        color: var(--gray-600);
-      }
-
-      .check-item.found {
-        opacity: 1;
-        background: #fef2f2;
-        color: var(--danger);
-      }
-
-      .check-icon {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-        display: grid;
-        place-items: center;
-        font-size: .8rem;
-      }
-
+      .check-icon { width: 20px; height: 20px; flex-shrink: 0; display: grid; place-items: center; font-size: .8rem; }
       .check-item.active .check-icon { color: var(--accent); }
       .check-item.done .check-icon { color: var(--success); }
       .check-item.found .check-icon { color: var(--danger); }
@@ -187,6 +206,53 @@
       .check-label { flex: 1; line-height: 1.3; }
       .check-detail { font-size: .72rem; color: var(--gray-400); margin-top: 2px; }
       .check-item.found .check-detail { color: var(--danger); opacity: .8; }
+
+      /* Page summary cards in checks panel */
+      .page-summary {
+        margin-bottom: 12px;
+        padding: 12px 14px;
+        background: var(--gray-50);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gray-200);
+        font-size: .78rem;
+        color: var(--gray-600);
+        display: none;
+      }
+
+      .page-summary.show { display: block; }
+
+      .page-summary .page-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 8px;
+      }
+
+      .page-pill {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: .7rem;
+        font-weight: 600;
+        border: 1px solid var(--gray-200);
+        background: var(--white);
+        color: var(--gray-500);
+        transition: all .3s ease;
+      }
+
+      .page-pill.reading {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        animation: pulse-page 1.5s ease infinite;
+      }
+
+      .page-pill.done-ok { background: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+      .page-pill.done-empty { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+
+      @keyframes pulse-page {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
 
       /* Score result */
       .resultado-final {
@@ -199,22 +265,9 @@
         transition: all .5s ease;
       }
 
-      .resultado-final.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .resultado-score {
-        font-size: 2.5rem;
-        font-weight: 800;
-        line-height: 1;
-      }
-
-      .resultado-nivel {
-        margin-top: 6px;
-        font-size: .85rem;
-        font-weight: 600;
-      }
+      .resultado-final.show { opacity: 1; transform: translateY(0); }
+      .resultado-score { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+      .resultado-nivel { margin-top: 6px; font-size: .85rem; font-weight: 600; }
 
       .resultado-final .btn-ver {
         display: inline-block;
@@ -230,15 +283,12 @@
         border: 1px solid rgba(255,255,255,.3);
       }
 
-      .resultado-final .btn-ver:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-      }
+      .resultado-final .btn-ver:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
       /* Stats bar */
       .leitura-stats {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 12px;
         margin-bottom: 20px;
       }
@@ -257,18 +307,17 @@
       @media (max-width: 1024px) {
         .leitura-grid { grid-template-columns: 1fr; }
         .verificacao-panel { position: static; }
+        .leitura-stats { grid-template-columns: repeat(3, 1fr); }
+      }
+      @media (max-width: 600px) {
         .leitura-stats { grid-template-columns: repeat(2, 1fr); }
       }
     </style>
   </head>
   <body>
     <div class="app-layout">
-      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-          <img src="/assets/img/logo-af.svg" alt="AF" />
-          <span>Andre Fiscaliza</span>
-        </div>
+        <div class="sidebar-brand"><img src="/assets/img/logo-af.svg" alt="AF" /><span>Andre Fiscaliza</span></div>
         <nav class="sidebar-nav">
           <div class="sidebar-section">Menu</div>
           <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
@@ -278,15 +327,11 @@
         </nav>
         <div class="sidebar-footer">
           <div class="sidebar-avatar">AJ</div>
-          <div class="sidebar-user">
-            <strong>Andre de Jesus</strong>
-            <small>@andre</small>
-          </div>
+          <div class="sidebar-user"><strong>Andre de Jesus</strong><small>@andre</small></div>
           <button onclick="AFAuth.logout()" title="Sair">🚪</button>
         </div>
       </aside>
 
-      <!-- Main -->
       <div class="main-area">
         <header class="topbar">
           <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
@@ -297,6 +342,10 @@
         <main class="container">
           <!-- Stats -->
           <div class="leitura-stats fade-in">
+            <div class="leitura-stat">
+              <div class="val" id="stat-pages">—</div>
+              <div class="label">Páginas</div>
+            </div>
             <div class="leitura-stat">
               <div class="val" id="stat-chars">—</div>
               <div class="label">Caracteres lidos</div>
@@ -322,7 +371,12 @@
               <div class="viewer-header">
                 <span class="file-icon">📄</span>
                 <span id="doc-nome">Carregando documento...</span>
+                <div class="page-indicator" id="page-indicator" style="display:none;">
+                  <span id="page-label">Página</span>
+                  <span class="page-badge" id="page-badge">0/0</span>
+                </div>
               </div>
+              <div class="page-progress-bar"><div class="fill" id="page-progress-fill" style="width:0%"></div></div>
               <div class="viewer-body" id="viewer-body">
                 <span class="cursor-blink"></span>
               </div>
@@ -337,7 +391,13 @@
 
                 <div class="check-progress" id="check-progress">
                   <div class="spinner"></div>
-                  <span class="progress-text" id="progress-text">Lendo documento...</span>
+                  <span class="progress-text" id="progress-text">Identificando páginas...</span>
+                </div>
+
+                <!-- Page summary pills -->
+                <div class="page-summary" id="page-summary">
+                  <strong>📄 Páginas do documento:</strong>
+                  <div class="page-pills" id="page-pills"></div>
                 </div>
 
                 <ul class="check-list" id="check-list"></ul>
@@ -377,7 +437,7 @@
 
       let docData = null;
 
-      function escapeHtml(str) {
+      function esc(str) {
         const div = document.createElement('div');
         div.textContent = str || '';
         return div.innerHTML;
@@ -410,70 +470,165 @@
         }
       }
 
-      function sleep(ms) {
-        return new Promise(r => setTimeout(r, ms));
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      // Build page pills
+      function initPagePills(totalPaginas) {
+        const container = document.getElementById('page-pills');
+        const summary = document.getElementById('page-summary');
+        container.innerHTML = '';
+        if (totalPaginas <= 0) return;
+        summary.classList.add('show');
+        for (let i = 1; i <= totalPaginas; i++) {
+          const pill = document.createElement('span');
+          pill.className = 'page-pill';
+          pill.id = 'page-pill-' + i;
+          pill.textContent = i;
+          container.appendChild(pill);
+        }
       }
 
-      async function typeText(container, text, speed) {
-        // Remove cursor
-        const cursor = container.querySelector('.cursor-blink');
+      function setPagePillState(pageNum, state) {
+        const pill = document.getElementById('page-pill-' + pageNum);
+        if (!pill) return;
+        pill.className = 'page-pill ' + state;
+      }
 
-        // Limita texto para performance
-        const maxChars = 8000;
-        const displayText = text.length > maxChars ? text.substring(0, maxChars) + '\n\n... [restante do texto: ' + (text.length - maxChars) + ' caracteres adicionais]' : text;
+      // Type text with animation
+      async function typeText(container, text, speed, cursor) {
+        const maxChars = 10000;
+        const displayText = text.length > maxChars
+          ? text.substring(0, maxChars) + '\n... [+' + (text.length - maxChars) + ' caracteres]'
+          : text;
 
         const chars = displayText.split('');
         let buffer = '';
-        let charCount = 0;
         const totalChars = chars.length;
-        const chunkSize = Math.max(1, Math.floor(totalChars / 200)); // ~200 steps
+        const chunkSize = Math.max(1, Math.floor(totalChars / 150));
 
         for (let i = 0; i < totalChars; i += chunkSize) {
           const chunk = chars.slice(i, Math.min(i + chunkSize, totalChars)).join('');
           buffer += chunk;
-          charCount += chunk.length;
 
-          // Update display
-          const textNode = document.createTextNode('');
-          container.textContent = buffer;
-          container.appendChild(cursor);
+          // Update just this text node, keep the rest of the container
+          if (cursor._textNode) {
+            cursor._textNode.textContent = buffer;
+          } else {
+            const tn = document.createTextNode(buffer);
+            cursor.parentNode.insertBefore(tn, cursor);
+            cursor._textNode = tn;
+          }
 
-          // Update stat
-          document.getElementById('stat-chars').textContent = charCount.toLocaleString('pt-BR');
-
-          // Count lines
-          const lineCount = (buffer.match(/\n/g) || []).length + 1;
-          document.getElementById('stat-lines').textContent = lineCount.toLocaleString('pt-BR');
-
-          // Auto-scroll
           container.scrollTop = container.scrollHeight;
-
           await sleep(speed);
         }
 
-        // Remove cursor when done
-        if (cursor && cursor.parentNode) cursor.remove();
+        // finalize
+        cursor._textNode = null;
+      }
+
+      // Count extracted data from text
+      function countData(texto) {
+        const valores = (texto.match(/R\$\s*[\d.,]+/g) || []);
+        const cnpjs = (texto.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-?\d{2}/g) || []);
+        const lines = (texto.match(/\n/g) || []).length + 1;
+        return { valores: valores.length, cnpjs: cnpjs.length, lines, chars: texto.length };
+      }
+
+      async function runPageByPage(paginas, totalPaginas, container, cursor) {
+        const indicator = document.getElementById('page-indicator');
+        indicator.style.display = 'flex';
+
+        let totalChars = 0, totalLines = 0, totalValores = 0, totalCnpjs = 0;
+
+        for (let i = 0; i < paginas.length; i++) {
+          const pg = paginas[i];
+          const num = pg.pagina;
+
+          // Update page indicator
+          document.getElementById('page-badge').textContent = num + '/' + totalPaginas;
+          document.getElementById('page-progress-fill').style.width = (num / totalPaginas * 100) + '%';
+          document.getElementById('progress-text').textContent = 'Lendo página ' + num + ' de ' + totalPaginas + '...';
+
+          // Update page pill
+          setPagePillState(num, 'reading');
+
+          // Add page separator (except for first page)
+          if (i > 0) {
+            const sep = document.createElement('div');
+            sep.className = 'page-separator';
+            sep.textContent = '📄 Página ' + num;
+            container.insertBefore(sep, cursor);
+          } else {
+            // First page label
+            const sep = document.createElement('div');
+            sep.className = 'page-separator';
+            sep.textContent = '📄 Página 1';
+            container.insertBefore(sep, cursor);
+          }
+
+          if (pg.texto.trim().length === 0) {
+            // Empty page
+            const notice = document.createElement('span');
+            notice.className = 'page-empty-notice';
+            notice.textContent = '⚠️ Página ' + num + ': nenhum texto extraível (pode ser imagem/escaneado)';
+            container.insertBefore(notice, cursor);
+            setPagePillState(num, 'done-empty');
+            container.scrollTop = container.scrollHeight;
+            await sleep(300);
+          } else {
+            // Type this page's text
+            await typeText(container, pg.texto, 12, cursor);
+
+            // Count data from this page
+            const data = countData(pg.texto);
+            totalChars += data.chars;
+            totalLines += data.lines;
+            totalValores += data.valores;
+            totalCnpjs += data.cnpjs;
+
+            setPagePillState(num, 'done-ok');
+
+            // Update stats
+            document.getElementById('stat-chars').textContent = totalChars.toLocaleString('pt-BR');
+            document.getElementById('stat-lines').textContent = totalLines.toLocaleString('pt-BR');
+            document.getElementById('stat-values').textContent = totalValores.toString();
+            document.getElementById('stat-cnpjs').textContent = totalCnpjs.toString();
+          }
+
+          // Update page stat
+          document.getElementById('stat-pages').textContent = num + '/' + totalPaginas;
+
+          await sleep(200);
+        }
+
+        // Mark pages not in paginas array (gaps) as empty
+        for (let p = 1; p <= totalPaginas; p++) {
+          if (!paginas.find(pg => pg.pagina === p)) {
+            setPagePillState(p, 'done-empty');
+          }
+        }
+
+        // Progress to 100%
+        document.getElementById('page-progress-fill').style.width = '100%';
+
+        // Remove cursor
+        if (cursor.parentNode) cursor.remove();
       }
 
       async function runConferencia(alertas, resumo) {
         const texto = resumo?.textoExtraido || '';
-
-        // Conta valores R$ no texto
         const valoresR = texto.match(/R\$\s*[\d.,]+/g) || [];
-        // Conta CNPJs
-        const cnpjs = texto.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/g) || [];
+        const cnpjs = texto.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-?\d{2}/g) || [];
 
         for (let i = 0; i < REGRAS_CONFERENCIA.length; i++) {
           const regra = REGRAS_CONFERENCIA[i];
           setCheckState(regra.id, 'active');
           document.getElementById('progress-text').textContent = regra.nome + '...';
 
-          // Delay para simular verificação
-          await sleep(400 + Math.random() * 300);
+          await sleep(350 + Math.random() * 250);
 
-          // Check if any alert matches this rule category
           let found = false;
-          let foundDetail = '';
 
           switch (regra.id) {
             case 'leitura':
@@ -481,11 +636,9 @@
               break;
             case 'valores':
               document.getElementById('stat-values').textContent = valoresR.length.toString();
-              if (resumo?.valorTotal > 0) {
-                setCheckState(regra.id, 'done', 'R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' total');
-              } else {
-                setCheckState(regra.id, 'done', valoresR.length + ' valores encontrados');
-              }
+              setCheckState(regra.id, 'done', resumo?.valorTotal > 0
+                ? 'R$ ' + (resumo.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' total'
+                : valoresR.length + ' valores encontrados');
               break;
             case 'cnpj':
               document.getElementById('stat-cnpjs').textContent = cnpjs.length.toString();
@@ -493,120 +646,68 @@
               break;
             case 'classificacao':
               found = alertas.some(a => a.tipo && (a.tipo.includes('CLASSIFICACAO') || a.tipo.includes('NATUREZA')));
-              if (found) {
-                const a = alertas.find(a => a.tipo && (a.tipo.includes('CLASSIFICACAO') || a.tipo.includes('NATUREZA')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Classificação conforme');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && (a.tipo.includes('CLASSIFICACAO') || a.tipo.includes('NATUREZA'))).descricao : 'Classificação conforme');
               break;
             case 'nd':
               found = alertas.some(a => a.tipo && a.tipo.includes('SUBELEMENTO'));
-              if (found) {
-                const a = alertas.find(a => a.tipo && a.tipo.includes('SUBELEMENTO'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'ND dentro do esperado');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && a.tipo.includes('SUBELEMENTO')).descricao : 'ND dentro do esperado');
               break;
             case 'subelemento':
               found = alertas.some(a => a.descricao && a.descricao.toLowerCase().includes('subelemento'));
-              if (found) {
-                const a = alertas.find(a => a.descricao && a.descricao.toLowerCase().includes('subelemento'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Subelementos válidos');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.descricao && a.descricao.toLowerCase().includes('subelemento')).descricao : 'Subelementos válidos');
               break;
             case 'portaria448':
               found = alertas.some(a => a.detalhes && a.detalhes.includes('448'));
-              if (found) {
-                const a = alertas.find(a => a.detalhes && a.detalhes.includes('448'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Conforme Portaria 448');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.detalhes && a.detalhes.includes('448')).descricao : 'Conforme Portaria 448');
               break;
             case 'rescisao':
               found = alertas.some(a => a.tipo && a.tipo.includes('RESCISAO'));
-              if (found) {
-                const a = alertas.find(a => a.tipo && a.tipo.includes('RESCISAO'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Verbas rescisórias OK');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && a.tipo.includes('RESCISAO')).descricao : 'Verbas rescisórias OK');
               break;
             case 'licitacao':
               found = alertas.some(a => a.tipo && (a.tipo.includes('LICITACAO') || a.tipo.includes('CONTRATO')));
-              if (found) {
-                const a = alertas.find(a => a.tipo && (a.tipo.includes('LICITACAO') || a.tipo.includes('CONTRATO')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Licitação regular');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && (a.tipo.includes('LICITACAO') || a.tipo.includes('CONTRATO'))).descricao : 'Licitação regular');
               break;
             case 'dispensa':
               found = alertas.some(a => a.tipo && a.tipo.includes('DISPENSA'));
-              if (found) {
-                const a = alertas.find(a => a.tipo && a.tipo.includes('DISPENSA'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Limites de dispensa OK');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && a.tipo.includes('DISPENSA')).descricao : 'Limites de dispensa OK');
               break;
             case 'duplicidade':
               found = alertas.some(a => a.tipo && a.tipo.includes('DUPLICA'));
-              if (found) {
-                const a = alertas.find(a => a.tipo && a.tipo.includes('DUPLICA'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Sem duplicidades');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && a.tipo.includes('DUPLICA')).descricao : 'Sem duplicidades');
               break;
             case 'superfaturamento':
               found = alertas.some(a => a.tipo && (a.tipo.includes('PRECO') || a.tipo.includes('VALOR')));
-              if (found) {
-                const a = alertas.find(a => a.tipo && (a.tipo.includes('PRECO') || a.tipo.includes('VALOR')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Preços dentro da faixa');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && (a.tipo.includes('PRECO') || a.tipo.includes('VALOR'))).descricao : 'Preços dentro da faixa');
               break;
             case 'fracionamento':
               found = alertas.some(a => a.tipo && a.tipo.includes('FRACION'));
-              if (found) {
-                const a = alertas.find(a => a.tipo && a.tipo.includes('FRACION'));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Sem fracionamento');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && a.tipo.includes('FRACION')).descricao : 'Sem fracionamento');
               break;
             case 'fornecedor':
               found = alertas.some(a => a.tipo && (a.tipo.includes('CNPJ') || a.tipo.includes('FORNEC') || a.tipo.includes('EMPRESA')));
-              if (found) {
-                const a = alertas.find(a => a.tipo && (a.tipo.includes('CNPJ') || a.tipo.includes('FORNEC') || a.tipo.includes('EMPRESA')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Fornecedor regular');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && (a.tipo.includes('CNPJ') || a.tipo.includes('FORNEC') || a.tipo.includes('EMPRESA'))).descricao : 'Fornecedor regular');
               break;
             case 'temporal':
               found = alertas.some(a => a.tipo && (a.tipo.includes('CRONOLOG') || a.tipo.includes('TEMPORAL') || a.tipo.includes('FIM_ANO')));
-              if (found) {
-                const a = alertas.find(a => a.tipo && (a.tipo.includes('CRONOLOG') || a.tipo.includes('TEMPORAL') || a.tipo.includes('FIM_ANO')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Cronologia OK');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.tipo && (a.tipo.includes('CRONOLOG') || a.tipo.includes('TEMPORAL') || a.tipo.includes('FIM_ANO'))).descricao : 'Cronologia OK');
               break;
             case 'resolucoes':
               found = alertas.some(a => a.detalhes && (a.detalhes.includes('Res.') || a.detalhes.includes('TCE')));
-              if (found) {
-                const a = alertas.find(a => a.detalhes && (a.detalhes.includes('Res.') || a.detalhes.includes('TCE')));
-                setCheckState(regra.id, 'found', a.descricao);
-              } else {
-                setCheckState(regra.id, 'done', 'Conforme resoluções TCE');
-              }
+              setCheckState(regra.id, found ? 'found' : 'done',
+                found ? alertas.find(a => a.detalhes && (a.detalhes.includes('Res.') || a.detalhes.includes('TCE'))).descricao : 'Conforme resoluções TCE');
               break;
             case 'score':
               await sleep(300);
@@ -615,11 +716,9 @@
           }
         }
 
-        // Done
         document.getElementById('check-progress').className = 'check-progress done';
         document.getElementById('progress-text').textContent = 'Conferência concluída!';
 
-        // Show result
         await sleep(500);
         const resEl = document.getElementById('resultado-final');
         const corBg = docData.score >= 70 ? 'linear-gradient(135deg, #dc2626, #b91c1c)' :
@@ -640,7 +739,6 @@
           return;
         }
 
-        // Fetch document data
         const res = await fetch('/api/documentos/' + encodeURIComponent(id));
         if (!res.ok) {
           document.getElementById('viewer-body').textContent = 'Erro ao carregar documento.';
@@ -650,30 +748,73 @@
         const doc = await res.json();
         docData = doc;
 
-        // Set header
         document.getElementById('doc-nome').textContent = doc.nome_arquivo || 'Documento';
 
-        const texto = doc.resumo?.textoExtraido || '';
+        const resumo = doc.resumo || {};
+        const texto = resumo.textoExtraido || '';
         const alertas = doc.alertas || [];
+        const paginas = resumo.paginas || [];
+        const totalPaginas = resumo.totalPaginas || 0;
 
         initCheckList();
 
-        if (texto.length === 0) {
-          // No extracted text - still run checks
-          document.getElementById('viewer-body').innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><p>Texto não disponível para este tipo de documento</p><p style="font-size:.8em;color:var(--gray-400);">A análise foi feita sobre os dados estruturados (CSV/XLSX)</p></div>';
+        if (paginas.length > 0 && totalPaginas > 0) {
+          // ── Page-by-page reading ──
+          document.getElementById('stat-pages').textContent = '0/' + totalPaginas;
+          document.getElementById('progress-text').textContent = 'Documento com ' + totalPaginas + ' página' + (totalPaginas > 1 ? 's' : '') + ' identificada' + (totalPaginas > 1 ? 's' : '');
+
+          initPagePills(totalPaginas);
+          await sleep(800);
+
+          const viewer = document.getElementById('viewer-body');
+          const cursor = viewer.querySelector('.cursor-blink');
+
+          await runPageByPage(paginas, totalPaginas, viewer, cursor);
+          await sleep(400);
+          await runConferencia(alertas, resumo);
+
+        } else if (texto.length > 0) {
+          // ── Legacy: single-pass text ──
+          document.getElementById('stat-pages').textContent = '1';
+          const viewer = document.getElementById('viewer-body');
+          const cursor = viewer.querySelector('.cursor-blink');
+
+          document.getElementById('progress-text').textContent = 'Lendo documento...';
+
+          const chars = texto.split('');
+          let buffer = '';
+          const chunkSize = Math.max(1, Math.floor(chars.length / 200));
+          for (let i = 0; i < chars.length; i += chunkSize) {
+            const chunk = chars.slice(i, Math.min(i + chunkSize, chars.length)).join('');
+            buffer += chunk;
+            viewer.textContent = buffer;
+            viewer.appendChild(cursor);
+            document.getElementById('stat-chars').textContent = buffer.length.toLocaleString('pt-BR');
+            document.getElementById('stat-lines').textContent = ((buffer.match(/\n/g) || []).length + 1).toLocaleString('pt-BR');
+            viewer.scrollTop = viewer.scrollHeight;
+            await sleep(15);
+          }
+          if (cursor.parentNode) cursor.remove();
+
+          const data = countData(texto);
+          document.getElementById('stat-values').textContent = data.valores.toString();
+          document.getElementById('stat-cnpjs').textContent = data.cnpjs.toString();
+
+          await sleep(400);
+          await runConferencia(alertas, resumo);
+
+        } else {
+          // No text
+          document.getElementById('viewer-body').innerHTML =
+            '<div class="empty-state"><div class="empty-icon">📄</div>' +
+            '<p>Texto não disponível para este tipo de documento</p>' +
+            '<p style="font-size:.8em;color:var(--gray-400);">A análise foi feita sobre os dados estruturados (CSV/XLSX)</p></div>';
+          document.getElementById('stat-pages').textContent = '0';
           document.getElementById('stat-chars').textContent = '0';
           document.getElementById('stat-lines').textContent = '0';
           document.getElementById('stat-values').textContent = '—';
           document.getElementById('stat-cnpjs').textContent = '—';
-          await runConferencia(alertas, doc.resumo);
-        } else {
-          // Type out the text
-          const viewer = document.getElementById('viewer-body');
-          await typeText(viewer, texto, 15);
-          await sleep(400);
-
-          // Run verification checks
-          await runConferencia(alertas, doc.resumo);
+          await runConferencia(alertas, resumo);
         }
       })();
     </script>

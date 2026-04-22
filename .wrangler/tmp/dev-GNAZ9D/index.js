@@ -48,7 +48,8 @@ var init_modules_watch_stub = __esm({
 var pdf_extractor_exports = {};
 __export(pdf_extractor_exports, {
   extrairImagensPdf: () => extrairImagensPdf,
-  extrairTextoPdf: () => extrairTextoPdf
+  extrairTextoPdf: () => extrairTextoPdf,
+  extrairTextoPdfPorPagina: () => extrairTextoPdfPorPagina
 });
 async function inflate(data) {
   for (const fmt of ["deflate", "deflate-raw"]) {
@@ -147,6 +148,23 @@ function parseCMap(cmapText) {
           table.set(code, dstStr);
         }
         dstStart++;
+      }
+    }
+  }
+  if (table.size >= 3) {
+    const sorted = [...table.entries()].filter(([, v]) => v.length === 1).sort((a, b) => a[0] - b[0]);
+    for (let i = 1; i < sorted.length; i++) {
+      const [prevCode, prevChar] = sorted[i - 1];
+      const [curCode, curChar] = sorted[i];
+      const codeDiff = curCode - prevCode;
+      const charDiff = curChar.codePointAt(0) - prevChar.codePointAt(0);
+      if (codeDiff > 1 && codeDiff <= 4 && codeDiff === charDiff) {
+        for (let gap = 1; gap < codeDiff; gap++) {
+          const gapCode = prevCode + gap;
+          if (!table.has(gapCode)) {
+            table.set(gapCode, String.fromCodePoint(prevChar.codePointAt(0) + gap));
+          }
+        }
       }
     }
   }
@@ -289,11 +307,10 @@ function extractTextFromContent(content, fontCMaps, defaultCMap) {
   const contentLines = content.split(/\r?\n/);
   for (const line of contentLines) {
     const trimmed = line.trim();
-    if (trimmed === "BT") {
+    if (/\bBT\b/.test(trimmed)) {
       inBT = true;
-      continue;
     }
-    if (trimmed === "ET") {
+    if (/\bET\b/.test(trimmed)) {
       inBT = false;
       if (currentLine.trim())
         lines.push(currentLine.trim());
@@ -307,13 +324,16 @@ function extractTextFromContent(content, fontCMaps, defaultCMap) {
       currentFont = tfMatch[1];
     }
     if (/^.*\bTd\b/.test(trimmed) || /^.*\bTD\b/.test(trimmed) || /^.*\bT\*\b/.test(trimmed)) {
-      const tdMatch = trimmed.match(/(-?[\d.]+)\s+(-?[\d.]+)\s+Td/);
+      const tdMatch = trimmed.match(/(-?[\d.]+)\s+(-?[\d.]+)\s+T[dD]/);
       if (tdMatch) {
+        const tx = Math.abs(parseFloat(tdMatch[1]));
         const ty = parseFloat(tdMatch[2]);
         if (Math.abs(ty) > 1) {
           if (currentLine.trim())
             lines.push(currentLine.trim());
           currentLine = "";
+        } else if (tx > 2 && currentLine.length > 0) {
+          currentLine += " ";
         }
       }
     }
@@ -409,9 +429,7 @@ async function extractAllStreams(bytes) {
   }
   return streams;
 }
-async function extrairTextoPdf(buffer) {
-  const bytes = new Uint8Array(buffer);
-  const allTexts = [];
+async function buildPdfInfra(bytes) {
   const pdfRawText = new TextDecoder("latin1").decode(bytes);
   const streams = await extractAllStreams(bytes);
   const streamByObjNum = /* @__PURE__ */ new Map();
@@ -428,60 +446,86 @@ async function extrairTextoPdf(buffer) {
   for (const m of fontObjMatches) {
     fontObjToUnicode.set(parseInt(m[1]), parseInt(m[3]));
   }
-  const fontNameToObj = /* @__PURE__ */ new Map();
-  const fontRefMatches = pdfRawText.matchAll(/\/(F\d+)\s+(\d+)\s+0\s+R/g);
-  for (const m of fontRefMatches) {
-    fontNameToObj.set(m[1], parseInt(m[2]));
-  }
   const toUnicodeObjToTable = /* @__PURE__ */ new Map();
   for (const [, toUnicodeObjId] of fontObjToUnicode) {
+    if (toUnicodeObjToTable.has(toUnicodeObjId))
+      continue;
     const stream = streamByObjNum.get(toUnicodeObjId);
     if (stream && isCMapStream(stream.data)) {
       const table = parseCMap(stream.data);
-      if (table.size > 0) {
+      if (table.size > 0)
         toUnicodeObjToTable.set(toUnicodeObjId, table);
-      }
     }
   }
-  for (const [fontName, fontObjId] of fontNameToObj) {
-    const toUnicodeObjId = fontObjToUnicode.get(fontObjId);
-    if (toUnicodeObjId !== void 0) {
-      const table = toUnicodeObjToTable.get(toUnicodeObjId);
-      if (table) {
-        fontCMaps.set(fontName, table);
-        continue;
-      }
-    }
-    const fontObjPattern = new RegExp(`\\b${fontObjId}\\s+0\\s+obj\\b[\\s\\S]*?endobj`);
-    const fontObjMatch = pdfRawText.match(fontObjPattern);
-    if (fontObjMatch) {
-      const toUMatch = fontObjMatch[0].match(/\/ToUnicode\s+(\d+)\s+0\s+R/);
-      if (toUMatch) {
-        const tuId = parseInt(toUMatch[1]);
-        let table = toUnicodeObjToTable.get(tuId);
+  const fontNameAllRefs = /* @__PURE__ */ new Map();
+  const fontRefMatches = pdfRawText.matchAll(/\/(F\d+)\s+(\d+)\s+0\s+R/g);
+  for (const m of fontRefMatches) {
+    const name = m[1];
+    const objId = parseInt(m[2]);
+    if (!fontNameAllRefs.has(name))
+      fontNameAllRefs.set(name, /* @__PURE__ */ new Set());
+    fontNameAllRefs.get(name).add(objId);
+  }
+  for (const [fontName, objIds] of fontNameAllRefs) {
+    let bestTable;
+    for (const objId of objIds) {
+      const tuObjId = fontObjToUnicode.get(objId);
+      if (tuObjId !== void 0) {
+        let table = toUnicodeObjToTable.get(tuObjId);
         if (!table) {
-          const stream = streamByObjNum.get(tuId);
+          const stream = streamByObjNum.get(tuObjId);
           if (stream && isCMapStream(stream.data)) {
             table = parseCMap(stream.data);
-            if (table && table.size > 0) {
-              toUnicodeObjToTable.set(tuId, table);
+            if (table && table.size > 0)
+              toUnicodeObjToTable.set(tuObjId, table);
+          }
+        }
+        if (table && (!bestTable || table.size > bestTable.size)) {
+          bestTable = table;
+        }
+      }
+    }
+    if (!bestTable) {
+      for (const objId of objIds) {
+        const objPattern = new RegExp(`\\b${objId}\\s+0\\s+obj\\b[\\s\\S]*?endobj`);
+        const objMatch = pdfRawText.match(objPattern);
+        if (objMatch) {
+          const tuMatch = objMatch[0].match(/\/ToUnicode\s+(\d+)\s+0\s+R/);
+          if (tuMatch) {
+            const tuId = parseInt(tuMatch[1]);
+            let table = toUnicodeObjToTable.get(tuId);
+            if (!table) {
+              const stream = streamByObjNum.get(tuId);
+              if (stream && isCMapStream(stream.data)) {
+                table = parseCMap(stream.data);
+                if (table && table.size > 0)
+                  toUnicodeObjToTable.set(tuId, table);
+              }
+            }
+            if (table && (!bestTable || table.size > bestTable.size)) {
+              bestTable = table;
             }
           }
         }
-        if (table) {
-          fontCMaps.set(fontName, table);
-        }
       }
     }
+    if (bestTable)
+      fontCMaps.set(fontName, bestTable);
   }
   let defaultCMap;
-  if (fontCMaps.size === 0) {
-    let bestSize = 0;
+  let bestCMapSize = 0;
+  for (const [, table] of toUnicodeObjToTable) {
+    if (table.size > bestCMapSize) {
+      bestCMapSize = table.size;
+      defaultCMap = table;
+    }
+  }
+  if (!defaultCMap) {
     for (const s of streams) {
       if (isCMapStream(s.data)) {
         const table = parseCMap(s.data);
-        if (table.size > bestSize) {
-          bestSize = table.size;
+        if (table.size > bestCMapSize) {
+          bestCMapSize = table.size;
           defaultCMap = table;
         }
       }
@@ -493,20 +537,124 @@ async function extrairTextoPdf(buffer) {
     if (diffTable.size > 0 && !defaultCMap)
       defaultCMap = diffTable;
   }
-  for (const s of streams) {
-    if (s.data.includes("BT") && (s.data.includes("Tj") || s.data.includes("TJ"))) {
-      const text = extractTextFromContent(s.data, fontCMaps, defaultCMap);
-      if (text.trim()) {
-        const cleanText = text.split("\n").filter((line) => {
-          const printable = line.replace(/[\x00-\x1F\x7F-\x9F]/g, "").trim();
-          return printable.length > 0 && printable.length >= line.trim().length * 0.3;
-        }).join("\n");
-        if (cleanText.trim())
-          allTexts.push(cleanText);
-      }
+  return { streams, streamByObjNum, fontCMaps, defaultCMap, pdfRawText };
+}
+function cleanExtractedText(text) {
+  return text.split("\n").filter((line) => {
+    const printable = line.replace(/[\x00-\x1F\x7F-\x9F]/g, "").trim();
+    return printable.length > 0 && printable.length >= line.trim().length * 0.3;
+  }).join("\n");
+}
+function extractTextFromStream(s, infra) {
+  if (!s.data.includes("BT") || !s.data.includes("Tj") && !s.data.includes("TJ"))
+    return "";
+  const text = extractTextFromContent(s.data, infra.fontCMaps, infra.defaultCMap);
+  if (!text.trim())
+    return "";
+  return cleanExtractedText(text);
+}
+function resolvePageTree(pdfRawText) {
+  const pagesKids = /* @__PURE__ */ new Map();
+  const pagesRegex = /(\d+)\s+0\s+obj\b((?:(?!endobj)[\s\S])*?\/Type\s*\/Pages\b(?:(?!endobj)[\s\S])*?)endobj/g;
+  for (const m of pdfRawText.matchAll(pagesRegex)) {
+    const objNum = parseInt(m[1]);
+    const body = m[2];
+    const kidsMatch = body.match(/\/Kids\s*\[([^\]]+)\]/);
+    if (kidsMatch) {
+      const kids = [];
+      for (const ref of kidsMatch[1].matchAll(/(\d+)\s+0\s+R/g))
+        kids.push(parseInt(ref[1]));
+      pagesKids.set(objNum, kids);
     }
   }
-  return allTexts.join("\n\n");
+  if (pagesKids.size === 0)
+    return [];
+  const catalogMatch = pdfRawText.match(/\/Pages\s+(\d+)\s+0\s+R/);
+  let rootId = catalogMatch ? parseInt(catalogMatch[1]) : 0;
+  const resolved = [];
+  const resolve = /* @__PURE__ */ __name((kids, depth) => {
+    if (depth > 6)
+      return;
+    for (const kid of kids) {
+      const subKids = pagesKids.get(kid);
+      if (subKids)
+        resolve(subKids, depth + 1);
+      else
+        resolved.push(kid);
+    }
+  }, "resolve");
+  const rootKids = pagesKids.get(rootId);
+  if (rootKids) {
+    resolve(rootKids, 0);
+  } else {
+    for (const [, kids] of pagesKids)
+      resolve(kids, 0);
+  }
+  return resolved;
+}
+function getPageContentsRefs(pdfRawText, pageObjNum) {
+  const objRegex = new RegExp(`\\b${pageObjNum}\\s+0\\s+obj\\b([\\s\\S]*?)endobj`);
+  const m = pdfRawText.match(objRegex);
+  if (!m)
+    return [];
+  const body = m[1];
+  const refs = [];
+  const arrayMatch = body.match(/\/Contents\s*\[([^\]]+)\]/);
+  if (arrayMatch) {
+    for (const ref of arrayMatch[1].matchAll(/(\d+)\s+0\s+R/g))
+      refs.push(parseInt(ref[1]));
+    return refs;
+  }
+  const singleMatch = body.match(/\/Contents\s+(\d+)\s+0\s+R/);
+  if (singleMatch)
+    refs.push(parseInt(singleMatch[1]));
+  return refs;
+}
+async function extrairTextoPdfPorPagina(buffer) {
+  const bytes = new Uint8Array(buffer);
+  const infra = await buildPdfInfra(bytes);
+  const countMatch = infra.pdfRawText.match(/\/Type\s*\/Pages\b[^]*?\/Count\s+(\d+)/);
+  const declaredPages = countMatch ? parseInt(countMatch[1]) : 0;
+  const pageObjIds = resolvePageTree(infra.pdfRawText);
+  const paginas = [];
+  if (pageObjIds.length > 0) {
+    for (let i = 0; i < pageObjIds.length; i++) {
+      const contentsRefs = getPageContentsRefs(infra.pdfRawText, pageObjIds[i]);
+      let pageText = "";
+      for (const ref of contentsRefs) {
+        const stream = infra.streamByObjNum.get(ref);
+        if (stream) {
+          const text = extractTextFromStream(stream, infra);
+          if (text.trim())
+            pageText += (pageText ? "\n" : "") + text;
+        }
+      }
+      paginas.push({ pagina: i + 1, texto: pageText.trim() });
+    }
+  }
+  const totalTextoPaginas = paginas.reduce((s, p) => s + p.texto.length, 0);
+  if (totalTextoPaginas === 0) {
+    let pageNum = 0;
+    for (const s of infra.streams) {
+      const text = extractTextFromStream(s, infra);
+      if (text.trim()) {
+        pageNum++;
+        paginas.push({ pagina: pageNum, texto: text.trim() });
+      }
+    }
+    if (pageNum > 0 && paginas[0]?.texto === "") {
+      paginas.splice(0, paginas.length - pageNum);
+    }
+  }
+  while (paginas.length > 1 && paginas[paginas.length - 1].texto === "")
+    paginas.pop();
+  const textoCompleto = paginas.map((p) => p.texto).filter((t) => t.length > 0).join("\n\n");
+  const totalPaginas = Math.max(declaredPages, paginas.length);
+  return { totalPaginas, paginas, textoCompleto };
+}
+async function extrairTextoPdf(buffer) {
+  const result = await extrairTextoPdfPorPagina(buffer);
+  return result.textoCompleto;
 }
 function extrairImagensPdf(buffer) {
   const bytes = new Uint8Array(buffer);
@@ -763,6 +911,12 @@ var init_pdf_extractor = __esm({
     __name(applyLiteralCmap, "applyLiteralCmap");
     __name(extractTextFromContent, "extractTextFromContent");
     __name(extractAllStreams, "extractAllStreams");
+    __name(buildPdfInfra, "buildPdfInfra");
+    __name(cleanExtractedText, "cleanExtractedText");
+    __name(extractTextFromStream, "extractTextFromStream");
+    __name(resolvePageTree, "resolvePageTree");
+    __name(getPageContentsRefs, "getPageContentsRefs");
+    __name(extrairTextoPdfPorPagina, "extrairTextoPdfPorPagina");
     __name(extrairTextoPdf, "extrairTextoPdf");
     __name(extrairImagensPdf, "extrairImagensPdf");
   }
@@ -1258,7 +1412,8 @@ function regraValorInvalido(rows) {
         tipo: "VALOR_ZERADO_OU_NEGATIVO",
         descricao: "Empenho com valor zerado ou negativo",
         pontuacao: 5,
-        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Valor: ${valor}`
+        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Valor: ${valor}`,
+        fundamentacao: "Art. 62, Lei 4.320/64"
       });
     }
   }
@@ -1275,7 +1430,8 @@ function regraDispensaSemLicitacao(rows) {
         tipo: "CONTRATO_SEM_LICITACAO_INDEVIDO",
         descricao: `Dispensa/inexigibilidade acima do limite (R$ ${LIMITE_DISPENSA_SERVICOS.toLocaleString("pt-BR")})`,
         pontuacao: 15,
-        detalhes: `Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Modalidade: ${modalidade} | Fornecedor: ${campo(row, "fornecedor", "credor", "razao", "nome")}`
+        detalhes: `Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Modalidade: ${modalidade} | Fornecedor: ${campo(row, "fornecedor", "credor", "razao", "nome")}`,
+        fundamentacao: "Art. 75, Lei 14.133/2021; Decreto 12.343/2024"
       });
     }
   }
@@ -1300,7 +1456,8 @@ function regraPagamentoDuplicado(rows) {
         tipo: "PAGAMENTO_DUPLICADO",
         descricao: "Poss\xEDvel pagamento duplicado detectado",
         pontuacao: 20,
-        detalhes: `Fornecedor: ${fornecedor} | Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Data: ${data}`
+        detalhes: `Fornecedor: ${fornecedor} | Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Data: ${data}`,
+        fundamentacao: "Art. 63, Lei 4.320/64"
       });
     }
   }
@@ -2063,65 +2220,65 @@ function regrasTextoLivre(texto, dados) {
   const textoLower = texto.toLowerCase();
   const termosRisco = [
     // Modalidades e contratação
-    { termo: "dispensa de licita\xE7\xE3o", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licita\xE7\xE3o", pts: 5 },
-    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licita\xE7\xE3o", pts: 5 },
-    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contrata\xE7\xE3o emergencial", pts: 10 },
-    { termo: "sem licita\xE7\xE3o", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contrata\xE7\xE3o sem licita\xE7\xE3o", pts: 10 },
-    { termo: "sigilo", tipo: "MENCAO_SIGILO", desc: "Documento menciona sigilo", pts: 10 },
+    { termo: "dispensa de licita\xE7\xE3o", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licita\xE7\xE3o", pts: 5, fundamentacao: "Lei 14.133/2021, art. 75" },
+    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licita\xE7\xE3o", pts: 5, fundamentacao: "Lei 14.133/2021, art. 74" },
+    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contrata\xE7\xE3o emergencial", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75, VIII" },
+    { termo: "sem licita\xE7\xE3o", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contrata\xE7\xE3o sem licita\xE7\xE3o", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75" },
+    { termo: "sigilo", tipo: "MENCAO_SIGILO", desc: "Documento menciona sigilo", pts: 10, fundamentacao: "Lei 14.133/2021, art. 24" },
     // Documentos obrigatórios (Manual §DFD/ETP/TR)
-    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica aus\xEAncia de Documento de Formaliza\xE7\xE3o da Demanda (DFD)", pts: 15 },
-    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica aus\xEAncia de Estudo T\xE9cnico Preliminar (ETP)", pts: 15 },
-    { termo: "sem termo de refer\xEAncia", tipo: "AUSENCIA_TR", desc: "Indica aus\xEAncia de Termo de Refer\xEAncia", pts: 15 },
-    { termo: "sem projeto b\xE1sico", tipo: "AUSENCIA_PB", desc: "Indica aus\xEAncia de Projeto B\xE1sico", pts: 15 },
+    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica aus\xEAncia de Documento de Formaliza\xE7\xE3o da Demanda (DFD)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica aus\xEAncia de Estudo T\xE9cnico Preliminar (ETP)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem termo de refer\xEAncia", tipo: "AUSENCIA_TR", desc: "Indica aus\xEAncia de Termo de Refer\xEAncia", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem projeto b\xE1sico", tipo: "AUSENCIA_PB", desc: "Indica aus\xEAncia de Projeto B\xE1sico", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
     // Empenho e liquidação (Manual §2.6, §2.8)
-    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido ap\xF3s execu\xE7\xE3o da despesa (Art. 60 Lei 4.320/64)", pts: 20 },
-    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido ap\xF3s execu\xE7\xE3o da despesa", pts: 20 },
-    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho pr\xE9vio", pts: 25 },
-    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "Liquida\xE7\xE3o sem atesto do fiscal/respons\xE1vel (Manual \xA72.8)", pts: 15 },
-    { termo: "sem fiscal", tipo: "SEM_FISCAL_CONTRATO", desc: "Contrato sem fiscal designado (Art. 117 Lei 14.133/2021)", pts: 15 },
-    { termo: "sem gestor", tipo: "SEM_GESTOR_CONTRATO", desc: "Contrato sem gestor designado", pts: 10 },
+    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido ap\xF3s execu\xE7\xE3o da despesa (Art. 60 Lei 4.320/64)", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido ap\xF3s execu\xE7\xE3o da despesa", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho pr\xE9vio", pts: 25, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "Liquida\xE7\xE3o sem atesto do fiscal/respons\xE1vel (Manual \xA72.8)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
+    { termo: "sem fiscal", tipo: "SEM_FISCAL_CONTRATO", desc: "Contrato sem fiscal designado (Art. 117 Lei 14.133/2021)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
+    { termo: "sem gestor", tipo: "SEM_GESTOR_CONTRATO", desc: "Contrato sem gestor designado", pts: 10, fundamentacao: "Lei 14.133/2021, art. 117" },
     // Aditivos (Manual §2.5)
-    { termo: "aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona aditivo contratual", pts: 5 },
-    { termo: "termo aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona termo aditivo", pts: 5 },
-    { termo: "acr\xE9scimo de 25%", tipo: "ADITIVO_LIMITE", desc: "Refer\xEAncia ao limite de 25% de acr\xE9scimo em aditivos (Art. 125 Lei 14.133)", pts: 10 },
+    { termo: "aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona aditivo contratual", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
+    { termo: "termo aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona termo aditivo", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
+    { termo: "acr\xE9scimo de 25%", tipo: "ADITIVO_LIMITE", desc: "Refer\xEAncia ao limite de 25% de acr\xE9scimo em aditivos (Art. 125 Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 125" },
     // Certidões (Manual Check Lists)
-    { termo: "certid\xE3o vencida", tipo: "CERTIDAO_VENCIDA", desc: "Certid\xE3o com validade expirada", pts: 15 },
+    { termo: "certid\xE3o vencida", tipo: "CERTIDAO_VENCIDA", desc: "Certid\xE3o com validade expirada", pts: 15, fundamentacao: "Lei 14.133/2021, art. 69" },
     { termo: "certid\xE3o negativa", tipo: "INFO_CERTIDAO", desc: "Documento menciona certid\xE3o negativa", pts: 0 },
     { termo: "cnd", tipo: "INFO_CERTIDAO", desc: "Refer\xEAncia a CND (Certid\xE3o Negativa de D\xE9bitos)", pts: 0 },
     // Retenções tributárias (Manual §2.9/§2.12)
-    { termo: "sem reten\xE7\xE3o", tipo: "AUSENCIA_RETENCAO", desc: "Poss\xEDvel aus\xEAncia de reten\xE7\xE3o tribut\xE1ria obrigat\xF3ria", pts: 10 },
-    { termo: "sem reten\xE7\xE3o de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "Aus\xEAncia de reten\xE7\xE3o de Imposto de Renda (IN RFB 1.234/2012)", pts: 15 },
-    { termo: "sem reten\xE7\xE3o de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "Aus\xEAncia de reten\xE7\xE3o de ISS", pts: 10 },
-    { termo: "sem reten\xE7\xE3o previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "Aus\xEAncia de reten\xE7\xE3o previdenci\xE1ria (IN RFB 2.110/2022)", pts: 15 },
+    { termo: "sem reten\xE7\xE3o", tipo: "AUSENCIA_RETENCAO", desc: "Poss\xEDvel aus\xEAncia de reten\xE7\xE3o tribut\xE1ria obrigat\xF3ria", pts: 10, fundamentacao: "Lei 14.133/2021, art. 122" },
+    { termo: "sem reten\xE7\xE3o de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "Aus\xEAncia de reten\xE7\xE3o de Imposto de Renda (IN RFB 1.234/2012)", pts: 15, fundamentacao: "IN RFB 1.234/2012" },
+    { termo: "sem reten\xE7\xE3o de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "Aus\xEAncia de reten\xE7\xE3o de ISS", pts: 10, fundamentacao: "Lei Complementar 116/2003" },
+    { termo: "sem reten\xE7\xE3o previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "Aus\xEAncia de reten\xE7\xE3o previdenci\xE1ria (IN RFB 2.110/2022)", pts: 15, fundamentacao: "IN RFB 2.110/2022" },
     // Ordem cronológica (Manual §2.9)
-    { termo: "ordem cronol\xF3gica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "Refer\xEAncia \xE0 ordem cronol\xF3gica de pagamentos (Art. 141 Lei 14.133)", pts: 0 },
-    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronol\xF3gica", pts: 15 },
+    { termo: "ordem cronol\xF3gica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "Refer\xEAncia \xE0 ordem cronol\xF3gica de pagamentos (Art. 141 Lei 14.133)", pts: 0, fundamentacao: "Lei 14.133/2021, art. 141" },
+    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronol\xF3gica", pts: 15, fundamentacao: "Lei 14.133/2021, art. 141" },
     // Cotação (Manual §2.4)
-    { termo: "cota\xE7\xE3o \xFAnica", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cota\xE7\xE3o de pre\xE7os (m\xEDnimo 3 obrigat\xF3rio - IN SEGES/ME 65/2021)", pts: 15 },
-    { termo: "pesquisa de pre\xE7o insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de pre\xE7os insuficiente", pts: 15 },
+    { termo: "cota\xE7\xE3o \xFAnica", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cota\xE7\xE3o de pre\xE7os (m\xEDnimo 3 obrigat\xF3rio - IN SEGES/ME 65/2021)", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
+    { termo: "pesquisa de pre\xE7o insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de pre\xE7os insuficiente", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
     // Obras (Manual Check Lists)
-    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (Anota\xE7\xE3o de Responsabilidade T\xE9cnica)", pts: 15 },
-    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade T\xE9cnica)", pts: 15 },
-    { termo: "sem cno", tipo: "AUSENCIA_CNO", desc: "Obra sem CNO (Cadastro Nacional de Obras)", pts: 10 },
-    { termo: "sem alvar\xE1", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvar\xE1 de constru\xE7\xE3o", pts: 15 },
-    { termo: "sem medi\xE7\xE3o", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem medi\xE7\xE3o/boletim de medi\xE7\xE3o", pts: 15 },
+    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (Anota\xE7\xE3o de Responsabilidade T\xE9cnica)", pts: 15, fundamentacao: "Lei 6.496/1977" },
+    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade T\xE9cnica)", pts: 15, fundamentacao: "Resolu\xE7\xE3o CAU/BR 51/2013" },
+    { termo: "sem cno", tipo: "AUSENCIA_CNO", desc: "Obra sem CNO (Cadastro Nacional de Obras)", pts: 10, fundamentacao: "IN RFB 1.845/2018" },
+    { termo: "sem alvar\xE1", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvar\xE1 de constru\xE7\xE3o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 8\xBA" },
+    { termo: "sem medi\xE7\xE3o", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem medi\xE7\xE3o/boletim de medi\xE7\xE3o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 140" },
     // Diárias (Manual Check Lists)
-    { termo: "sem relat\xF3rio de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "Di\xE1ria sem relat\xF3rio de viagem (prazo: 5 dias \xFAteis)", pts: 10 },
+    { termo: "sem relat\xF3rio de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "Di\xE1ria sem relat\xF3rio de viagem (prazo: 5 dias \xFAteis)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 74" },
     { termo: "di\xE1ria", tipo: "INFO_DIARIA", desc: "Documento menciona di\xE1rias", pts: 0 },
     // Fracionamento
-    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10 },
-    { termo: "sobrepre\xE7o", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepre\xE7o", pts: 15 },
-    { termo: "superfaturamento", tipo: "MENCAO_SUPERFATURAMENTO", desc: "Documento menciona superfaturamento", pts: 15 },
+    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10, fundamentacao: "Lei 14.133/2021, art. 23, \xA75\xBA" },
+    { termo: "sobrepre\xE7o", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepre\xE7o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
+    { termo: "superfaturamento", tipo: "MENCAO_SUPERFATURAMENTO", desc: "Documento menciona superfaturamento", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
     // Matriz de risco
-    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Aus\xEAncia de Matriz de Risco (Art. 6\xBA, XXVII, Lei 14.133)", pts: 10 },
+    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Aus\xEAncia de Matriz de Risco (Art. 6\xBA, XXVII, Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 6\xBA, XXVII" },
     // Controle patrimonial
-    { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10 },
+    { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10, fundamentacao: "Lei 4.320/64, art. 94" },
     // Classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)
-    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20 },
-    { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
-    { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20 },
-    { termo: "classifica\xE7\xE3o econ\xF4mica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classifica\xE7\xE3o econ\xF4mica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20 },
-    { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20 }
+    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolu\xE7\xE3o TCE/SE 267/2011" },
+    { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
+    { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
+    { termo: "classifica\xE7\xE3o econ\xF4mica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classifica\xE7\xE3o econ\xF4mica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolu\xE7\xE3o TCE/SE 267/2011" },
+    { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" }
   ];
   const tiposJaAdicionados = /* @__PURE__ */ new Set();
   for (const tr of termosRisco) {
@@ -2131,7 +2288,7 @@ function regrasTextoLivre(texto, dados) {
       continue;
     if (textoLower.includes(tr.termo)) {
       tiposJaAdicionados.add(tr.tipo);
-      alertas.push({ tipo: tr.tipo, descricao: tr.desc, pontuacao: tr.pts });
+      alertas.push({ tipo: tr.tipo, descricao: tr.desc, pontuacao: tr.pts, fundamentacao: tr.fundamentacao });
     }
   }
   for (const v of dados.valores) {
@@ -2140,7 +2297,8 @@ function regrasTextoLivre(texto, dados) {
         tipo: "VALOR_ELEVADO_DOCUMENTO",
         descricao: "Valor elevado encontrado no documento (acima de R$ 500 mil)",
         pontuacao: 5,
-        detalhes: `Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
+        detalhes: `Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+        fundamentacao: "Lei 14.133/2021, art. 23, \xA71\xBA"
       });
     }
   }
@@ -2151,7 +2309,8 @@ function regrasTextoLivre(texto, dados) {
           tipo: "DISPENSA_ACIMA_LIMITE",
           descricao: `Valor acima do limite de dispensa por pequeno valor (R$ ${LIMITE_DISPENSA_PEQUENO_VALOR.toLocaleString("pt-BR", { minimumFractionDigits: 2 })})`,
           pontuacao: 20,
-          detalhes: `Valor encontrado: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Art. 75, II, Lei 14.133/2021`
+          detalhes: `Valor encontrado: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Art. 75, II, Lei 14.133/2021`,
+          fundamentacao: "Lei 14.133/2021, art. 75, II; Decreto 12.343/2024"
         });
         break;
       }
@@ -2173,7 +2332,8 @@ function regrasTextoLivre(texto, dados) {
             tipo: "NF_ANTERIOR_EMPENHO_PDF",
             descricao: "Poss\xEDvel NF emitida antes do empenho detectada no documento (Art. 60 Lei 4.320/64)",
             pontuacao: 15,
-            detalhes: `Data anterior: ${datesParsed[0].str} | Data posterior: ${datesParsed[1].str}`
+            detalhes: `Data anterior: ${datesParsed[0].str} | Data posterior: ${datesParsed[1].str}`,
+            fundamentacao: "Art. 60, Lei 4.320/64"
           });
         }
       }
@@ -2197,6 +2357,8 @@ async function analisarDocumento(input) {
   let totalRegistros = 0;
   let valorTotal = 0;
   let textoExtraido;
+  let totalPaginas = 0;
+  let paginasExtraidas = [];
   let classificacoes = CLASSIFICACAO_PESSOAL;
   let regrasDb = [];
   if (input.db) {
@@ -2216,6 +2378,7 @@ async function analisarDocumento(input) {
     } catch {
     }
   }
+  let detalhesExtraidos = {};
   if (input.conteudo && (input.tipo.includes("csv") || input.tipo.includes("text"))) {
     const rows = parseCsv(input.conteudo);
     totalRegistros = rows.length;
@@ -2243,6 +2406,20 @@ async function analisarDocumento(input) {
         consultarCnpjsBrasilApi(cnpjs),
         consultarSancoesCGU(cnpjs, input.apiKeyTransparencia)
       ]);
+      detalhesExtraidos.cnpjs = cnpjs.map((cnpj) => {
+        const info = dadosCnpj.get(cnpj);
+        return {
+          cnpj,
+          razao_social: info?.razao_social,
+          situacao: info?.descricao_situacao_cadastral,
+          data_abertura: info?.data_inicio_atividade,
+          porte: info?.porte,
+          natureza_juridica: info?.natureza_juridica,
+          capital_social: info?.capital_social,
+          cnae_principal: info?.cnae_fiscal_descricao,
+          socios: info?.qsa?.map((s) => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+        };
+      });
       alertas.push(
         ...regraEmpresaRecenteCriada(rows, dadosCnpj),
         ...regraSituacaoIrregular(rows, dadosCnpj),
@@ -2253,9 +2430,16 @@ async function analisarDocumento(input) {
         ...regraCnaeIncompativel(rows, dadosCnpj)
       );
     }
+    detalhesExtraidos.valores = rows.map((r) => valorNumerico(r, "valor", "vlr", "montante", "total")).filter((v) => v > 0);
+    detalhesExtraidos.datas = rows.map((r) => campo(r, "data", "dt_empenho", "emissao", "dt_pagamento")).filter(Boolean);
+    detalhesExtraidos.empenhos = rows.map((r) => campo(r, "empenho", "numero", "nota", "id")).filter(Boolean);
+    detalhesExtraidos.nds = rows.map((r) => campo(r, "natureza", "nd", "natureza_despesa", "classificacao_despesa")).filter(Boolean);
   } else if (input.conteudoPdf && input.tipo.includes("pdf")) {
-    const { extrairTextoPdf: extrairTextoPdf2, extrairImagensPdf: extrairImagensPdf2 } = await Promise.resolve().then(() => (init_pdf_extractor(), pdf_extractor_exports));
-    textoExtraido = await extrairTextoPdf2(input.conteudoPdf);
+    const { extrairTextoPdfPorPagina: extrairTextoPdfPorPagina2, extrairImagensPdf: extrairImagensPdf2 } = await Promise.resolve().then(() => (init_pdf_extractor(), pdf_extractor_exports));
+    const resultadoPdf = await extrairTextoPdfPorPagina2(input.conteudoPdf);
+    textoExtraido = resultadoPdf.textoCompleto;
+    totalPaginas = resultadoPdf.totalPaginas;
+    paginasExtraidas = resultadoPdf.paginas;
     if (input.ai) {
       try {
         const imagens = extrairImagensPdf2(input.conteudoPdf);
@@ -2297,6 +2481,20 @@ async function analisarDocumento(input) {
             consultarCnpjsBrasilApi(dados.cnpjs),
             consultarSancoesCGU(dados.cnpjs, input.apiKeyTransparencia)
           ]);
+          detalhesExtraidos.cnpjs = dados.cnpjs.map((cnpj) => {
+            const info = dadosCnpj.get(cnpj);
+            return {
+              cnpj,
+              razao_social: info?.razao_social,
+              situacao: info?.descricao_situacao_cadastral,
+              data_abertura: info?.data_inicio_atividade,
+              porte: info?.porte,
+              natureza_juridica: info?.natureza_juridica,
+              capital_social: info?.capital_social,
+              cnae_principal: info?.cnae_fiscal_descricao,
+              socios: info?.qsa?.map((s) => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+            };
+          });
           alertas.push(
             ...regraEmpresaRecenteCriada(dados.rows, dadosCnpj),
             ...regraSituacaoIrregular(dados.rows, dadosCnpj),
@@ -2307,6 +2505,11 @@ async function analisarDocumento(input) {
             ...regraCnaeIncompativel(dados.rows, dadosCnpj)
           );
         }
+        detalhesExtraidos.valores = dados.valores;
+        detalhesExtraidos.datas = dados.datas;
+        detalhesExtraidos.empenhos = dados.empenhos;
+        detalhesExtraidos.nds = dados.nds;
+        detalhesExtraidos.termos = dados.termos;
       }
     }
   }
@@ -2328,8 +2531,16 @@ async function analisarDocumento(input) {
       totalRegistros,
       valorTotal,
       registrosAnalisados: totalRegistros,
-      ...textoExtraido ? { textoExtraido: textoExtraido.substring(0, 5e3) } : {}
-    }
+      ...textoExtraido ? { textoExtraido: textoExtraido.substring(0, 15e3) } : {},
+      ...totalPaginas > 0 ? { totalPaginas } : {},
+      ...paginasExtraidas.length > 0 ? {
+        paginas: paginasExtraidas.map((p) => ({
+          pagina: p.pagina,
+          texto: p.texto.substring(0, 5e3)
+        }))
+      } : {}
+    },
+    ...Object.keys(detalhesExtraidos).length > 0 ? { detalhesExtraidos } : {}
   };
 }
 __name(analisarDocumento, "analisarDocumento");

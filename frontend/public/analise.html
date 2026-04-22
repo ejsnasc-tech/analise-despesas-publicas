@@ -7,42 +7,120 @@
     <link rel="stylesheet" href="/assets/css/style.css" />
     <script src="/assets/js/jspdf.umd.min.js"></script>
     <script src="/assets/js/auth.js" defer></script>
+    <script src="/assets/js/relatorio_graficos.js" defer></script>
     <style>
+      /* ── Score header ─── */
       .analise-header { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-      .analise-header .score-box { min-width:100px; text-align:center; padding:20px 28px; border-radius:var(--radius); color:#fff; }
-      .analise-header .score-box h2 { margin:0; font-size:2.4em; font-weight:800; }
-      .analise-header .score-box small { opacity:.8; font-size:.85em; }
-      .analise-header .info-box { flex:1; min-width:200px; }
-      .analise-header .info-box h1 { margin:0 0 4px; font-size:1.25em; color:var(--gray-900); }
-      .analise-header .info-box .meta { color:var(--gray-500); font-size:.85em; }
-      .section-title { font-size:1rem; font-weight:600; margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid var(--gray-200); display:flex; align-items:center; gap:8px; color:var(--gray-800); }
+      .score-box { min-width:110px; text-align:center; padding:20px 28px; border-radius:var(--radius); color:#fff; }
+      .score-box h2 { margin:0; font-size:2.4em; font-weight:800; }
+      .score-box small { opacity:.8; font-size:.85em; }
+      .info-box { flex:1; min-width:200px; }
+      .info-box h1 { margin:0 0 4px; font-size:1.25em; color:var(--gray-900); }
+      .info-box .meta { color:var(--gray-500); font-size:.85em; margin:2px 0; }
+
+      /* ── Section titles ─── */
+      .sec-title { font-size:1rem; font-weight:600; margin:0 0 14px; padding-bottom:8px; border-bottom:2px solid var(--gray-200); display:flex; align-items:center; gap:8px; color:var(--gray-800); }
+
+      /* ── Resumo grid ─── */
+      .resumo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; }
+      .mini-stat { background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--gray-200); }
+      .mini-stat .val { font-size:1.5em; font-weight:800; color:var(--gray-900); line-height:1.2; }
+      .mini-stat .lbl { font-size:.7rem; color:var(--gray-500); text-transform:uppercase; letter-spacing:.03em; margin-top:4px; }
+      .mini-stat.green .val { color:#059669; }
+      .mini-stat.red .val { color:#dc2626; }
+      .mini-stat.amber .val { color:#d97706; }
+      .mini-stat.blue .val { color:#2563eb; }
+
+      /* ── Verificações checklist ─── */
+      .verif-list { list-style:none; padding:0; margin:0; }
+      .verif-item { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:4px; font-size:.85em; transition:var(--transition); }
+      .verif-item:hover { background:var(--gray-50); }
+      .verif-icon { width:22px; height:22px; flex-shrink:0; display:grid; place-items:center; font-size:.9rem; }
+      .verif-content { flex:1; min-width:0; }
+      .verif-name { font-weight:500; color:var(--gray-700); }
+      .verif-detail { font-size:.78em; color:var(--gray-400); margin-top:2px; line-height:1.4; }
+      .verif-item.ok .verif-icon { color:#059669; }
+      .verif-item.ok .verif-name { color:var(--gray-600); }
+      .verif-item.alerta .verif-icon { color:#dc2626; }
+      .verif-item.alerta .verif-name { color:#dc2626; font-weight:600; }
+      .verif-item.alerta .verif-detail { color:#b91c1c; }
+      .verif-item.alerta { background:#fef2f2; }
+      .verif-item.info .verif-icon { color:#2563eb; }
+      .verif-item.info .verif-name { color:#2563eb; }
+      .verif-item.info { background:#eff6ff; }
+      .verif-pts { font-size:.72em; font-weight:700; color:#dc2626; margin-left:auto; white-space:nowrap; padding-left:8px; }
+
+      /* ── Alert cards ─── */
       .alerta-card { background:var(--gray-50); border-left:4px solid var(--warning); padding:12px 16px; margin-bottom:10px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; transition:var(--transition); }
       .alerta-card:hover { box-shadow:var(--shadow-sm); }
-      .alerta-card.alto { border-left-color:var(--danger); }
-      .alerta-card.medio { border-left-color:var(--warning); }
-      .alerta-card.baixo-alerta { border-left-color:var(--success); }
-      .alerta-card .alerta-titulo { font-weight:600; font-size:.9em; color:var(--gray-800); }
-      .alerta-card .alerta-pts { float:right; font-size:.8em; color:var(--danger); font-weight:700; }
-      .alerta-card .alerta-det { font-size:.8em; color:var(--gray-500); margin-top:4px; line-height:1.4; }
-      .alerta-card .alerta-tipo { display:inline-block; background:var(--gray-200); padding:2px 8px; border-radius:4px; font-size:.7em; color:var(--gray-600); margin-right:6px; font-weight:500; }
+      .alerta-card.alto { border-left-color:#dc2626; }
+      .alerta-card.medio { border-left-color:#d97706; }
+      .alerta-card.baixo { border-left-color:#059669; }
+      .alerta-titulo { font-weight:600; font-size:.9em; color:var(--gray-800); }
+      .alerta-pts { float:right; font-size:.8em; color:#dc2626; font-weight:700; }
+      .alerta-det { font-size:.8em; color:var(--gray-500); margin-top:4px; line-height:1.4; }
+      .alerta-tipo { display:inline-block; background:var(--gray-200); padding:2px 8px; border-radius:4px; font-size:.7em; color:var(--gray-600); margin-right:6px; font-weight:500; }
+
+      /* ── Extracted data ─── */
+      .dados-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      .dados-col h4 { margin:0 0 8px; font-size:.85rem; font-weight:600; color:var(--gray-700); display:flex; align-items:center; gap:6px; }
+      .dados-tag { display:inline-block; background:var(--gray-100); border:1px solid var(--gray-200); padding:3px 10px; border-radius:4px; font-size:.78em; color:var(--gray-600); margin:2px 4px 2px 0; font-family:'Courier New',monospace; }
+      .dados-tag.cnpj { background:#dbeafe; border-color:#bfdbfe; color:#1d4ed8; }
+      .dados-tag.valor { background:#d1fae5; border-color:#a7f3d0; color:#065f46; }
+      .dados-tag.data { background:#fef3c7; border-color:#fde68a; color:#92400e; }
+      .dados-tag.termo { background:#f3e8ff; border-color:#e9d5ff; color:#7c3aed; }
+      .dados-tag.empenho { background:#fee2e2; border-color:#fecaca; color:#991b1b; }
+
+      /* ── Text viewer ─── */
+      .texto-viewer { background:var(--gray-50); padding:20px; border-radius:var(--radius-sm); max-height:500px; overflow:auto; font-size:.8em; white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; border:1px solid var(--gray-200); line-height:1.7; color:var(--gray-700); }
+      .texto-viewer mark { background:#fef08a; padding:0 2px; border-radius:2px; }
+      .texto-viewer .mark-cnpj { background:#dbeafe; }
+      .texto-viewer .mark-valor { background:#d1fae5; }
+
+      /* ── Per-page view ─── */
+      .page-accordion { border:1px solid var(--gray-200); border-radius:var(--radius-sm); overflow:hidden; }
+      .page-accordion + .page-accordion { border-top:none; }
+      .page-acc-header { display:flex; align-items:center; gap:10px; padding:12px 16px; cursor:pointer; background:var(--gray-50); border-bottom:1px solid var(--gray-200); transition:var(--transition); user-select:none; }
+      .page-acc-header:hover { background:var(--gray-100); }
+      .page-acc-header .page-num { background:var(--accent); color:#fff; width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-size:.75rem; font-weight:700; flex-shrink:0; }
+      .page-acc-header .page-num.empty { background:var(--gray-300); }
+      .page-acc-header .page-info { flex:1; font-size:.85em; font-weight:500; color:var(--gray-700); }
+      .page-acc-header .page-stats { font-size:.72em; color:var(--gray-400); display:flex; gap:10px; }
+      .page-acc-header .page-stats span { white-space:nowrap; }
+      .page-acc-header .chevron { transition:transform .2s; color:var(--gray-400); }
+      .page-acc-header.open .chevron { transform:rotate(180deg); }
+      .page-acc-body { display:none; padding:16px; background:var(--white); }
+      .page-acc-body.open { display:block; }
+      .page-acc-body pre { margin:0; font-size:.78em; line-height:1.7; white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; color:var(--gray-600); max-height:400px; overflow:auto; }
+      .page-empty-msg { font-size:.82em; color:#92400e; background:#fef3c7; padding:10px 14px; border-radius:6px; border:1px solid #fde68a; }
+
+      /* ── Button group ─── */
       .btn-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
       .btn-reanalisar { background:var(--accent); color:#fff; border:none; cursor:pointer; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; transition:var(--transition); }
       .btn-reanalisar:hover { background:var(--accent-hover); transform:translateY(-1px); }
-      .texto-extraido { background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); max-height:400px; overflow:auto; font-size:.82em; white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; border:1px solid var(--gray-200); line-height:1.6; }
-      .resumo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
-      .resumo-grid .stat-card { background:var(--gray-50); padding:16px; border-radius:var(--radius-sm); text-align:center; border:1px solid var(--gray-200); }
-      .resumo-grid .stat-card h3 { margin:0; font-size:1.4em; color:var(--gray-900); font-weight:800; }
-      .resumo-grid .stat-card small { color:var(--gray-500); font-size:.8em; }
+
+      /* ── Card spacing ─── */
+      .card + .card { margin-top:16px; }
+      .card:first-child { margin-top:0; }
+
+      /* ── Tabs ─── */
+      .tab-bar { display:flex; gap:4px; border-bottom:2px solid var(--gray-200); margin-bottom:16px; }
+      .tab-btn { padding:8px 16px; font-size:.85em; font-weight:500; color:var(--gray-500); background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-2px; cursor:pointer; transition:var(--transition); }
+      .tab-btn:hover { color:var(--gray-700); }
+      .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+      .tab-content { display:none; }
+      .tab-content.active { display:block; }
+
+      @media (max-width:768px) {
+        .dados-grid { grid-template-columns:1fr; }
+        .resumo-grid { grid-template-columns:repeat(2,1fr); }
+      }
     </style>
   </head>
   <body>
     <div class="app-layout">
-      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-          <img src="/assets/img/logo-af.svg" alt="AF" />
-          <span>Andre Fiscaliza</span>
-        </div>
+        <div class="sidebar-brand"><img src="/assets/img/logo-af.svg" alt="AF" /><span>Andre Fiscaliza</span></div>
         <nav class="sidebar-nav">
           <div class="sidebar-section">Menu</div>
           <a href="/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
@@ -52,15 +130,11 @@
         </nav>
         <div class="sidebar-footer">
           <div class="sidebar-avatar">AJ</div>
-          <div class="sidebar-user">
-            <strong>Andre de Jesus</strong>
-            <small>@andre</small>
-          </div>
+          <div class="sidebar-user"><strong>Andre de Jesus</strong><small>@andre</small></div>
           <button onclick="AFAuth.logout()" title="Sair">🚪</button>
         </div>
       </aside>
 
-      <!-- Main -->
       <div class="main-area">
         <header class="topbar">
           <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
@@ -68,328 +142,970 @@
           <div class="topbar-right"></div>
         </header>
 
-    <main class="container">
-      <div class="card" style="margin-top:16px;">
-        <!-- Cabeçalho com score -->
-        <div class="analise-header">
-          <div class="score-box" id="score-box" style="background:#28a745;">
-            <h2 id="score">0</h2>
-            <small>de 100</small>
+        <main class="container">
+          <!-- 1. SCORE HEADER -->
+          <div class="card fade-in">
+            <div class="analise-header">
+              <div class="score-box" id="score-box" style="background:#059669;">
+                <h2 id="score-val">0</h2>
+                <small>de 100</small>
+              </div>
+              <div class="info-box">
+                <h1 id="doc-titulo">Carregando...</h1>
+                <p class="meta" id="doc-meta"></p>
+                <p><span id="nivel-badge" class="badge baixo">BAIXO</span></p>
+              </div>
+            </div>
+            <div class="progress" style="margin-top:12px;"><span id="score-bar" style="width:0%"></span></div>
           </div>
-          <div class="info-box">
-            <h1 id="doc-titulo">Resultado da Análise</h1>
-            <p class="meta" id="doc-meta"></p>
-            <p><span id="nivel" class="badge baixo">BAIXO</span></p>
+
+
+          <!-- 2. RESUMO NUMÉRICO, GRÁFICOS E QUADRO LEGAL -->
+          <div class="card fade-in" id="sec-resumo">
+            <h3 class="sec-title">📊 Resumo Geral da Análise</h3>
+            <div class="resumo-grid" id="resumo-grid"></div>
+            <div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:24px;">
+              <div style="flex:1;min-width:260px;max-width:400px;">
+                <h4 style="margin-bottom:8px;font-size:.95em;color:#444;">Distribuição dos Tipos de Alerta</h4>
+                <canvas id="grafico-alertas" width="350" height="220"></canvas>
+              </div>
+              <div style="flex:1;min-width:260px;max-width:400px;">
+                <h4 style="margin-bottom:8px;font-size:.95em;color:#444;">Pontuação de Risco por Tipo</h4>
+                <canvas id="grafico-pontos" width="350" height="220"></canvas>
+              </div>
+            </div>
+            <div id="quadro-legal" style="margin-top:32px;"></div>
           </div>
-        </div>
-        <div class="progress" style="margin-top:12px;"><span id="score-bar" style="width:0%"></span></div>
-      </div>
 
-      <!-- Resumo numérico -->
-      <div class="card" id="resumo-section" style="display:none;">
-        <h3 class="section-title">📊 Resumo da Análise</h3>
-        <div class="resumo-grid" id="resumo-stats"></div>
-      </div>
+          <!-- 3. TABS: Verificações / Alertas / Dados / Texto -->
+          <div class="card fade-in">
+            <div class="tab-bar" id="tab-bar">
+              <button class="tab-btn active" data-tab="tab-verificacoes">🔍 Verificações</button>
+              <button class="tab-btn" data-tab="tab-alertas">🚨 Alertas <span id="alertas-badge" style="background:var(--gray-200);padding:1px 6px;border-radius:10px;font-size:.75em;margin-left:4px;">0</span></button>
+              <button class="tab-btn" data-tab="tab-dados">📋 Dados Extraídos</button>
+              <button class="tab-btn" data-tab="tab-paginas">📄 Por Página</button>
+              <button class="tab-btn" data-tab="tab-texto">📝 Texto Completo</button>
+              <button class="tab-btn" data-tab="tab-doc">📄 Documento</button>
+            </div>
 
-      <!-- Alertas -->
-      <div class="card">
-        <h3 class="section-title">🚨 Alertas Encontrados <span id="alertas-count" style="font-size:.8em;color:#888;">(0)</span></h3>
-        <div id="alertas-vazio" style="color:#28a745;padding:12px;">Nenhum alerta encontrado.</div>
-        <div id="alertas"></div>
-      </div>
+            <!-- TAB: Verificações -->
+            <div class="tab-content active" id="tab-verificacoes">
+              <p style="font-size:.82em;color:var(--gray-500);margin:0 0 12px;">Todas as regras aplicadas pelo motor de análise. ✅ Conforme · 🚨 Alerta encontrado · ℹ️ Informação</p>
+              <ul class="verif-list" id="verif-list"></ul>
+            </div>
 
-      <!-- Dados do documento -->
-      <div class="card">
-        <h3 class="section-title">📄 Dados do Documento</h3>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
-            <tbody id="dados-extraidos">
-              <tr><td>Documento</td><td>Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <!-- TAB: Alertas -->
+            <div class="tab-content" id="tab-alertas">
+              <div id="alertas-container"></div>
+              <div id="alertas-vazio" style="display:none;text-align:center;padding:24px;color:#059669;">
+                <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+                <p style="font-weight:600;">Nenhum alerta encontrado</p>
+                <p style="font-size:.85em;color:var(--gray-500);">Documento dentro dos parâmetros esperados</p>
+              </div>
+            </div>
 
-      <!-- Texto extraído (PDF) -->
-      <div class="card" id="texto-section" style="display:none;">
-        <h3 class="section-title">📝 Texto Extraído do Documento</h3>
-        <pre class="texto-extraido" id="texto-extraido"></pre>
-      </div>
+            <!-- TAB: Dados Extraídos -->
+            <div class="tab-content" id="tab-dados">
+              <p style="font-size:.82em;color:var(--gray-500);margin:0 0 12px;">Dados identificados automaticamente no documento.</p>
+              <div class="dados-grid" id="dados-grid"></div>
+            </div>
 
-      <!-- Ações -->
-      <div class="btn-group">
-        <a href="/dashboard.html"><button class="primary">⬅ Dashboard</button></a>
-        <button id="btn-relatorio">📥 Baixar Relatório PDF</button>
-        <button id="btn-reanalisar" class="btn-reanalisar" style="display:none;">🔄 Reanalisar</button>
-        <a href="/documentos.html"><button>📂 Documentos</button></a>
+            <!-- TAB: Por Página -->
+            <div class="tab-content" id="tab-paginas">
+              <p style="font-size:.82em;color:var(--gray-500);margin:0 0 12px;" id="paginas-info">Visualização do conteúdo extraído de cada página do documento.</p>
+              <div id="paginas-container"></div>
+              <div id="paginas-none" style="display:none;text-align:center;padding:24px;color:var(--gray-400);">
+                <div style="font-size:2rem;margin-bottom:8px;">📄</div>
+                <p>Informação por página não disponível para este documento.</p>
+                <p style="font-size:.82em;">Faça um novo upload para gerar dados por página.</p>
+              </div>
+            </div>
+
+            <!-- TAB: Texto Completo -->
+            <div class="tab-content" id="tab-texto">
+              <p style="font-size:.82em;color:var(--gray-500);margin:0 0 8px;" id="texto-info">Texto extraído do documento com destaques para valores e CNPJs.</p>
+              <div class="texto-viewer" id="texto-viewer">Nenhum texto extraído.</div>
+            </div>
+
+            <!-- TAB: Documento -->
+            <div class="tab-content" id="tab-doc">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+                  <tbody id="doc-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="btn-group">
+            <a href="/dashboard.html"><button class="primary">⬅ Dashboard</button></a>
+            <button id="btn-relatorio">📥 Baixar Relatório PDF</button>
+            <button id="btn-reanalisar" class="btn-reanalisar" style="display:none;">🔄 Reanalisar</button>
+            <a href="/documentos.html"><button class="secondary">📂 Documentos</button></a>
+          </div>
+        </main>
+
+        <footer class="footer">Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas</footer>
       </div>
-    </main>
+    </div>
+
     <script>
       let _docData = null;
+      let _dadosExtraidos = null;
+      let _verifItems = [];
+      function esc(t) { const d = document.createElement('div'); d.textContent = String(t||''); return d.innerHTML; }
 
-      function esc(t) { return String(t || ''); }
+      /* ── Tabs ─── */
+      document.getElementById('tab-bar').addEventListener('click', function(e) {
+        const btn = e.target.closest('.tab-btn');
+        if (!btn) return;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
 
+      /* ── Text analysis (mirrors backend parseTextoLivre) ─── */
+      function analisarTexto(texto) {
+        if (!texto) return { cnpjs:[], valores:[], datas:[], termos:[], empenhos:[], nds:[] };
+        const cnpjSet = new Set();
+        for (const m of texto.matchAll(/\d{2}\.\d{3}\.\d{3}\/\d{4}-?\d{2}/g)) {
+          cnpjSet.add(m[0].replace(/\D/g,''));
+        }
+        const valores = [];
+        for (const m of texto.matchAll(/R\$\s*[\d.,]+/g)) valores.push(m[0]);
+        const datas = [];
+        for (const m of texto.matchAll(/\d{2}\/\d{2}\/\d{4}/g)) datas.push(m[0]);
+        const empenhos = [];
+        for (const m of texto.matchAll(/\d{4}NE\d{6}/gi)) empenhos.push(m[0]);
+        const nds = [];
+        for (const m of texto.matchAll(/\d\.\d\.\d{2}\.\d{2}(?:\.\d{2})?/g)) nds.push(m[0]);
+
+        const termosChave = [
+          'dispensa','inexigibilidade','emergencial','licitação','pregão','tomada de preço',
+          'convite','concorrência','aditivo','contrato','empenho','liquidação','pagamento',
+          'nota fiscal','reembolso','fracionamento','sobrepreço','superfaturamento',
+          'dfd','etp','termo de referência','projeto básico','matriz de risco',
+          'certidão','atesto','fiscal de contrato','gestor','art ','rrt',
+          'cno','alvará','medição','diária','retenção','ir ','iss',
+          'inss','fgts','darf','gps','ordem cronológica','rescisão','férias',
+          'aviso prévio','fgts','multa','saldo de salário','13º','gratificação'
+        ];
+        const low = texto.toLowerCase();
+        const termos = termosChave.filter(t => low.includes(t));
+
+        return { cnpjs:[...cnpjSet], valores, datas, termos, empenhos, nds };
+      }
+
+      /* ── Highlight text ─── */
+      function highlightTexto(texto) {
+        let html = esc(texto);
+        // Highlight CNPJs
+        html = html.replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4}-?\d{2})/g, '<mark class="mark-cnpj">$1</mark>');
+        // Highlight valores R$
+        html = html.replace(/(R\$\s*[\d.,]+)/g, '<mark class="mark-valor">$1</mark>');
+        return html;
+      }
+
+      /* ── Todas as verificações ─── */
+      const TODAS_VERIFICACOES = [
+        { id:'leitura_pdf', nome:'Extração de texto do documento', categoria:'Leitura', icon:'📖',
+          matchTipo: null, check: (a,t) => ({ ok: t.length > 0, detail: t.length > 0 ? t.length+' caracteres extraídos' : 'Sem texto extraível' }) },
+        { id:'valores_monetarios', nome:'Valores monetários identificados', categoria:'Extração', icon:'💰',
+          matchTipo: null, check: (a,t,d) => ({ ok: true, info: true, detail: d.valores.length+' valores R$ encontrados' }) },
+        { id:'cnpj_cpf', nome:'CNPJs/CPFs identificados', categoria:'Extração', icon:'🔢',
+          matchTipo: null, check: (a,t,d) => ({ ok: true, info: true, detail: d.cnpjs.length+' CNPJs encontrados' }) },
+        { id:'nds_encontradas', nome:'Naturezas da Despesa (ND) encontradas', categoria:'Extração', icon:'🏷️',
+          matchTipo: null, check: (a,t,d) => ({ ok: true, info: true, detail: d.nds.length > 0 ? d.nds.slice(0,5).join(', ') : 'Nenhuma ND identificada no texto' }) },
+        { id:'termos_juridicos', nome:'Termos jurídicos/fiscais identificados', categoria:'Extração', icon:'⚖️',
+          matchTipo: null, check: (a,t,d) => ({ ok: true, info: true, detail: d.termos.length > 0 ? d.termos.slice(0,8).join(', ') : 'Nenhum termo relevante' }) },
+        { id:'empenhos_ref', nome:'Números de empenho referenciados', categoria:'Extração', icon:'📋',
+          matchTipo: null, check: (a,t,d) => ({ ok: true, info: true, detail: d.empenhos.length > 0 ? d.empenhos.join(', ') : 'Nenhum empenho identificado' }) },
+
+        { id:'classificacao', nome:'Classificação da despesa (Portaria STN 448/2002)', categoria:'Classificação', icon:'📜',
+          matchTipo: ['CLASSIFICACAO','NATUREZA','ELEMENTO_DESPESA'] },
+        { id:'subelemento', nome:'Subelemento vs. tipo de ato/vínculo (Res. TCE/SE 267/2011)', categoria:'Classificação', icon:'🔗',
+          matchTipo: ['SUBELEMENTO'] },
+        { id:'nd_vinculo', nome:'Validação ND × vínculo servidor', categoria:'Classificação', icon:'👤',
+          matchTipo: ['VINCULO','ND_INCORRETA'] },
+
+        { id:'rescisao', nome:'Verbas rescisórias e indenizações trabalhistas', categoria:'Pessoal', icon:'📝',
+          matchTipo: ['RESCISAO'] },
+        { id:'empenho_posteriori', nome:'Empenho prévio obrigatório (Art. 60, Lei 4.320/64)', categoria:'Empenho', icon:'📌',
+          matchTipo: ['EMPENHO_POSTERIORI','SEM_EMPENHO'] },
+        { id:'nf_empenho', nome:'NF anterior ao empenho', categoria:'Empenho', icon:'📆',
+          matchTipo: ['NF_ANTERIOR_EMPENHO'] },
+
+        { id:'dispensa', nome:'Limites de dispensa de licitação (Art. 75, Lei 14.133/2021)', categoria:'Licitação', icon:'🚫',
+          matchTipo: ['DISPENSA'] },
+        { id:'licitacao', nome:'Modalidade de licitação adequada', categoria:'Licitação', icon:'⚖️',
+          matchTipo: ['LICITACAO','CONTRATO_SEM','MENCAO_DISPENSA','MENCAO_INEXIG','MENCAO_EMERGENCIAL','MENCAO_SEM_LICIT'] },
+        { id:'fracionamento', nome:'Fracionamento de despesa', categoria:'Licitação', icon:'✂️',
+          matchTipo: ['FRACION'] },
+
+        { id:'duplicidade', nome:'Pagamentos duplicados', categoria:'Pagamento', icon:'🔄',
+          matchTipo: ['DUPLICA'] },
+        { id:'superfaturamento', nome:'Análise de preços praticados', categoria:'Pagamento', icon:'📈',
+          matchTipo: ['PRECO','VALOR_ELEVADO','SUPERFATUR','SOBREPRECO'] },
+        { id:'ordem_crono', nome:'Ordem cronológica de pagamentos (Art. 141, Lei 14.133)', categoria:'Pagamento', icon:'📅',
+          matchTipo: ['CRONOLOG','TEMPORAL','FIM_ANO','ORDEM_CRONOLOGICA'] },
+
+        { id:'fornecedor_cnpj', nome:'Validade do CNPJ do fornecedor', categoria:'Fornecedor', icon:'🏢',
+          matchTipo: ['CNPJ_INVALIDO','CNPJ_INVAL'] },
+        { id:'fornecedor_situacao', nome:'Situação cadastral do fornecedor', categoria:'Fornecedor', icon:'🔍',
+          matchTipo: ['SITUACAO_IRREGULAR','EMPRESA_RECENTE','SANCIONA'] },
+        { id:'fornecedor_porte', nome:'Porte/capital vs. valor contratado', categoria:'Fornecedor', icon:'💼',
+          matchTipo: ['PORTE_INCOMP','CAPITAL_SOCIAL','CNAE_INCOMP'] },
+        { id:'fornecedor_socios', nome:'Sócios em comum entre fornecedores', categoria:'Fornecedor', icon:'🤝',
+          matchTipo: ['SOCIOS_COMUM'] },
+
+        { id:'documentos_obrig', nome:'Documentos obrigatórios (DFD, ETP, TR)', categoria:'Conformidade', icon:'📎',
+          matchTipo: ['AUSENCIA_DFD','AUSENCIA_ETP','AUSENCIA_TR','AUSENCIA_PB'] },
+        { id:'retencoes', nome:'Retenções tributárias (IR, ISS, INSS)', categoria:'Conformidade', icon:'💲',
+          matchTipo: ['RETENCAO'] },
+        { id:'fiscal_gestor', nome:'Fiscal e gestor de contrato designados', categoria:'Conformidade', icon:'👔',
+          matchTipo: ['SEM_FISCAL','SEM_GESTOR','SEM_ATESTO'] },
+        { id:'certidoes', nome:'Validade de certidões', categoria:'Conformidade', icon:'📃',
+          matchTipo: ['CERTIDAO_VENCIDA'] },
+        { id:'obras', nome:'Documentação de obras (ART, RRT, CNO, Alvará)', categoria:'Conformidade', icon:'🏗️',
+          matchTipo: ['AUSENCIA_ART','AUSENCIA_RRT','AUSENCIA_CNO','AUSENCIA_ALVARA','AUSENCIA_MEDICAO'] },
+        { id:'tombamento', nome:'Tombamento patrimonial de bens permanentes', categoria:'Conformidade', icon:'🏷️',
+          matchTipo: ['TOMBAMENTO'] },
+        { id:'matriz_risco', nome:'Matriz de riscos (Art. 6º, XXVII, Lei 14.133)', categoria:'Conformidade', icon:'📊',
+          matchTipo: ['MATRIZ_RISCO'] },
+        { id:'sigilo', nome:'Menções a sigilo ou restrição de acesso', categoria:'Conformidade', icon:'🔒',
+          matchTipo: ['SIGILO'] },
+      ];
+
+      function buildVerificacoes(alertas, texto, dadosExtraidos) {
+        const list = document.getElementById('verif-list');
+        list.innerHTML = '';
+        let currentCat = '';
+        let okCount = 0, alertaCount = 0, infoCount = 0;
+        _verifItems = [];
+
+        TODAS_VERIFICACOES.forEach(v => {
+          // Category separator
+          if (v.categoria !== currentCat) {
+            currentCat = v.categoria;
+            const sep = document.createElement('li');
+            sep.style.cssText = 'font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);padding:14px 14px 4px;font-weight:600;';
+            sep.textContent = currentCat;
+            list.appendChild(sep);
+          }
+
+          const li = document.createElement('li');
+          let state = 'ok', icon = '✅', detail = '', pts = '';
+
+          if (v.check) {
+            const result = v.check(alertas, texto, dadosExtraidos);
+            if (result.info) { state = 'info'; icon = 'ℹ️'; infoCount++; }
+            else if (result.ok) { okCount++; }
+            else { state = 'alerta'; icon = '🚨'; alertaCount++; }
+            detail = result.detail || '';
+          } else if (v.matchTipo) {
+            const found = alertas.filter(a => v.matchTipo.some(t => (a.tipo||'').includes(t)));
+            if (found.length > 0) {
+              state = 'alerta';
+              icon = '🚨';
+              detail = found.map(a => a.descricao).join(' | ');
+              pts = '+' + found.reduce((s,a) => s + (a.pontuacao||0), 0) + ' pts';
+              alertaCount++;
+            } else {
+              detail = 'Conforme — nenhuma irregularidade detectada';
+              okCount++;
+            }
+          }
+
+          // Save structured data for PDF
+          _verifItems.push({ nome: v.nome, icon: v.icon, categoria: v.categoria, state, detail, pts });
+
+          li.className = 'verif-item ' + state;
+          li.innerHTML =
+            '<span class="verif-icon">' + icon + '</span>' +
+            '<div class="verif-content">' +
+              '<div class="verif-name">' + v.icon + ' ' + esc(v.nome) + '</div>' +
+              (detail ? '<div class="verif-detail">' + esc(detail) + '</div>' : '') +
+            '</div>' +
+            (pts ? '<span class="verif-pts">' + pts + '</span>' : '');
+          list.appendChild(li);
+        });
+
+        return { ok: okCount, alerta: alertaCount, info: infoCount };
+      }
+
+      function buildAlertas(alertas) {
+        const container = document.getElementById('alertas-container');
+        const vazio = document.getElementById('alertas-vazio');
+        container.innerHTML = '';
+
+        if (alertas.length === 0) {
+          vazio.style.display = 'block';
+          return;
+        }
+        vazio.style.display = 'none';
+        document.getElementById('alertas-badge').textContent = alertas.length;
+        document.getElementById('alertas-badge').style.background = '#fee2e2';
+        document.getElementById('alertas-badge').style.color = '#dc2626';
+
+        // Sort by pontuacao desc
+        const sorted = [...alertas].sort((a,b) => (b.pontuacao||0) - (a.pontuacao||0));
+        sorted.forEach(a => {
+          const severity = (a.pontuacao||0) >= 15 ? 'alto' : (a.pontuacao||0) >= 8 ? 'medio' : 'baixo';
+          const div = document.createElement('div');
+          div.className = 'alerta-card ' + severity;
+          div.innerHTML =
+            '<span class="alerta-pts">+' + (a.pontuacao||0) + ' pts</span>' +
+            '<span class="alerta-tipo">' + esc(a.tipo) + '</span>' +
+            '<div class="alerta-titulo">' + esc(a.descricao) + '</div>' +
+            (a.detalhes ? '<div class="alerta-det">' + esc(a.detalhes) + '</div>' : '') +
+            (a.fundamentacao ? '<div class="alerta-det" style="color:#2563eb;font-style:italic;margin-top:2px;">Fundamento legal: ' + esc(a.fundamentacao) + '</div>' : '');
+          container.appendChild(div);
+        });
+      }
+
+      function buildDadosExtraidos(dados) {
+        const grid = document.getElementById('dados-grid');
+        grid.innerHTML = '';
+
+        // Se vier do backend enriquecido, mostra detalhes completos dos CNPJs
+        if (dados.cnpjs && Array.isArray(dados.cnpjs) && typeof dados.cnpjs[0] === 'object') {
+          // CNPJs detalhados
+          const col = document.createElement('div');
+          col.className = 'dados-col';
+          col.innerHTML = '<h4>🔢 CNPJs Encontrados <span style="font-weight:400;color:var(--gray-400);">(' + dados.cnpjs.length + ')</span></h4>';
+          if (dados.cnpjs.length === 0) {
+            col.innerHTML += '<p style="font-size:.82em;color:var(--gray-400);margin:0;">Nenhum encontrado</p>';
+          } else {
+            dados.cnpjs.forEach(c => {
+              const box = document.createElement('div');
+              box.className = 'dados-tag cnpj';
+              let html = '<b>' + (c.cnpj ? c.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5') : '-') + '</b>';
+              if (c.razao_social) html += '<br><span style="font-weight:400;">' + c.razao_social + '</span>';
+              if (c.situacao) html += '<br><span style="color:#059669;">' + c.situacao + '</span>';
+              if (c.data_abertura) {
+                // Calcula idade
+                const dt = new Date(c.data_abertura);
+                const hoje = new Date();
+                let anos = hoje.getFullYear() - dt.getFullYear();
+                let m = hoje.getMonth() - dt.getMonth();
+                if (m < 0 || (m === 0 && hoje.getDate() < dt.getDate())) anos--;
+                html += '<br><span style="color:#92400e;">Aberta em ' + c.data_abertura + ' (' + anos + ' anos)</span>';
+              }
+              if (c.porte) html += '<br><span style="color:#1d4ed8;">Porte: ' + c.porte + '</span>';
+              if (c.natureza_juridica) html += '<br><span style="color:#7c3aed;">' + c.natureza_juridica + '</span>';
+              if (c.capital_social) html += '<br><span style="color:#065f46;">Capital: R$ ' + Number(c.capital_social).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>';
+              if (c.cnae_principal) html += '<br><span style="color:#991b1b;">CNAE: ' + c.cnae_principal + '</span>';
+              if (c.socios && c.socios.length > 0) {
+                html += '<br><span style="color:#b91c1c;">Sócios (' + c.socios.length + '): ' + c.socios.map(s => s.nome).join(', ') + '</span>';
+              }
+              box.innerHTML = html;
+              col.appendChild(box);
+            });
+          }
+          grid.appendChild(col);
+        }
+        // Outras seções (valores, datas, etc)
+        const sections = [
+          { title:'💰 Valores Monetários', items: dados.valores, cls:'valor', fmt: v => v },
+          { title:'📅 Datas Identificadas', items: dados.datas, cls:'data', fmt: d => d },
+          { title:'🏷️ Naturezas da Despesa', items: dados.nds, cls:'empenho', fmt: n => n },
+          { title:'📋 Números de Empenho', items: dados.empenhos, cls:'empenho', fmt: e => e },
+          { title:'⚖️ Termos Jurídicos/Fiscais', items: dados.termos, cls:'termo', fmt: t => t },
+        ];
+        sections.forEach(s => {
+          if (!s.items || !Array.isArray(s.items) || s.items.length === 0) return;
+          const col = document.createElement('div');
+          col.className = 'dados-col';
+          col.innerHTML = '<h4>' + s.title + ' <span style="font-weight:400;color:var(--gray-400);">(' + s.items.length + ')</span></h4>';
+          const maxShow = 20;
+          s.items.slice(0, maxShow).forEach(item => {
+            const span = document.createElement('span');
+            span.className = 'dados-tag ' + s.cls;
+            span.textContent = s.fmt(item);
+            col.appendChild(span);
+          });
+          if (s.items.length > maxShow) {
+            const more = document.createElement('span');
+            more.className = 'dados-tag';
+            more.textContent = '+' + (s.items.length - maxShow) + ' mais';
+            col.appendChild(more);
+          }
+          grid.appendChild(col);
+        });
+      }
+
+      function buildDocTable(doc) {
+        const tbody = document.getElementById('doc-table-body');
+        tbody.innerHTML = '';
+        const tamanhoFmt = doc.tamanho > 1048576 ? (doc.tamanho/1048576).toFixed(1)+' MB' :
+                           doc.tamanho > 1024 ? (doc.tamanho/1024).toFixed(1)+' KB' : doc.tamanho+' bytes';
+        const campos = [
+          ['📄 Nome do Arquivo', doc.nome_arquivo],
+          ['📁 Tipo MIME', doc.tipo],
+          ['📦 Tamanho', tamanhoFmt],
+          ['📅 Data do Upload', doc.data_upload],
+          ['🔑 ID', doc.id],
+          ['📊 Score de Risco', doc.score + '/100'],
+          ['🏷️ Nível', doc.nivel],
+          ['📄 Total de Páginas', (doc.resumo?.totalPaginas || '—')],
+          ['✅ Status', doc.status || 'concluido'],
+        ];
+        campos.forEach(([label, value]) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td style="font-weight:500;width:200px;">' + esc(label) + '</td><td>' + esc(value) + '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+
+      function buildPaginas(paginas, totalPaginas) {
+        const container = document.getElementById('paginas-container');
+        const noneEl = document.getElementById('paginas-none');
+        container.innerHTML = '';
+
+        if (!paginas || paginas.length === 0) {
+          noneEl.style.display = 'block';
+          return;
+        }
+
+        document.getElementById('paginas-info').textContent =
+          'Documento com ' + totalPaginas + ' página' + (totalPaginas > 1 ? 's' : '') + '. ' +
+          paginas.filter(p => p.texto.trim().length > 0).length + ' com texto extraído.';
+
+        paginas.forEach((pg, idx) => {
+          const isEmpty = pg.texto.trim().length === 0;
+          const data = isEmpty ? null : analisarTexto(pg.texto);
+          const wrapper = document.createElement('div');
+          wrapper.className = 'page-accordion';
+
+          const header = document.createElement('div');
+          header.className = 'page-acc-header' + (idx === 0 ? ' open' : '');
+          header.innerHTML =
+            '<span class="page-num' + (isEmpty ? ' empty' : '') + '">' + pg.pagina + '</span>' +
+            '<span class="page-info">Página ' + pg.pagina + (isEmpty ? ' — sem texto' : '') + '</span>' +
+            (data ? '<span class="page-stats">' +
+              '<span>📝 ' + pg.texto.length + ' chars</span>' +
+              '<span>🔢 ' + data.cnpjs.length + ' CNPJs</span>' +
+              '<span>💰 ' + data.valores.length + ' valores</span>' +
+              '<span>📅 ' + data.datas.length + ' datas</span>' +
+            '</span>' : '') +
+            '<span class="chevron">▼</span>';
+
+          const body = document.createElement('div');
+          body.className = 'page-acc-body' + (idx === 0 ? ' open' : '');
+
+          if (isEmpty) {
+            body.innerHTML = '<div class="page-empty-msg">⚠️ Nenhum texto extraído desta página. Pode ser uma página em branco ou conter apenas imagens/escaneamento.</div>';
+          } else {
+            const pre = document.createElement('pre');
+            pre.innerHTML = highlightTexto(pg.texto);
+            body.appendChild(pre);
+          }
+
+          header.addEventListener('click', function() {
+            this.classList.toggle('open');
+            body.classList.toggle('open');
+          });
+
+          wrapper.appendChild(header);
+          wrapper.appendChild(body);
+          container.appendChild(wrapper);
+        });
+      }
+
+      /* ── PDF Report ─── */
       function baixarRelatorio() {
         if (!_docData) return;
         const d = _docData;
         const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const W = 210, H = 297, M = 15;
-        const maxW = W - 2 * M;
+        const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+        const W=210, H=297, M=14, maxW=W-2*M;
         let y = M;
 
-        function checkPage(need) {
-          if (y + need > H - M) { pdf.addPage(); y = M; }
+        function checkPage(need) { if(y+need>H-M-10){ pdf.addPage(); y=M; } }
+
+        function secTitle(title, bg) {
+          checkPage(14);
+          const c = bg||[15,23,42];
+          pdf.setFillColor(...c); pdf.rect(M,y,maxW,8,'F');
+          pdf.setTextColor(255,255,255); pdf.setFontSize(9.5); pdf.setFont('helvetica','bold');
+          pdf.text(title, M+3, y+5.7); y+=11;
+          pdf.setTextColor(15,23,42);
         }
 
-        // --- CABEÇALHO ---
-        pdf.setFillColor(26, 26, 46);
-        pdf.rect(0, 0, W, 40, 'F');
-        pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(20);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('ANDRE FISCALIZA', M, 18);
-        pdf.setFontSize(11);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('Relatório de Análise de Despesas Públicas', M, 26);
-        pdf.setFontSize(9);
-        pdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, M, 33);
-        y = 48;
+        function hline(color) {
+          pdf.setDrawColor(...(color||[210,215,225])); pdf.setLineWidth(0.25);
+          pdf.line(M, y, M+maxW, y); y+=3;
+        }
 
-        // --- SCORE ---
-        const corScore = d.score >= 70 ? [220, 53, 69] : d.score >= 40 ? [255, 165, 0] : [40, 167, 69];
-        pdf.setFillColor(...corScore);
-        pdf.roundedRect(M, y, maxW, 28, 3, 3, 'F');
-        pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(24);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text(`${d.score}/100`, M + 8, y + 14);
-        pdf.setFontSize(14);
-        pdf.text(esc(d.nivel), M + 50, y + 14);
-        pdf.setFontSize(10);
-        pdf.setFont('helvetica', 'normal');
-        pdf.text('Score de Risco', M + 8, y + 22);
-        y += 35;
+        function rowKV(label, value, col) {
+          checkPage(6);
+          pdf.setFont('helvetica','bold'); pdf.setFontSize(8.5); pdf.setTextColor(80,80,100);
+          pdf.text(label+':', M, y);
+          pdf.setFont('helvetica','normal'); pdf.setTextColor(...(col||[15,23,42]));
+          const lines = pdf.splitTextToSize(String(value||'—'), maxW-42);
+          lines.slice(0,2).forEach((l,i)=>{ if(i>0) checkPage(5); pdf.text(l, M+42, y+(i*4.5)); });
+          y += lines.length > 1 ? lines.length*4.5+1 : 5.5;
+        }
 
-        // --- DADOS DO DOCUMENTO ---
-        pdf.setTextColor(26, 26, 46);
-        pdf.setFontSize(13);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Dados do Documento', M, y);
-        y += 2;
-        pdf.setDrawColor(26, 26, 46);
-        pdf.setLineWidth(0.5);
-        pdf.line(M, y, M + maxW, y);
-        y += 6;
+        // ── CAPA ──────────────────────────────────────────────────────
+        pdf.setFillColor(15,23,42); pdf.rect(0,0,W,46,'F');
+        pdf.setFillColor(37,99,235); pdf.rect(0,43,W,3,'F');
+        pdf.setTextColor(255,255,255);
+        pdf.setFontSize(22); pdf.setFont('helvetica','bold'); pdf.text('ANDRE FISCALIZA', M, 18);
+        pdf.setFontSize(11); pdf.setFont('helvetica','normal'); pdf.text('Relatório de Análise de Despesas Públicas', M, 27);
+        pdf.setFontSize(8.5); pdf.setTextColor(180,200,230);
+        pdf.text('Gerado em: '+new Date().toLocaleDateString('pt-BR')+' às '+new Date().toLocaleTimeString('pt-BR'), M, 35);
+        pdf.setTextColor(220,230,250);
+        const nomeArq = pdf.splitTextToSize('Documento: '+(d.nome_arquivo||'—'), maxW);
+        pdf.setFontSize(8); pdf.text(nomeArq[0], M, 41);
+        y = 52;
 
-        pdf.setFontSize(10);
-        const campos = [
-          ['Arquivo', d.nome_arquivo],
-          ['Tipo', d.tipo],
-          ['Tamanho', d.tamanho > 1024 ? (d.tamanho / 1024).toFixed(1) + ' KB' : d.tamanho + ' bytes'],
-          ['Data de Upload', d.data_upload]
+        // ── PLACAR DE RISCO ───────────────────────────────────────────
+        const score = d.score||0;
+        const corScore = score>=70?[220,53,69]:score>=40?[217,119,6]:[5,150,105];
+        pdf.setFillColor(...corScore); pdf.roundedRect(M, y, 52, 28, 2,2,'F');
+        pdf.setTextColor(255,255,255);
+        pdf.setFontSize(28); pdf.setFont('helvetica','bold'); pdf.text(String(score), M+5, y+17);
+        pdf.setFontSize(12); pdf.setFont('helvetica','normal'); pdf.text('/100', M+25, y+17);
+        pdf.setFontSize(8); pdf.text('SCORE DE RISCO', M+3, y+24);
+
+        const nivelCores = {BAIXO:[5,150,105],MEDIO:[217,119,6],ALTO:[234,88,12],CRITICO:[220,53,69]};
+        const nc = nivelCores[d.nivel]||[80,80,80];
+        pdf.setFillColor(...nc); pdf.roundedRect(M+56, y, 32, 13, 1.5,1.5,'F');
+        pdf.setTextColor(255,255,255); pdf.setFontSize(11); pdf.setFont('helvetica','bold');
+        pdf.text(d.nivel||'—', M+60, y+9);
+
+        const alertas = d.alertas||[];
+        const resumo = d.resumo||{};
+        const verifItems = _verifItems||[];
+        const okCount = verifItems.filter(v=>v.state==='ok').length;
+        const alertaCount2 = verifItems.filter(v=>v.state==='alerta').length;
+        const dadosLoc = _dadosExtraidos||{};
+        const det = d.detalhesExtraidos||{};
+
+        // mini-stats right
+        const miniStats = [
+          [String(alertas.length), alertas.length>0?'Alertas!':'Alertas', alertas.length>0?[220,53,69]:[5,150,105]],
+          [okCount+'/'+verifItems.length, 'Verif. OK', [5,150,105]],
+          [alertaCount2>0?String(alertaCount2):'0', 'Verif. c/Alerta', alertaCount2>0?[220,53,69]:[5,150,105]],
+          [resumo.totalRegistros||'—', 'Registros', [37,99,235]],
+          [resumo.totalPaginas||'—', 'Páginas', [80,80,160]],
         ];
-        campos.forEach(([label, val]) => {
-          pdf.setFont('helvetica', 'bold');
-          pdf.text(`${label}:`, M, y);
-          pdf.setFont('helvetica', 'normal');
-          pdf.text(esc(val), M + 35, y);
-          y += 5.5;
+        let sx = M+92;
+        miniStats.forEach(([val,lbl,c])=>{
+          if(sx+21>W-M) return;
+          pdf.setFillColor(248,250,252); pdf.roundedRect(sx, y, 21, 28, 1.5,1.5,'F');
+          pdf.setDrawColor(220,225,235); pdf.setLineWidth(0.2); pdf.roundedRect(sx,y,21,28,1.5,1.5,'S');
+          pdf.setTextColor(...c); pdf.setFontSize(12); pdf.setFont('helvetica','bold');
+          const vlines = pdf.splitTextToSize(String(val), 19);
+          pdf.text(vlines[0], sx+1, y+10, {maxWidth:19});
+          pdf.setTextColor(90,90,110); pdf.setFontSize(6); pdf.setFont('helvetica','normal');
+          const llb = pdf.splitTextToSize(lbl, 19);
+          llb.forEach((l,i)=>pdf.text(l, sx+1, y+17+i*3.5));
+          sx+=23;
         });
+        y+=33;
 
-        const resumo = d.resumo || {};
-        if (resumo.totalRegistros) {
-          pdf.setFont('helvetica', 'bold');
-          pdf.text('Registros:', M, y);
-          pdf.setFont('helvetica', 'normal');
-          pdf.text(`${resumo.registrosAnalisados || resumo.totalRegistros} analisados de ${resumo.totalRegistros}`, M + 35, y);
-          y += 5.5;
-          pdf.setFont('helvetica', 'bold');
-          pdf.text('Valor Total:', M, y);
-          pdf.setFont('helvetica', 'normal');
-          pdf.text('R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }), M + 35, y);
-          y += 5.5;
+        // Valor total destacado
+        if(resumo.valorTotal){
+          checkPage(14);
+          pdf.setFillColor(240,253,244); pdf.roundedRect(M,y,maxW,12,1.5,1.5,'F');
+          pdf.setDrawColor(167,243,208); pdf.setLineWidth(0.3); pdf.roundedRect(M,y,maxW,12,1.5,1.5,'S');
+          pdf.setTextColor(5,150,105); pdf.setFontSize(10); pdf.setFont('helvetica','bold');
+          pdf.text('Valor Total Analisado: R$ '+(resumo.valorTotal).toLocaleString('pt-BR',{minimumFractionDigits:2}), M+4, y+8);
+          y+=16;
         }
-        y += 5;
+        y+=2;
 
-        // --- ALERTAS ---
-        const alertas = d.alertas || [];
-        checkPage(15);
-        pdf.setTextColor(26, 26, 46);
-        pdf.setFontSize(13);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text(`Alertas Encontrados (${alertas.length})`, M, y);
-        y += 2;
-        pdf.line(M, y, M + maxW, y);
-        y += 6;
+        // ── DADOS DO DOCUMENTO ────────────────────────────────────────
+        secTitle('1. DADOS DO DOCUMENTO');
+        const tamanhoFmt = d.tamanho>1048576?(d.tamanho/1048576).toFixed(1)+' MB':d.tamanho>1024?(d.tamanho/1024).toFixed(1)+' KB':(d.tamanho||0)+' bytes';
+        rowKV('Arquivo', d.nome_arquivo);
+        rowKV('Tipo MIME', d.tipo);
+        rowKV('Tamanho', tamanhoFmt);
+        rowKV('Data do Upload', d.data_upload);
+        rowKV('Registros', (resumo.registrosAnalisados||resumo.totalRegistros||0)+' analisados');
+        if(resumo.valorTotal) rowKV('Valor Total', 'R$ '+(resumo.valorTotal).toLocaleString('pt-BR',{minimumFractionDigits:2}));
+        rowKV('Páginas', String(resumo.totalPaginas||'—'));
+        y+=4;
 
-        if (alertas.length === 0) {
-          pdf.setFontSize(10);
-          pdf.setFont('helvetica', 'normal');
-          pdf.setTextColor(40, 167, 69);
-          pdf.text('Nenhum alerta encontrado. Documento dentro dos parâmetros esperados.', M, y);
-          y += 8;
+        // ── CNPJs ENCONTRADOS ─────────────────────────────────────────
+        const cnpjsDet = det.cnpjs||[];
+        const cnpjsLocal = Array.isArray(dadosLoc.cnpjs)&&typeof dadosLoc.cnpjs[0]==='string'?dadosLoc.cnpjs:[];
+        const totalCnpjs = cnpjsDet.length||cnpjsLocal.length;
+        secTitle('2. CNPJs ENCONTRADOS E ANÁLISE ('+totalCnpjs+')');
+
+        if(totalCnpjs===0){
+          pdf.setFontSize(9); pdf.setFont('helvetica','italic'); pdf.setTextColor(120,120,120);
+          pdf.text('Nenhum CNPJ identificado no documento.', M, y); y+=9;
+        } else if(cnpjsDet.length>0){
+          cnpjsDet.forEach((c,idx)=>{
+            const nSocios = c.socios?c.socios.length:0;
+            const estH = 8+(c.razao_social?5:0)+(c.situacao?5:0)+(c.data_abertura?5:0)+(c.porte?5:0)+(c.natureza_juridica?4:0)+(c.capital_social?5:0)+(c.cnae_principal?8:0)+(nSocios>0?5+nSocios*4.5:0);
+            checkPage(Math.min(estH+6, 60));
+            const yStart = y;
+            pdf.setFillColor(239,246,255); pdf.roundedRect(M,y,maxW,4,'F'); // header stripe
+            pdf.setFillColor(247,250,255); pdf.rect(M,y+4,maxW,100,'F'); // body (will be clipped)
+            pdf.setDrawColor(191,219,254); pdf.setLineWidth(0.3);
+
+            let by = y+6;
+            const cnpjFmt = (c.cnpj||'').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5');
+            pdf.setTextColor(29,78,216); pdf.setFontSize(11); pdf.setFont('helvetica','bold');
+            pdf.text(cnpjFmt, M+3, by); by+=5.5;
+
+            if(c.razao_social){ pdf.setTextColor(15,23,42); pdf.setFontSize(9); pdf.setFont('helvetica','bold'); const rl=pdf.splitTextToSize(c.razao_social,maxW-8); rl.forEach(l=>{checkPage(5);pdf.text(l,M+3,by);by+=4.5;}); }
+            if(c.situacao){ const isAtiv=(c.situacao||'').toLowerCase().includes('ativ'); pdf.setTextColor(isAtiv?5:220,isAtiv?150:53,isAtiv?105:69); pdf.setFontSize(8.5); pdf.setFont('helvetica','normal'); pdf.text('Situação Cadastral: '+c.situacao, M+3, by); by+=5; }
+            if(c.data_abertura){
+              const dt=new Date(c.data_abertura); const hoje=new Date();
+              let anos=hoje.getFullYear()-dt.getFullYear()-((hoje.getMonth()<dt.getMonth()||(hoje.getMonth()===dt.getMonth()&&hoje.getDate()<dt.getDate()))?1:0);
+              pdf.setTextColor(100,70,0); pdf.setFontSize(8.5); pdf.setFont('helvetica','normal');
+              pdf.text('Data de abertura: '+c.data_abertura+' ('+anos+' ano'+(anos!==1?'s':'')+' de atividade)', M+3, by); by+=5;
+            }
+            if(c.porte){ pdf.setTextColor(37,99,235); pdf.setFontSize(8.5); pdf.text('Porte: '+c.porte, M+3, by); by+=4.5; }
+            if(c.natureza_juridica){ pdf.setTextColor(109,40,217); pdf.setFontSize(8); pdf.text('Natureza jurídica: '+c.natureza_juridica, M+3, by); by+=4.5; }
+            if(c.capital_social){ pdf.setTextColor(6,78,59); pdf.setFontSize(8.5); pdf.text('Capital social: R$ '+Number(c.capital_social).toLocaleString('pt-BR',{minimumFractionDigits:2}), M+3, by); by+=5; }
+            if(c.cnae_principal){ checkPage(8); const cl=pdf.splitTextToSize('CNAE principal: '+c.cnae_principal,maxW-8); pdf.setTextColor(153,27,27); pdf.setFontSize(8); cl.slice(0,2).forEach(l=>{pdf.text(l,M+3,by);by+=4;}); }
+            if(nSocios>0){
+              checkPage(6+nSocios*5);
+              pdf.setTextColor(80,20,120); pdf.setFontSize(8.5); pdf.setFont('helvetica','bold');
+              pdf.text('Quadro Societário ('+nSocios+' sócio'+(nSocios!==1?'s':'')+'):', M+3, by); by+=5;
+              pdf.setFont('helvetica','normal'); pdf.setFontSize(8);
+              c.socios.forEach(s=>{ checkPage(5); pdf.setTextColor(60,20,100); pdf.text('  • '+s.nome+(s.qualificacao?' — '+s.qualificacao:''), M+5, by); by+=4.5; });
+            }
+            // Draw border around the box
+            pdf.setDrawColor(191,219,254); pdf.setLineWidth(0.3);
+            pdf.roundedRect(M, yStart, maxW, by-yStart+3, 1.5,1.5,'S');
+            y = by+6;
+          });
         } else {
-          alertas.forEach((a, i) => {
-            checkPage(18);
-            // Faixa de fundo alternada
-            if (i % 2 === 0) {
-              pdf.setFillColor(245, 245, 250);
-              pdf.rect(M, y - 4, maxW, a.detalhes ? 14 : 9, 'F');
-            }
-            // Ícone de severidade
-            const corAlerta = a.pontuacao >= 15 ? [220, 53, 69] : a.pontuacao >= 8 ? [255, 165, 0] : [255, 193, 7];
-            pdf.setFillColor(...corAlerta);
-            pdf.circle(M + 3, y - 0.5, 2, 'F');
-
-            pdf.setTextColor(50, 50, 50);
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'bold');
-            const descLines = pdf.splitTextToSize(`${i + 1}. ${a.descricao}`, maxW - 30);
-            pdf.text(descLines, M + 8, y);
-
-            pdf.setTextColor(150, 50, 50);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text(`+${a.pontuacao} pts`, M + maxW - 18, y);
-
-            y += descLines.length * 4.5;
-
-            if (a.detalhes) {
-              pdf.setTextColor(120, 120, 120);
-              pdf.setFontSize(8.5);
-              const detLines = pdf.splitTextToSize(a.detalhes, maxW - 12);
-              detLines.slice(0, 3).forEach((line) => {
-                checkPage(5);
-                pdf.text(line, M + 8, y);
-                y += 3.8;
-              });
-            }
-            y += 3;
+          // Fallback: sem enriquecimento
+          cnpjsLocal.forEach(cnpj=>{
+            checkPage(7);
+            pdf.setFontSize(9); pdf.setFont('courier','normal'); pdf.setTextColor(29,78,216);
+            pdf.text('• '+cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5'), M+4, y); y+=5.5;
           });
-        }
-        y += 4;
-
-        // --- TEXTO EXTRAÍDO ---
-        if (resumo.textoExtraido) {
-          checkPage(15);
-          pdf.setTextColor(26, 26, 46);
-          pdf.setFontSize(13);
-          pdf.setFont('helvetica', 'bold');
-          pdf.text('Texto Extraído do Documento', M, y);
-          y += 2;
-          pdf.line(M, y, M + maxW, y);
-          y += 6;
-
-          pdf.setFontSize(8);
-          pdf.setFont('courier', 'normal');
-          pdf.setTextColor(60, 60, 60);
-          // Limpa caracteres nulos/controle
-          const textoLimpo = resumo.textoExtraido.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
-          const linhasTexto = pdf.splitTextToSize(textoLimpo, maxW);
-          linhasTexto.forEach((line) => {
-            checkPage(5);
-            pdf.text(line, M, y);
-            y += 3.5;
-          });
+          y+=4;
         }
 
-        // --- RODAPÉ em cada página ---
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let p = 1; p <= totalPages; p++) {
+        // ── DADOS EXTRAÍDOS ───────────────────────────────────────────
+        const valores = det.valores||(dadosLoc.valores||[]);
+        const datas = det.datas||(dadosLoc.datas||[]);
+        const nds = det.nds||(dadosLoc.nds||[]);
+        const empenhos = det.empenhos||(dadosLoc.empenhos||[]);
+        const termos = dadosLoc.termos||[];
+        const temDados = valores.length||datas.length||nds.length||empenhos.length||termos.length;
+
+        if(temDados){
+          secTitle('3. DADOS EXTRAÍDOS DO DOCUMENTO');
+
+          function dataBlock(label, items, maxShow, colorRGB) {
+            if(!items||items.length===0) return;
+            checkPage(14);
+            pdf.setFillColor(248,249,252); pdf.rect(M,y,maxW,6,'F');
+            pdf.setFont('helvetica','bold'); pdf.setFontSize(8.5); pdf.setTextColor(40,40,80);
+            pdf.text(label+' ('+items.length+')', M+3, y+4.5); y+=7.5;
+            pdf.setFont('helvetica','normal'); pdf.setFontSize(8); pdf.setTextColor(...(colorRGB||[40,40,40]));
+            const shown = items.slice(0,maxShow);
+            // Show in chunks across the page
+            const itemStr = shown.join('   ');
+            const lines = pdf.splitTextToSize(itemStr, maxW-6);
+            lines.slice(0,5).forEach(l=>{ checkPage(5); pdf.text(l, M+4, y); y+=4; });
+            if(items.length>maxShow){ pdf.setTextColor(140,140,160); pdf.text('...e mais '+(items.length-maxShow)+' itens', M+4, y); y+=4; }
+            y+=3;
+            hline();
+          }
+
+          const valoresStr = valores.map(v=>typeof v==='number'?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2}):String(v));
+          dataBlock('Valores Monetários', valoresStr, 30, [6,78,59]);
+          dataBlock('Datas Identificadas', datas, 40, [92,64,0]);
+          dataBlock('Naturezas de Despesa (ND)', nds, 25, [80,20,120]);
+          dataBlock('Números de Empenho', empenhos, 25, [153,27,27]);
+          dataBlock('Termos Jurídicos/Fiscais Detectados', termos, 60, [30,58,138]);
+          y+=2;
+        }
+
+        // ── VERIFICAÇÕES REALIZADAS ───────────────────────────────────
+        secTitle('4. VERIFICAÇÕES REALIZADAS ('+verifItems.length+')');
+
+        if(verifItems.length===0){
+          pdf.setFontSize(9); pdf.setFont('helvetica','italic'); pdf.setTextColor(120,120,120);
+          pdf.text('Nenhuma verificação disponível.', M, y); y+=9;
+        } else {
+          // Header
+          pdf.setFillColor(230,235,245); pdf.rect(M,y,maxW,7,'F');
+          pdf.setFontSize(7.5); pdf.setFont('helvetica','bold'); pdf.setTextColor(40,40,80);
+          pdf.text('Verificação', M+6, y+4.8);
+          pdf.text('Status', M+maxW-25, y+4.8);
+          y+=8;
+
+          let prevCat='';
+          verifItems.forEach((v,idx)=>{
+            if(v.categoria!==prevCat){
+              prevCat=v.categoria; checkPage(9);
+              pdf.setFillColor(244,246,252); pdf.rect(M,y,maxW,6.5,'F');
+              pdf.setFontSize(6.5); pdf.setFont('helvetica','bold'); pdf.setTextColor(100,100,130);
+              pdf.text(v.categoria.toUpperCase(), M+3, y+4.5); y+=7.5;
+            }
+            const hasDetail = !!v.detail;
+            const needH = hasDetail ? 12 : 7.5;
+            checkPage(needH+1);
+            if(idx%2===0){ pdf.setFillColor(253,253,255); pdf.rect(M,y,maxW,needH,'F'); }
+            // Colored dot
+            const dotColor = v.state==='alerta'?[220,53,69]:v.state==='ok'?[5,150,105]:[37,99,235];
+            pdf.setFillColor(...dotColor); pdf.circle(M+2.5, y+needH/2, 1.5,'F');
+            // Name
+            const nls = pdf.splitTextToSize(v.icon+' '+v.nome, maxW-36);
+            pdf.setFontSize(8); pdf.setFont('helvetica', v.state==='alerta'?'bold':'normal');
+            pdf.setTextColor(v.state==='alerta'?220:15, v.state==='alerta'?53:23, v.state==='alerta'?69:42);
+            pdf.text(nls[0], M+6, y+5.5);
+            if(hasDetail){
+              const dl = pdf.splitTextToSize(v.detail, maxW-36);
+              pdf.setFontSize(7); pdf.setFont('helvetica','normal'); pdf.setTextColor(100,100,120);
+              dl.slice(0,2).forEach((l,i)=>pdf.text(l, M+6, y+9.5+i*3.5));
+            }
+            // Status label
+            const badges = {ok:'✓ OK',alerta:'! ALERTA',info:'i INFO'};
+            const bColors = {ok:[5,150,105],alerta:[220,53,69],info:[37,99,235]};
+            pdf.setFontSize(7); pdf.setFont('helvetica','bold'); pdf.setTextColor(...(bColors[v.state]||[80,80,80]));
+            pdf.text(badges[v.state]||'—', M+maxW-23, y+5.5);
+            if(v.pts){ pdf.setTextColor(220,53,69); pdf.setFontSize(7); pdf.text(v.pts, M+maxW-10, y+5.5); }
+            y+=needH+0.5;
+          });
+          y+=4;
+        }
+
+        // ── ALERTAS DETALHADOS ────────────────────────────────────────
+        const corAlertaBg = alertas.length>0?[220,53,69]:[5,150,105];
+        secTitle('5. ALERTAS ENCONTRADOS ('+alertas.length+')', corAlertaBg);
+
+        if(alertas.length===0){
+          checkPage(16);
+          pdf.setFillColor(240,253,244); pdf.roundedRect(M,y,maxW,14,2,2,'F');
+          pdf.setDrawColor(167,243,208); pdf.setLineWidth(0.3); pdf.roundedRect(M,y,maxW,14,2,2,'S');
+          pdf.setTextColor(5,150,105); pdf.setFontSize(10); pdf.setFont('helvetica','bold');
+          pdf.text('✓ Nenhum alerta — documento dentro dos parâmetros esperados.', M+5, y+9);
+          y+=18;
+        } else {
+          [...alertas].sort((a,b)=>(b.pontuacao||0)-(a.pontuacao||0)).forEach((a,i)=>{
+            const lnDesc = pdf.splitTextToSize((i+1)+'. '+a.descricao, maxW-28);
+            const lnDet = a.detalhes ? pdf.splitTextToSize(a.detalhes, maxW-12) : [];
+            const lnFund = a.fundamentacao ? pdf.splitTextToSize('Fundamento legal: '+a.fundamentacao, maxW-12) : [];
+            const totalH = 4+lnDesc.length*5+(lnDet.length?Math.min(lnDet.length,3)*4+3:0)+(lnFund.length?Math.min(lnFund.length,2)*3.8+2:0)+4;
+            checkPage(totalH+4);
+
+            const c = a.pontuacao>=15?[220,53,69]:a.pontuacao>=8?[217,119,6]:[234,179,8];
+            pdf.setFillColor(...c); pdf.rect(M,y,3.5,totalH,'F');
+            pdf.setFillColor(i%2===0?252:248, i%2===0?252:250, i%2===0?255:254);
+            pdf.rect(M+3.5, y, maxW-3.5, totalH,'F');
+            pdf.setDrawColor(220,220,230); pdf.setLineWidth(0.2); pdf.rect(M,y,maxW,totalH,'S');
+
+            let by = y+5.5;
+            // Tipo chip
+            pdf.setFillColor(230,230,245); pdf.roundedRect(M+5, y+1.5, pdf.getTextWidth(a.tipo||'')+6, 4.5, 1,1,'F');
+            pdf.setTextColor(80,80,140); pdf.setFontSize(6.5); pdf.setFont('helvetica','bold'); pdf.text(a.tipo||'', M+8, y+5.3);
+            // Pontuação
+            pdf.setTextColor(...c); pdf.setFontSize(9); pdf.setFont('helvetica','bold'); pdf.text('+'+a.pontuacao+' pts', M+maxW-18, y+5.5);
+            by = y+8;
+            // Descrição
+            pdf.setFontSize(9); pdf.setFont('helvetica','bold'); pdf.setTextColor(20,20,40);
+            lnDesc.forEach(l=>{ pdf.text(l, M+6, by); by+=5; });
+            // Detalhes
+            if(lnDet.length){
+              pdf.setFontSize(7.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(80,80,100);
+              lnDet.slice(0,3).forEach(l=>{ checkPage(4); pdf.text(l, M+8, by); by+=4; });
+              by+=1;
+            }
+            // Fundamentação
+            if(lnFund.length){
+              pdf.setFontSize(7.5); pdf.setFont('helvetica','italic'); pdf.setTextColor(37,99,235);
+              lnFund.slice(0,2).forEach(l=>{ checkPage(4); pdf.text(l, M+8, by); by+=4; });
+            }
+            y = by+5;
+          });
+        }
+        y+=4;
+
+        // ── QUADRO-RESUMO POR LEI ─────────────────────────────────────
+        secTitle('6. QUADRO-RESUMO POR BASE LEGAL');
+        if(alertas.length===0){
+          pdf.setFontSize(9); pdf.setFont('helvetica','italic'); pdf.setTextColor(5,150,105);
+          pdf.text('Nenhum alerta — todas as bases legais verificadas e conformes.', M, y); y+=9;
+        } else {
+          const porLei = {};
+          alertas.forEach(a=>{ const base=a.fundamentacao||'Outros/Não especificado'; if(!porLei[base]) porLei[base]=[]; porLei[base].push(a); });
+          // header
+          pdf.setFillColor(230,235,245); pdf.rect(M,y,maxW,7,'F');
+          pdf.setFontSize(7.5); pdf.setFont('helvetica','bold'); pdf.setTextColor(40,40,80);
+          pdf.text('Base Legal / Fundamento', M+3, y+5);
+          pdf.text('Alertas', M+100, y+5);
+          pdf.text('Qtd', M+maxW-10, y+5);
+          y+=8;
+          Object.entries(porLei).forEach(([lei,arr],idx)=>{
+            const leiL = pdf.splitTextToSize(lei, 80);
+            const nomeL = pdf.splitTextToSize(arr.map(a=>a.descricao).join(' | '), maxW-100);
+            const rowH = Math.max(leiL.length, nomeL.slice(0,3).length)*5+4;
+            checkPage(rowH+2);
+            if(idx%2===0){ pdf.setFillColor(250,250,255); pdf.rect(M,y,maxW,rowH,'F'); }
+            pdf.setFontSize(8); pdf.setFont('helvetica','bold'); pdf.setTextColor(37,99,235);
+            leiL.forEach((l,i)=>pdf.text(l, M+3, y+6+i*5));
+            pdf.setFont('helvetica','normal'); pdf.setTextColor(60,60,80); pdf.setFontSize(7.5);
+            nomeL.slice(0,3).forEach((l,i)=>pdf.text(l, M+100, y+6+i*5));
+            pdf.setFont('helvetica','bold'); pdf.setFontSize(11); pdf.setTextColor(220,53,69);
+            pdf.text(String(arr.length), M+maxW-8, y+rowH/2+3);
+            y+=rowH+1;
+          });
+        }
+        y+=6;
+
+        // ── RODAPÉ ────────────────────────────────────────────────────
+        const tp=pdf.internal.getNumberOfPages();
+        for(let p=1;p<=tp;p++){
           pdf.setPage(p);
-          pdf.setFillColor(240, 240, 245);
-          pdf.rect(0, H - 12, W, 12, 'F');
-          pdf.setFontSize(8);
-          pdf.setFont('helvetica', 'normal');
-          pdf.setTextColor(130, 130, 130);
-          pdf.text('Andre Fiscaliza - Sistema de Análise de Despesas Públicas', M, H - 5);
-          pdf.text(`Página ${p} de ${totalPages}`, W - M - 20, H - 5);
+          pdf.setFillColor(241,245,249); pdf.rect(0,H-12,W,12,'F');
+          pdf.setDrawColor(200,210,220); pdf.setLineWidth(0.25); pdf.line(0,H-12,W,H-12);
+          pdf.setFontSize(7.5); pdf.setFont('helvetica','normal'); pdf.setTextColor(130,130,150);
+          pdf.text('Andre Fiscaliza — Sistema de Análise de Despesas Públicas', M, H-5);
+          pdf.text('Página '+p+' de '+tp, W-M-18, H-5);
+          if(d.nome_arquivo){ pdf.setTextColor(160,160,180); pdf.text(d.nome_arquivo, W/2, H-5, {align:'center', maxWidth:80}); }
         }
-
-        pdf.save(`relatorio_${(d.nome_arquivo || 'analise').replace(/\.[^.]+$/, '')}_${new Date().toISOString().slice(0, 10)}.pdf`);
+        pdf.save('relatorio_'+(d.nome_arquivo||'analise').replace(/\.[^.]+$/,'')+'.pdf');
       }
       document.getElementById('btn-relatorio').addEventListener('click', baixarRelatorio);
 
-      (async function () {
+      /* ── Reanalisar ─── */
+      async function reanalisar(id) {
+        const btn = document.getElementById('btn-reanalisar');
+        btn.textContent = '⏳ Reanalisando...'; btn.disabled = true;
+        try {
+          const res = await fetch('/api/documentos/'+id+'/reanalisar', {method:'POST'});
+          if (res.ok) { window.location.reload(); }
+          else { btn.textContent = '❌ Erro'; setTimeout(()=>{btn.textContent='🔄 Reanalisar';btn.disabled=false;},2000); }
+        } catch { btn.textContent = '🔄 Reanalisar'; btn.disabled = false; }
+      }
+
+      /* ── Main ─── */
+      (async function() {
         const id = new URLSearchParams(window.location.search).get('id');
         if (!id) return;
-        const res = await fetch(`/api/documentos/${id}`);
-        if (!res.ok) return;
+        const res = await fetch('/api/documentos/' + encodeURIComponent(id));
+        if (!res.ok) { document.getElementById('doc-titulo').textContent = 'Documento não encontrado'; return; }
         const doc = await res.json();
         _docData = doc;
-        document.getElementById('score').textContent = `${doc.score}/100`;
-        document.getElementById('score-bar').style.width = `${doc.score}%`;
-        const nivelEl = document.getElementById('nivel');
+
+        // Score header
+        const score = doc.score || 0;
+        document.getElementById('score-val').textContent = score;
+        document.getElementById('score-bar').style.width = score + '%';
+        const scoreBox = document.getElementById('score-box');
+        scoreBox.style.background = score >= 70 ? 'linear-gradient(135deg,#dc2626,#b91c1c)' :
+                                    score >= 40 ? 'linear-gradient(135deg,#d97706,#b45309)' :
+                                    'linear-gradient(135deg,#059669,#047857)';
+        document.getElementById('doc-titulo').textContent = doc.nome_arquivo || 'Documento';
+        const tamanhoFmt = doc.tamanho > 1048576 ? (doc.tamanho/1048576).toFixed(1)+' MB' :
+                           doc.tamanho > 1024 ? (doc.tamanho/1024).toFixed(1)+' KB' : (doc.tamanho||0)+' bytes';
+        document.getElementById('doc-meta').textContent = doc.tipo + ' · ' + tamanhoFmt + ' · ' + (doc.data_upload || '');
+        const nivelEl = document.getElementById('nivel-badge');
         nivelEl.textContent = doc.nivel;
-        nivelEl.className = `badge ${String(doc.nivel).toLowerCase()}`;
-        const alertas = document.getElementById('alertas');
-        alertas.innerHTML = '';
-        (doc.alertas || []).forEach((a) => {
-          const li = document.createElement('li');
-          const titulo = document.createElement('strong');
-          titulo.textContent = `⚠️ ${a.descricao} (+${a.pontuacao})`;
-          li.appendChild(titulo);
-          if (a.detalhes) {
-            const det = document.createElement('div');
-            det.style.cssText = 'font-size:0.85em;color:#666;margin-top:2px;';
-            det.textContent = a.detalhes;
-            li.appendChild(det);
-          }
-          alertas.appendChild(li);
-        });
+        nivelEl.className = 'badge ' + String(doc.nivel||'').toLowerCase();
 
-        const resumoEl = document.getElementById('resumo-stats');
-        const resumo = doc.resumo || (doc.alertas ? {} : null);
-        if (resumo && resumo.totalRegistros) {
-          resumoEl.innerHTML = '';
-          const items = [
-            { label: '📋 Registros', value: resumo.totalRegistros },
-            { label: '💰 Valor Total', value: 'R$ ' + (resumo.valorTotal || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) },
-            { label: '🔍 Analisados', value: resumo.registrosAnalisados }
-          ];
-          items.forEach((item) => {
-            const card = document.createElement('article');
-            card.className = 'card';
-            card.innerHTML = `${item.label} <h2>${item.value}</h2>`;
-            resumoEl.appendChild(card);
-          });
-        }
+        // Score bar color
+        const bar = document.getElementById('score-bar');
+        bar.style.background = score >= 70 ? 'linear-gradient(90deg,#dc2626,#ef4444)' :
+                               score >= 40 ? 'linear-gradient(90deg,#d97706,#f59e0b)' :
+                               'linear-gradient(90deg,#059669,#10b981)';
 
-        const dadosEl = document.getElementById('dados-extraidos');
-        dadosEl.innerHTML = '';
-        const campos = [
-          ['Nome do arquivo', doc.nome_arquivo],
-          ['Tipo', doc.tipo],
-          ['Tamanho', doc.tamanho > 1024 ? (doc.tamanho / 1024).toFixed(1) + ' KB' : doc.tamanho + ' bytes'],
-          ['Upload', doc.data_upload]
+        // Reanalisar button
+        const btnReanalise = document.getElementById('btn-reanalisar');
+        btnReanalise.style.display = 'inline-block';
+        btnReanalise.addEventListener('click', () => reanalisar(doc.id));
+
+        // Resumo
+        const alertas = doc.alertas || [];
+        const resumo = doc.resumo || {};
+        const texto = resumo.textoExtraido || '';
+        const dadosExtraidos = doc.detalhesExtraidos || analisarTexto(texto);
+        _dadosExtraidos = dadosExtraidos;
+
+        // Verificações
+        const verifResult = buildVerificacoes(alertas, texto, dadosExtraidos);
+
+        // Resumo grid
+        const grid = document.getElementById('resumo-grid');
+        const totalPontos = alertas.reduce((s,a) => s + (a.pontuacao||0), 0);
+        const statsData = [
+          { val: score+'/100', lbl: 'Score de Risco', cls: score >= 70 ? 'red' : score >= 40 ? 'amber' : 'green' },
+          { val: alertas.length, lbl: 'Alertas Encontrados', cls: alertas.length > 0 ? 'red' : 'green' },
+          { val: totalPontos, lbl: 'Pontos de Risco', cls: totalPontos > 40 ? 'red' : totalPontos > 20 ? 'amber' : 'green' },
+          { val: verifResult.ok, lbl: 'Verificações OK', cls: 'green' },
+          { val: verifResult.alerta, lbl: 'Verificações c/ Alerta', cls: verifResult.alerta > 0 ? 'red' : 'green' },
+          { val: resumo.totalRegistros || dadosExtraidos.cnpjs.length || '—', lbl: 'Registros', cls: 'blue' },
+          { val: resumo.valorTotal ? 'R$ '+(resumo.valorTotal).toLocaleString('pt-BR',{minimumFractionDigits:2}) : dadosExtraidos.valores.length+' encontrados', lbl: 'Valor Total', cls: 'blue' },
+          { val: texto.length.toLocaleString('pt-BR'), lbl: 'Caracteres Extraídos', cls: 'blue' },
         ];
-        campos.forEach(([label, value]) => {
-          const tr = document.createElement('tr');
-          const td1 = document.createElement('td'); td1.textContent = label;
-          const td2 = document.createElement('td'); td2.textContent = String(value);
-          tr.appendChild(td1); tr.appendChild(td2);
-          dadosEl.appendChild(tr);
+        grid.innerHTML = '';
+        statsData.forEach(s => {
+          const div = document.createElement('div');
+          div.className = 'mini-stat ' + s.cls;
+          div.innerHTML = '<div class="val">' + s.val + '</div><div class="lbl">' + s.lbl + '</div>';
+          grid.appendChild(div);
         });
 
-        // Mostra texto extraído do PDF, se houver
-        if (resumo && resumo.textoExtraido) {
-          const h3 = document.createElement('h3');
-          h3.textContent = 'Texto extraído do documento';
-          const pre = document.createElement('pre');
-          pre.style.cssText = 'background:#f5f5f5;padding:12px;border-radius:6px;max-height:400px;overflow:auto;font-size:0.85em;white-space:pre-wrap;word-break:break-word;';
-          pre.textContent = resumo.textoExtraido;
-          const container = document.querySelector('.container');
-          const lastP = container.querySelector('p:last-of-type');
-          container.insertBefore(h3, lastP);
-          container.insertBefore(pre, lastP);
+        // Alertas
+        buildAlertas(alertas);
+
+        // Dados extraídos
+        buildDadosExtraidos(dadosExtraidos);
+
+        // Páginas
+        buildPaginas(resumo.paginas || [], resumo.totalPaginas || 0);
+
+        // Texto
+        if (texto.length > 0) {
+          document.getElementById('texto-info').textContent = texto.length.toLocaleString('pt-BR') + ' caracteres extraídos. CNPJs e valores destacados.';
+          document.getElementById('texto-viewer').innerHTML = highlightTexto(texto);
         }
+
+        // Doc table
+        buildDocTable(doc);
+        // Gráficos
+        RelatorioGraficos.loadChartJs(() => {
+          RelatorioGraficos.renderAlertasPie(alertas);
+          RelatorioGraficos.renderAlertasBar(alertas);
+        });
+
+        // Quadro-resumo por lei/decreto
+        function buildQuadroLegal(alertas) {
+          const quadro = document.getElementById('quadro-legal');
+          if (!alertas || alertas.length === 0) {
+            quadro.innerHTML = '<div style="color:#059669;font-weight:600;">Nenhum alerta com base legal encontrado.</div>';
+            return;
+          }
+          // Agrupa por fundamentacao
+          const porLei = {};
+          alertas.forEach(a => {
+            const base = a.fundamentacao || 'Outros/Não especificado';
+            if (!porLei[base]) porLei[base] = [];
+            porLei[base].push(a);
+          });
+          // Monta tabela
+          let html = '<h3 class="sec-title" style="margin-top:0;">📚 Quadro-Resumo por Lei/Decreto</h3>';
+          html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.97em;background:#f9fafb;">';
+          html += '<thead><tr style="background:#e0e7ef;"><th style="padding:8px 10px;text-align:left;">Lei/Decreto/Fundamento</th><th style="padding:8px 10px;text-align:left;">Alertas Relacionados</th><th style="padding:8px 10px;text-align:center;">Total</th></tr></thead><tbody>';
+          Object.entries(porLei).forEach(([lei, arr]) => {
+            html += '<tr>' +
+              '<td style="padding:7px 10px;font-weight:600;color:#2563eb;min-width:180px;">' + lei + '</td>' +
+              '<td style="padding:7px 10px;">' + arr.map(a => '<span style="display:inline-block;background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:4px;margin:2px 2px 2px 0;font-size:.93em;">'+a.descricao+'</span>').join(' ') + '</td>' +
+              '<td style="padding:7px 10px;text-align:center;font-weight:700;">' + arr.length + '</td>' +
+              '</tr>';
+          });
+          html += '</tbody></table></div>';
+          quadro.innerHTML = html;
+        }
+        buildQuadroLegal(alertas);
       })();
     </script>
-        <footer class="footer">
-          Andre de Jesus Oliveira © 2026 · Sistema de Análise de Despesas Públicas
-        </footer>
-      </div>
-    </div>
   </body>
 </html>
