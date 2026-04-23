@@ -182,6 +182,7 @@
             <div class="tab-bar" id="tab-bar">
               <button class="tab-btn active" data-tab="tab-verificacoes">🔍 Verificações</button>
               <button class="tab-btn" data-tab="tab-alertas">🚨 Alertas <span id="alertas-badge" style="background:var(--gray-200);padding:1px 6px;border-radius:10px;font-size:.75em;margin-left:4px;">0</span></button>
+              <button class="tab-btn" data-tab="tab-cnpjs">🏢 CNPJs <span id="cnpjs-badge" style="background:var(--gray-200);padding:1px 6px;border-radius:10px;font-size:.75em;margin-left:4px;">0</span></button>
               <button class="tab-btn" data-tab="tab-dados">📋 Dados Extraídos</button>
               <button class="tab-btn" data-tab="tab-paginas">📄 Por Página</button>
               <button class="tab-btn" data-tab="tab-texto">📝 Texto Completo</button>
@@ -192,6 +193,16 @@
             <div class="tab-content active" id="tab-verificacoes">
               <p style="font-size:.82em;color:var(--gray-500);margin:0 0 12px;">Todas as regras aplicadas pelo motor de análise. ✅ Conforme · 🚨 Alerta encontrado · ℹ️ Informação</p>
               <ul class="verif-list" id="verif-list"></ul>
+            </div>
+
+            <!-- TAB: CNPJs -->
+            <div class="tab-content" id="tab-cnpjs">
+              <p style="font-size:.82em;color:var(--gray-500);margin:0 0 12px;">Ficha completa de todos os CNPJs identificados no documento, com dados da Receita Federal (BrasilAPI).</p>
+              <div id="cnpjs-container"></div>
+              <div id="cnpjs-vazio" style="display:none;text-align:center;padding:24px;color:var(--gray-400);">
+                <div style="font-size:2rem;margin-bottom:8px;">🔍</div>
+                <p>Nenhum CNPJ identificado neste documento.</p>
+              </div>
             </div>
 
             <!-- TAB: Alertas -->
@@ -434,6 +445,128 @@
         });
 
         return { ok: okCount, alerta: alertaCount, info: infoCount };
+      }
+
+      async function buildCnpjs(dadosExtraidos) {
+        const container = document.getElementById('cnpjs-container');
+        const vazio = document.getElementById('cnpjs-vazio');
+        const badge = document.getElementById('cnpjs-badge');
+        container.innerHTML = '';
+
+        const cnpjs = dadosExtraidos.cnpjs || [];
+        badge.textContent = cnpjs.length;
+
+        if (cnpjs.length === 0) {
+          vazio.style.display = 'block';
+          return;
+        }
+        vazio.style.display = 'none';
+        badge.style.background = '#dbeafe';
+        badge.style.color = '#1d4ed8';
+
+        // Enriquece CNPJs sem razao_social via BrasilAPI (browser-side)
+        const isObjeto = typeof cnpjs[0] === 'object' && cnpjs[0] !== null;
+        let cnpjsEnriquecidos = isObjeto ? [...cnpjs] : cnpjs.map(c => ({ cnpj: c }));
+
+        const semDados = cnpjsEnriquecidos.filter(c => !c.razao_social);
+        if (semDados.length > 0) {
+          const loadingMsg = document.createElement('p');
+          loadingMsg.id = 'cnpjs-loading';
+          loadingMsg.style.cssText = 'color:#6b7280;font-size:.85em;margin:8px 0;';
+          loadingMsg.textContent = '⏳ Consultando Receita Federal (BrasilAPI)...';
+          container.appendChild(loadingMsg);
+
+          await Promise.allSettled(semDados.map(async (c) => {
+            try {
+              const r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + c.cnpj.replace(/\D/g,''));
+              if (r.ok) {
+                const info = await r.json();
+                const idx = cnpjsEnriquecidos.findIndex(x => x.cnpj === c.cnpj);
+                if (idx >= 0) {
+                  cnpjsEnriquecidos[idx] = {
+                    cnpj: c.cnpj,
+                    razao_social: info.razao_social,
+                    situacao: info.descricao_situacao_cadastral,
+                    data_abertura: info.data_inicio_atividade,
+                    porte: info.porte,
+                    natureza_juridica: info.natureza_juridica,
+                    capital_social: info.capital_social,
+                    cnae_principal: info.cnae_fiscal_descricao,
+                    socios: info.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+                  };
+                }
+              }
+            } catch { /* BrasilAPI indisponível */ }
+          }));
+
+          const loadEl = document.getElementById('cnpjs-loading');
+          if (loadEl) loadEl.remove();
+        }
+
+        cnpjsEnriquecidos.forEach((c) => {
+          const cnpj = c.cnpj || '';
+          const cnpjFmt = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+
+          const card = document.createElement('div');
+          card.style.cssText = 'background:#f8faff;border:1px solid #bfdbfe;border-left:4px solid #2563eb;border-radius:6px;padding:14px 16px;margin-bottom:12px;';
+
+          let html = '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">';
+          html += '<span style="font-family:monospace;font-size:1rem;font-weight:700;color:#1d4ed8;">' + esc(cnpjFmt) + '</span>';
+
+          if (c.situacao) {
+            const ativo = (c.situacao || '').toUpperCase().includes('ATIV');
+            const corSit = ativo ? '#059669' : '#dc2626';
+            const bgSit = ativo ? '#d1fae5' : '#fee2e2';
+            html += '<span style="background:' + bgSit + ';color:' + corSit + ';padding:2px 10px;border-radius:10px;font-size:.78em;font-weight:600;">' + esc(c.situacao) + '</span>';
+          }
+          html += '</div>';
+
+          if (c.razao_social) {
+            html += '<table style="width:100%;font-size:.83em;border-collapse:collapse;">';
+
+            const rows = [
+              ['🏢 Razão Social',       c.razao_social],
+              ['📅 Data de Abertura',   c.data_abertura ? (() => {
+                const dt = new Date(c.data_abertura);
+                const hoje = new Date();
+                let anos = hoje.getFullYear() - dt.getFullYear();
+                if (hoje.getMonth() < dt.getMonth() || (hoje.getMonth() === dt.getMonth() && hoje.getDate() < dt.getDate())) anos--;
+                return c.data_abertura + ' (' + anos + ' ano' + (anos !== 1 ? 's' : '') + ' de atividade)';
+              })() : null],
+              ['📦 Porte',              c.porte],
+              ['⚖️ Natureza Jurídica',  c.natureza_juridica],
+              ['💰 Capital Social',     c.capital_social ? 'R$ ' + Number(c.capital_social).toLocaleString('pt-BR', {minimumFractionDigits:2}) : null],
+              ['🏭 CNAE Principal',     c.cnae_principal],
+            ];
+
+            rows.forEach(([label, value]) => {
+              if (!value) return;
+              html += '<tr>' +
+                '<td style="padding:4px 8px 4px 0;color:#6b7280;font-weight:600;white-space:nowrap;width:160px;">' + label + '</td>' +
+                '<td style="padding:4px 0;color:#111827;">' + esc(value) + '</td>' +
+                '</tr>';
+            });
+            html += '</table>';
+
+            if (c.socios && c.socios.length > 0) {
+              html += '<div style="margin-top:10px;border-top:1px solid #dbeafe;padding-top:8px;">';
+              html += '<div style="font-size:.82em;font-weight:600;color:#7c3aed;margin-bottom:6px;">👥 Quadro Societário (' + c.socios.length + ' sócio' + (c.socios.length !== 1 ? 's' : '') + ')</div>';
+              html += '<table style="width:100%;font-size:.8em;border-collapse:collapse;">';
+              c.socios.forEach((s, si) => {
+                html += '<tr style="background:' + (si % 2 === 0 ? '#f5f3ff' : '#fff') + ';">' +
+                  '<td style="padding:4px 8px;color:#7c3aed;font-weight:600;">• ' + esc(s.nome || '—') + '</td>' +
+                  '<td style="padding:4px 8px;color:#6b7280;">' + esc(s.qualificacao || '') + '</td>' +
+                  '</tr>';
+              });
+              html += '</table></div>';
+            }
+          } else {
+            html += '<span style="color:#6b7280;font-size:.82em;">Dados da Receita Federal não disponíveis.</span>';
+          }
+
+          card.innerHTML = html;
+          container.appendChild(card);
+        });
       }
 
       function buildAlertas(alertas) {
@@ -1026,7 +1159,16 @@
         const alertas = doc.alertas || [];
         const resumo = doc.resumo || {};
         const texto = resumo.textoExtraido || '';
-        const dadosExtraidos = doc.detalhesExtraidos || analisarTexto(texto);
+        const dadosTexto = analisarTexto(texto);
+        const det = doc.detalhesExtraidos || {};
+        const dadosExtraidos = {
+          cnpjs:    det.cnpjs    || dadosTexto.cnpjs    || [],
+          valores:  det.valores  || dadosTexto.valores  || [],
+          datas:    det.datas    || dadosTexto.datas    || [],
+          empenhos: det.empenhos || dadosTexto.empenhos || [],
+          nds:      det.nds      || dadosTexto.nds      || [],
+          termos:   det.termos   || dadosTexto.termos   || [],
+        };
         _dadosExtraidos = dadosExtraidos;
 
         // Verificações
@@ -1058,6 +1200,9 @@
 
         // Dados extraídos
         buildDadosExtraidos(dadosExtraidos);
+
+        // CNPJs (aba dedicada)
+        buildCnpjs(dadosExtraidos);
 
         // Páginas
         buildPaginas(resumo.paginas || [], resumo.totalPaginas || 0);

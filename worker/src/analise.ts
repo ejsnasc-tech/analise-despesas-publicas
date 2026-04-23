@@ -1,4 +1,4 @@
-export interface Alerta {
+﻿export interface Alerta {
   tipo: string;
   descricao: string;
   pontuacao: number;
@@ -42,24 +42,24 @@ export interface ResultadoAnalise {
   };
 }
 
-/* ── Limites legais (Lei 14.133/2021, art. 75) ──────────────────── */
-const LIMITE_DISPENSA_SERVICOS = 59906.02;   // Art. 75, II – atualizado Decreto 12.343/2024
-const LIMITE_DISPENSA_OBRAS = 119812.03;     // Art. 75, I – atualizado Decreto 12.343/2024
+/* â”€â”€ Limites legais (Lei 14.133/2021, art. 75) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+const LIMITE_DISPENSA_SERVICOS = 59906.02;   // Art. 75, II â€“ atualizado Decreto 12.343/2024
+const LIMITE_DISPENSA_OBRAS = 119812.03;     // Art. 75, I â€“ atualizado Decreto 12.343/2024
 const LIMITE_DISPENSA_PEQUENO_VALOR = 59906.02;
 const ZSCORE_THRESHOLD = 3.0;
 const JANELA_FRACIONAMENTO_DIAS = 30;
 const LIMITE_MEI = 81000;
 
-/* ── Classificação de Natureza da Despesa / Subelemento ─────────
- *  Portaria STN nº 448/2002 + Resolução TCE/SE nº 267/2011
+/* â”€â”€ ClassificaÃ§Ã£o de Natureza da Despesa / Subelemento â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ *  Portaria STN nÂº 448/2002 + ResoluÃ§Ã£o TCE/SE nÂº 267/2011
  *  Formato: CDMMEESS  (Cat.Grupo.Mod.Elemento.Subelemento)
  *  Exemplo: 31901101 = 3.1.90.11.01 = Vencimento servidor efetivo
- * ─────────────────────────────────────────────────────────────── */
+ * â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type VinculoServidor = "EFETIVO" | "COMISSIONADO" | "TEMPORARIO" | "TODOS";
 
 interface ClassificacaoDespesa {
-  codigo: string;       // Elemento (6 dígitos) ou Elemento+Sub (8 dígitos)
+  codigo: string;       // Elemento (6 dÃ­gitos) ou Elemento+Sub (8 dÃ­gitos)
   descricao: string;
   vinculos: VinculoServidor[];
 }
@@ -73,55 +73,55 @@ interface RegraClassificacaoDB {
 }
 
 /**
- * Tabela de classificação da despesa de pessoal conforme
- * Portaria STN 448/2002 e Resolução TCE/SE 267/2011.
- * Cada entrada mapeia um código de natureza/subelemento aos vínculos válidos.
+ * Tabela de classificaÃ§Ã£o da despesa de pessoal conforme
+ * Portaria STN 448/2002 e ResoluÃ§Ã£o TCE/SE 267/2011.
+ * Cada entrada mapeia um cÃ³digo de natureza/subelemento aos vÃ­nculos vÃ¡lidos.
  */
 const CLASSIFICACAO_PESSOAL: ClassificacaoDespesa[] = [
-  // ── 3.1.90.04 – Contratação por Tempo Determinado ──────────────
-  { codigo: "319004",   descricao: "Contratação por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
-  { codigo: "31900401", descricao: "Contratação por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
+  // â”€â”€ 3.1.90.04 â€“ ContrataÃ§Ã£o por Tempo Determinado â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { codigo: "319004",   descricao: "ContrataÃ§Ã£o por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
+  { codigo: "31900401", descricao: "ContrataÃ§Ã£o por Tempo Determinado",          vinculos: ["TEMPORARIO"] },
 
-  // ── 3.1.90.11 – Vencimentos e Vantagens Fixas – Pessoal Civil ──
+  // â”€â”€ 3.1.90.11 â€“ Vencimentos e Vantagens Fixas â€“ Pessoal Civil â”€â”€
   { codigo: "319011",   descricao: "Vencimentos e Vantagens Fixas",              vinculos: ["EFETIVO", "COMISSIONADO"] },
   { codigo: "31901101", descricao: "Vencimento",                                 vinculos: ["EFETIVO"] },
   { codigo: "31901102", descricao: "Soldo",                                      vinculos: ["EFETIVO"] },
-  { codigo: "31901103", descricao: "Subsídio",                                   vinculos: ["COMISSIONADO", "EFETIVO"] },
-  { codigo: "31901113", descricao: "Gratificação por exercício de cargo",         vinculos: ["COMISSIONADO"] },
-  { codigo: "31901122", descricao: "Gratificação de tempo de serviço",            vinculos: ["EFETIVO"] },
-  { codigo: "31901130", descricao: "Vencimentos de cargo em comissão",            vinculos: ["COMISSIONADO"] },
-  { codigo: "31901134", descricao: "Gratificação natalina (13º)",                 vinculos: ["EFETIVO", "COMISSIONADO"] },
-  { codigo: "31901140", descricao: "Salário-família",                             vinculos: ["EFETIVO"] },
-  { codigo: "31901141", descricao: "Férias – abono constitucional",               vinculos: ["EFETIVO", "COMISSIONADO"] },
-  { codigo: "31901144", descricao: "Férias indenizadas",                          vinculos: ["EFETIVO", "COMISSIONADO"] },
-  { codigo: "31901146", descricao: "Auxílio-alimentação",                         vinculos: ["EFETIVO", "COMISSIONADO"] },
-  { codigo: "31901199", descricao: "Outras vantagens fixas – pessoal civil",      vinculos: ["EFETIVO"] },
+  { codigo: "31901103", descricao: "SubsÃ­dio",                                   vinculos: ["COMISSIONADO", "EFETIVO"] },
+  { codigo: "31901113", descricao: "GratificaÃ§Ã£o por exercÃ­cio de cargo",         vinculos: ["COMISSIONADO"] },
+  { codigo: "31901122", descricao: "GratificaÃ§Ã£o de tempo de serviÃ§o",            vinculos: ["EFETIVO"] },
+  { codigo: "31901130", descricao: "Vencimentos de cargo em comissÃ£o",            vinculos: ["COMISSIONADO"] },
+  { codigo: "31901134", descricao: "GratificaÃ§Ã£o natalina (13Âº)",                 vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901140", descricao: "SalÃ¡rio-famÃ­lia",                             vinculos: ["EFETIVO"] },
+  { codigo: "31901141", descricao: "FÃ©rias â€“ abono constitucional",               vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901144", descricao: "FÃ©rias indenizadas",                          vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901146", descricao: "AuxÃ­lio-alimentaÃ§Ã£o",                         vinculos: ["EFETIVO", "COMISSIONADO"] },
+  { codigo: "31901199", descricao: "Outras vantagens fixas â€“ pessoal civil",      vinculos: ["EFETIVO"] },
 
-  // ── 3.1.90.13 – Obrigações Patronais ───────────────────────────
-  { codigo: "319013",   descricao: "Obrigações Patronais",                       vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+  // â”€â”€ 3.1.90.13 â€“ ObrigaÃ§Ãµes Patronais â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { codigo: "319013",   descricao: "ObrigaÃ§Ãµes Patronais",                       vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
 
-  // ── 3.1.90.16 – Outras Despesas Variáveis – Pessoal Civil ─────
-  { codigo: "319016",   descricao: "Outras Despesas Variáveis – Pessoal Civil",  vinculos: ["EFETIVO"] },
+  // â”€â”€ 3.1.90.16 â€“ Outras Despesas VariÃ¡veis â€“ Pessoal Civil â”€â”€â”€â”€â”€
+  { codigo: "319016",   descricao: "Outras Despesas VariÃ¡veis â€“ Pessoal Civil",  vinculos: ["EFETIVO"] },
   { codigo: "31901601", descricao: "Horas-extras",                               vinculos: ["EFETIVO"] },
 
-  // ── 3.1.90.91 – Sentenças Judiciais ───────────────────────────
-  { codigo: "319091",   descricao: "Sentenças Judiciais",                        vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+  // â”€â”€ 3.1.90.91 â€“ SentenÃ§as Judiciais â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { codigo: "319091",   descricao: "SentenÃ§as Judiciais",                        vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
 
-  // ── 3.1.90.92 – Despesas de Exercícios Anteriores ─────────────
-  { codigo: "319092",   descricao: "Despesas de Exercícios Anteriores",          vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
+  // â”€â”€ 3.1.90.92 â€“ Despesas de ExercÃ­cios Anteriores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { codigo: "319092",   descricao: "Despesas de ExercÃ­cios Anteriores",          vinculos: ["EFETIVO", "COMISSIONADO", "TEMPORARIO"] },
 
-  // ── 3.1.90.94 – Indenizações e Restituições Trabalhistas ──────
-  { codigo: "319094",   descricao: "Indenizações e Restituições Trabalhistas",   vinculos: ["EFETIVO"] },
-  { codigo: "31909401", descricao: "Indenizações Trabalhistas – servidor efetivo", vinculos: ["EFETIVO"] },
+  // â”€â”€ 3.1.90.94 â€“ IndenizaÃ§Ãµes e RestituiÃ§Ãµes Trabalhistas â”€â”€â”€â”€â”€â”€
+  { codigo: "319094",   descricao: "IndenizaÃ§Ãµes e RestituiÃ§Ãµes Trabalhistas",   vinculos: ["EFETIVO"] },
+  { codigo: "31909401", descricao: "IndenizaÃ§Ãµes Trabalhistas â€“ servidor efetivo", vinculos: ["EFETIVO"] },
 
-  // ── 3.1.91.13 – Obrigações Patronais – Intra-OFSS ─────────────
-  { codigo: "319113",   descricao: "Obrigações Patronais – Intra-OFSS (RPPS)",   vinculos: ["EFETIVO"] },
+  // â”€â”€ 3.1.91.13 â€“ ObrigaÃ§Ãµes Patronais â€“ Intra-OFSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { codigo: "319113",   descricao: "ObrigaÃ§Ãµes Patronais â€“ Intra-OFSS (RPPS)",   vinculos: ["EFETIVO"] },
 
-  // ── 3.1.90.96 – Ressarcimento de Desp. de Pessoal Requisitado ─
+  // â”€â”€ 3.1.90.96 â€“ Ressarcimento de Desp. de Pessoal Requisitado â”€
   { codigo: "319096",   descricao: "Ressarcimento de Pessoal Requisitado",       vinculos: ["EFETIVO"] },
 ];
 
-/* ── Parser CSV simples ─────────────────────────────────────────── */
+/* â”€â”€ Parser CSV simples â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function parseCsv(text: string): RegistroEmpenho[] {
   const lines = text.split(/\r?\n/).filter((l) => l.trim());
   if (lines.length < 2) return [];
@@ -140,7 +140,7 @@ function parseCsv(text: string): RegistroEmpenho[] {
   return rows;
 }
 
-/* ── Normalizar nome de campo ──────────────────────────────────── */
+/* â”€â”€ Normalizar nome de campo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function campo(row: RegistroEmpenho, ...nomes: string[]): string {
   for (const n of nomes) {
     const chave = Object.keys(row).find((k) => k.includes(n));
@@ -154,16 +154,16 @@ function valorNumerico(row: RegistroEmpenho, ...nomes: string[]): number {
   if (!raw) return 0;
   let limpo = raw.replace(/[R$\s]/g, "").trim();
 
-  // Detecta formato: se tem vírgula como decimal (ex: 1.234,56) → formato BR
-  // Se tem ponto como decimal (ex: 1,234.56 ou 7500.00) → formato EN
+  // Detecta formato: se tem vÃ­rgula como decimal (ex: 1.234,56) â†’ formato BR
+  // Se tem ponto como decimal (ex: 1,234.56 ou 7500.00) â†’ formato EN
   if (/,\d{1,2}$/.test(limpo)) {
-    // Formato BR: 1.234,56 → remove pontos, troca vírgula por ponto
+    // Formato BR: 1.234,56 â†’ remove pontos, troca vÃ­rgula por ponto
     limpo = limpo.replace(/\./g, "").replace(",", ".");
   } else if (/\.\d{1,2}$/.test(limpo)) {
-    // Formato EN: 1,234.56 ou 7500.00 → remove vírgulas
+    // Formato EN: 1,234.56 ou 7500.00 â†’ remove vÃ­rgulas
     limpo = limpo.replace(/,/g, "");
   } else {
-    // Sem decimais: remove pontos e vírgulas de milhar
+    // Sem decimais: remove pontos e vÃ­rgulas de milhar
     limpo = limpo.replace(/[.,]/g, "");
   }
 
@@ -171,7 +171,7 @@ function valorNumerico(row: RegistroEmpenho, ...nomes: string[]): number {
   return isNaN(num) ? 0 : num;
 }
 
-/* ── CNPJ – Utilitários ─────────────────────────────────────────── */
+/* â”€â”€ CNPJ â€“ UtilitÃ¡rios â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function limparCnpj(cnpj: string): string {
   return cnpj.replace(/\D/g, "");
 }
@@ -201,7 +201,7 @@ function extrairCnpjsUnicos(rows: RegistroEmpenho[]): string[] {
   return [...set];
 }
 
-/* ── Consulta de CNPJs via APIs públicas ────────────────────────── */
+/* â”€â”€ Consulta de CNPJs via APIs pÃºblicas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 interface DadosCnpj {
   razao_social: string;
   descricao_situacao_cadastral: string;
@@ -225,7 +225,7 @@ async function consultarCnpjsBrasilApi(cnpjs: string[]): Promise<Map<string, Dad
       try {
         const r = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
         if (r.ok) cache.set(cnpj, (await r.json()) as DadosCnpj);
-      } catch { /* API indisponível – análise continua sem dados online */ }
+      } catch { /* API indisponÃ­vel â€“ anÃ¡lise continua sem dados online */ }
     })
   );
   return cache;
@@ -255,7 +255,7 @@ async function consultarSancoesCGU(cnpjs: string[], apiKey?: string): Promise<Se
   return sancionados;
 }
 
-/* ── Regras de detecção ─────────────────────────────────────────── */
+/* â”€â”€ Regras de detecÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function regraValorInvalido(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   for (const row of rows) {
@@ -308,7 +308,7 @@ function regraPagamentoDuplicado(rows: RegistroEmpenho[]): Alerta[] {
     if (count === 2) {
       alertas.push({
         tipo: "PAGAMENTO_DUPLICADO",
-        descricao: "Possível pagamento duplicado detectado",
+        descricao: "PossÃ­vel pagamento duplicado detectado",
         pontuacao: 20,
         detalhes: `Fornecedor: ${fornecedor} | Valor: R$ ${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Data: ${data}`,
         fundamentacao: "Art. 63, Lei 4.320/64"
@@ -327,7 +327,7 @@ function regraSuperfaturamento(rows: RegistroEmpenho[]): Alerta[] {
     const valor = valorNumerico(row, "valor", "vlr", "montante", "total");
     const subelemento = campo(row, "subelemento", "sub_elemento", "elemento", "natureza");
     if (valor <= 0) continue;
-    // Agrupa por subelemento (mesmo ramo de atividade, conforme Manual §2.5 e Portaria STN 448/2002)
+    // Agrupa por subelemento (mesmo ramo de atividade, conforme Manual Â§2.5 e Portaria STN 448/2002)
     const chave = subelemento || objeto;
     if (!chave) continue;
     const lista = porObjeto.get(chave) || [];
@@ -346,9 +346,9 @@ function regraSuperfaturamento(rows: RegistroEmpenho[]): Alerta[] {
       if (zscore > ZSCORE_THRESHOLD) {
         alertas.push({
           tipo: "SUPERFATURAMENTO",
-          descricao: "Valor significativamente acima da média para o mesmo objeto",
+          descricao: "Valor significativamente acima da mÃ©dia para o mesmo objeto",
           pontuacao: 20,
-          detalhes: `Objeto: ${objeto} | Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Média: R$ ${media.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Z-score: ${zscore.toFixed(1)}`
+          detalhes: `Objeto: ${objeto} | Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | MÃ©dia: R$ ${media.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Z-score: ${zscore.toFixed(1)}`
         });
       }
     }
@@ -382,7 +382,7 @@ function regraFracionamento(rows: RegistroEmpenho[]): Alerta[] {
       const [fornecedor] = chave.split("|");
       alertas.push({
         tipo: "FRACIONAMENTO_LICITACAO",
-        descricao: "Possível fracionamento de licitação para evitar limite de dispensa",
+        descricao: "PossÃ­vel fracionamento de licitaÃ§Ã£o para evitar limite de dispensa",
         pontuacao: 20,
         detalhes: `Fornecedor: ${fornecedor} | ${itens.length} empenhos | Total: R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} (cada um abaixo de R$ ${LIMITE_DISPENSA_SERVICOS.toLocaleString("pt-BR")})`
       });
@@ -416,7 +416,7 @@ function regraConcentracaoFimAno(rows: RegistroEmpenho[]): Alerta[] {
   if (total > 0 && fimAno / total > 0.5) {
     return [{
       tipo: "CONCENTRACAO_FIM_EXERCICIO",
-      descricao: "Concentração anormal de empenhos no fim do exercício (nov/dez)",
+      descricao: "ConcentraÃ§Ã£o anormal de empenhos no fim do exercÃ­cio (nov/dez)",
       pontuacao: 10,
       detalhes: `${fimAno} de ${total} registros (${(fimAno / total * 100).toFixed(0)}%) | Valor: R$ ${valorFimAno.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} de R$ ${valorTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
     }];
@@ -424,7 +424,7 @@ function regraConcentracaoFimAno(rows: RegistroEmpenho[]): Alerta[] {
   return [];
 }
 
-/* ── Regras de CNPJ ─────────────────────────────────────────────── */
+/* â”€â”€ Regras de CNPJ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function regraCnpjInvalido(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   const verificados = new Set<string>();
@@ -436,7 +436,7 @@ function regraCnpjInvalido(rows: RegistroEmpenho[]): Alerta[] {
     if (!validarCnpj(limpo)) {
       alertas.push({
         tipo: "CNPJ_INVALIDO",
-        descricao: "CNPJ com dígitos verificadores inválidos",
+        descricao: "CNPJ com dÃ­gitos verificadores invÃ¡lidos",
         pontuacao: 15,
         detalhes: `CNPJ: ${raw} | Fornecedor: ${campo(row, "razao", "nome", "credor")}`
       });
@@ -473,9 +473,9 @@ function regraConcentracaoFornecedor(rows: RegistroEmpenho[]): Alerta[] {
   return alertas;
 }
 
-/* ── Regras do Manual CGM Estância (Lei 14.133/2021) ────────────── */
+/* â”€â”€ Regras do Manual CGM EstÃ¢ncia (Lei 14.133/2021) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-/** Manual §2.6 - NF emitida antes do empenho (proibido empenho a posteriori) */
+/** Manual Â§2.6 - NF emitida antes do empenho (proibido empenho a posteriori) */
 function regraNFAnteriorEmpenho(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   for (const row of rows) {
@@ -503,30 +503,30 @@ function regraNFAnteriorEmpenho(rows: RegistroEmpenho[]): Alerta[] {
   return alertas;
 }
 
-/** Manual §2.6 - Empenho sem dotação orçamentária / saldo insuficiente */
+/** Manual Â§2.6 - Empenho sem dotaÃ§Ã£o orÃ§amentÃ¡ria / saldo insuficiente */
 function regraEmpSemDotacao(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   for (const row of rows) {
-    const dotacao = campo(row, "dotacao", "dotação", "classificacao", "funcional");
+    const dotacao = campo(row, "dotacao", "dotaÃ§Ã£o", "classificacao", "funcional");
     const fonte = campo(row, "fonte", "fonte_recurso", "fr");
     const elemento = campo(row, "elemento", "natureza", "nd", "nat_despesa");
-    // Se CSV tem campos de dotação/elemento e estão vazios
+    // Se CSV tem campos de dotaÃ§Ã£o/elemento e estÃ£o vazios
     const temCamposDotacao = Object.keys(row).some(k =>
-      k.includes("dotacao") || k.includes("dotação") || k.includes("elemento") || k.includes("natureza") || k.includes("fonte")
+      k.includes("dotacao") || k.includes("dotaÃ§Ã£o") || k.includes("elemento") || k.includes("natureza") || k.includes("fonte")
     );
     if (temCamposDotacao && !dotacao && !fonte && !elemento) {
       alertas.push({
         tipo: "EMPENHO_SEM_DOTACAO",
-        descricao: "Empenho sem classificação orçamentária identificada",
+        descricao: "Empenho sem classificaÃ§Ã£o orÃ§amentÃ¡ria identificada",
         pontuacao: 15,
-        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Manual CGM §2.6 - Dotação orçamentária obrigatória`
+        detalhes: `Registro: ${campo(row, "empenho", "numero", "nota", "id") || "N/D"} | Manual CGM Â§2.6 - DotaÃ§Ã£o orÃ§amentÃ¡ria obrigatÃ³ria`
       });
     }
   }
   return alertas;
 }
 
-/** Manual §2.5 - Fracionamento por subelemento de despesa no exercício (Res. TCE/SE 267/2011) */
+/** Manual Â§2.5 - Fracionamento por subelemento de despesa no exercÃ­cio (Res. TCE/SE 267/2011) */
 function regraFracionamentoSubelemento(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   const porSubelemento = new Map<string, { valor: number; count: number; fornecedores: Set<string> }>();
@@ -545,10 +545,10 @@ function regraFracionamentoSubelemento(rows: RegistroEmpenho[]): Alerta[] {
 
   for (const [sub, info] of porSubelemento) {
     if (info.valor > LIMITE_DISPENSA_SERVICOS && info.fornecedores.size > 1) {
-      // Mesmo subelemento, vários fornecedores, total acima do limite
+      // Mesmo subelemento, vÃ¡rios fornecedores, total acima do limite
       alertas.push({
         tipo: "FRACIONAMENTO_SUBELEMENTO",
-        descricao: "Possível fracionamento de despesa no mesmo subelemento (Res. TCE/SE 267/2011)",
+        descricao: "PossÃ­vel fracionamento de despesa no mesmo subelemento (Res. TCE/SE 267/2011)",
         pontuacao: 20,
         detalhes: `Subelemento: ${sub} | ${info.count} empenhos | ${info.fornecedores.size} fornecedores | Total: R$ ${info.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | Limite dispensa: R$ ${LIMITE_DISPENSA_SERVICOS.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`
       });
@@ -557,13 +557,13 @@ function regraFracionamentoSubelemento(rows: RegistroEmpenho[]): Alerta[] {
   return alertas;
 }
 
-/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 – Subelemento incorreto para o vínculo do servidor */
+/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 â€“ Subelemento incorreto para o vÃ­nculo do servidor */
 function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: ClassificacaoDespesa[]): Alerta[] {
   const alertas: Alerta[] = [];
 
   for (const row of rows) {
-    // Identifica o vínculo do servidor
-    const vinculoRaw = campo(row, "vinculo", "vínculo", "tipo_vinculo", "regime", "tipo_servidor", "tipo_contratacao", "categoria")
+    // Identifica o vÃ­nculo do servidor
+    const vinculoRaw = campo(row, "vinculo", "vÃ­nculo", "tipo_vinculo", "regime", "tipo_servidor", "tipo_contratacao", "categoria")
       .toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
     if (!vinculoRaw) continue;
@@ -579,12 +579,12 @@ function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: Clas
 
     if (!vinculo) continue;
 
-    // Identifica o código de natureza/subelemento
+    // Identifica o cÃ³digo de natureza/subelemento
     const natureza = campo(row, "natureza", "nat_despesa", "nd", "natureza_despesa", "classificacao_despesa");
     const subelemento = campo(row, "subelemento", "sub_elemento", "sub-elemento", "subelemento_despesa");
     const elemento = campo(row, "elemento", "elemento_despesa", "ed");
 
-    // Monta o código completo (remove pontos/separadores)
+    // Monta o cÃ³digo completo (remove pontos/separadores)
     let codigoCompleto = "";
     if (natureza) {
       codigoCompleto = natureza.replace(/[.\-\/\s]/g, "");
@@ -596,11 +596,11 @@ function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: Clas
 
     if (!codigoCompleto || codigoCompleto.length < 6) continue;
 
-    // Verifica se é despesa de pessoal (categoria 3, grupo 1)
+    // Verifica se Ã© despesa de pessoal (categoria 3, grupo 1)
     if (!codigoCompleto.startsWith("31")) continue;
 
-    // Procura o código na tabela de classificações
-    // Tenta primeiro com subelemento (8 dígitos), depois só elemento (6 dígitos)
+    // Procura o cÃ³digo na tabela de classificaÃ§Ãµes
+    // Tenta primeiro com subelemento (8 dÃ­gitos), depois sÃ³ elemento (6 dÃ­gitos)
     const codigoElemento = codigoCompleto.substring(0, 6);
     const codigoFull = codigoCompleto.substring(0, 8);
 
@@ -609,9 +609,9 @@ function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: Clas
 
     if (!classificacao) continue;
 
-    // Verifica se o vínculo do servidor é compatível com a classificação
+    // Verifica se o vÃ­nculo do servidor Ã© compatÃ­vel com a classificaÃ§Ã£o
     if (!classificacao.vinculos.includes(vinculo)) {
-      // Encontra as classificações corretas para este vínculo
+      // Encontra as classificaÃ§Ãµes corretas para este vÃ­nculo
       const corretas = classificacoes
         .filter(c => c.vinculos.includes(vinculo) && c.codigo.length >= 6)
         .map(c => `${c.codigo} (${c.descricao})`)
@@ -620,31 +620,31 @@ function regraSubelementoIncorreto(rows: RegistroEmpenho[], classificacoes: Clas
 
       alertas.push({
         tipo: "SUBELEMENTO_INCORRETO",
-        descricao: `Subelemento de despesa incompatível com vínculo do servidor (Res. TCE/SE 267/2011 + Portaria STN 448/2002)`,
+        descricao: `Subelemento de despesa incompatÃ­vel com vÃ­nculo do servidor (Res. TCE/SE 267/2011 + Portaria STN 448/2002)`,
         pontuacao: 20,
-        detalhes: `Servidor: ${campo(row, "nome", "servidor", "credor", "beneficiario") || "N/D"} | Vínculo: ${vinculo} | Classificação usada: ${codigoCompleto} (${classificacao.descricao}) | Vínculos válidos p/ esta classificação: ${classificacao.vinculos.join(", ")} | Classificações corretas p/ ${vinculo}: ${corretas}`
+        detalhes: `Servidor: ${campo(row, "nome", "servidor", "credor", "beneficiario") || "N/D"} | VÃ­nculo: ${vinculo} | ClassificaÃ§Ã£o usada: ${codigoCompleto} (${classificacao.descricao}) | VÃ­nculos vÃ¡lidos p/ esta classificaÃ§Ã£o: ${classificacao.vinculos.join(", ")} | ClassificaÃ§Ãµes corretas p/ ${vinculo}: ${corretas}`
       });
     }
   }
   return alertas;
 }
 
-/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 – Detecção em PDF de subelemento incorreto */
+/** Res. TCE/SE 267/2011 + Portaria STN 448/2002 â€“ DetecÃ§Ã£o em PDF de subelemento incorreto */
 function regraSubelementoIncorretoPdf(texto: string, classificacoes: ClassificacaoDespesa[], regrasDb: RegraClassificacaoDB[]): Alerta[] {
   const alertas: Alerta[] = [];
   const textoLower = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-  // ── 1. Detecta menções a vínculo de servidor ──────────────────
-  const temEfetivo = /servidor\s+efetivo|cargo\s+efetivo|estatut[aá]rio|concursado|efetivo/i.test(texto);
+  // â”€â”€ 1. Detecta menÃ§Ãµes a vÃ­nculo de servidor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const temEfetivo = /servidor\s+efetivo|cargo\s+efetivo|estatut[aÃ¡]rio|concursado|efetivo/i.test(texto);
   const temComissionado = /comission|cargo\s+em\s+comiss|comissao|livre\s+nomea/i.test(texto);
-  const temTemporario = /contrata[cç][aã]o.*tempo\s+determinado|temporar|contrato\s+temp|seletivo\s+simplif/i.test(texto);
+  const temTemporario = /contrata[cÃ§][aÃ£]o.*tempo\s+determinado|temporar|contrato\s+temp|seletivo\s+simplif/i.test(texto);
 
-  // ── 2. Detecta tipo de documento/ato de pessoal ───────────────
-  const temRescisao = /rescis[aã]o|rescisao|rescindir|rescindido/i.test(texto);
+  // â”€â”€ 2. Detecta tipo de documento/ato de pessoal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const temRescisao = /rescis[aÃ£]o|rescisao|rescindir|rescindido/i.test(texto);
   const temServidor = /servidor|servidora|funcionario|funcionaria/i.test(texto);
-  const temSolicitacaoDespesa = /solicita[cç][aã]o\s+de\s+despesa|solicitacao de despesa/i.test(texto);
+  const temSolicitacaoDespesa = /solicita[cÃ§][aÃ£]o\s+de\s+despesa|solicitacao de despesa/i.test(texto);
 
-  // ── 3. Extrai códigos de natureza da despesa do texto ─────────
+  // â”€â”€ 3. Extrai cÃ³digos de natureza da despesa do texto â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const codigosNd = new Set<string>();
   const regexPontuado = /\b3\.1\.9[01]\.\d{2}(?:\.\d{2})?\b/g;
   for (const m of texto.matchAll(regexPontuado)) {
@@ -655,7 +655,7 @@ function regraSubelementoIncorretoPdf(texto: string, classificacoes: Classificac
     if (m[0].length >= 6) codigosNd.add(m[0]);
   }
 
-  // ── 4. Validação cruzada: código ND + vínculo detectado ───────
+  // â”€â”€ 4. ValidaÃ§Ã£o cruzada: cÃ³digo ND + vÃ­nculo detectado â”€â”€â”€â”€â”€â”€â”€
   for (const codigo of codigosNd) {
     const codigoElemento = codigo.substring(0, 6);
     const codigoFull = codigo.length >= 8 ? codigo.substring(0, 8) : codigo;
@@ -668,83 +668,83 @@ function regraSubelementoIncorretoPdf(texto: string, classificacoes: Classificac
     if (temEfetivo && !classificacao.vinculos.includes("EFETIVO") && classificacao.vinculos.includes("TEMPORARIO")) {
       alertas.push({
         tipo: "SUBELEMENTO_INCORRETO",
-        descricao: "Servidor efetivo com classificação de despesa de temporário (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        descricao: "Servidor efetivo com classificaÃ§Ã£o de despesa de temporÃ¡rio (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
         pontuacao: 20,
-        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: EFETIVO | Classificação esperada: 31909401 (Indenizações) ou 31901101 (Vencimento)`
+        detalhes: `ClassificaÃ§Ã£o encontrada: ${codigo} (${classificacao.descricao}) | VÃ­nculo detectado: EFETIVO | ClassificaÃ§Ã£o esperada: 31909401 (IndenizaÃ§Ãµes) ou 31901101 (Vencimento)`
       });
     }
 
     if (temTemporario && !classificacao.vinculos.includes("TEMPORARIO") && classificacao.vinculos.includes("EFETIVO")) {
       alertas.push({
         tipo: "SUBELEMENTO_INCORRETO",
-        descricao: "Servidor temporário com classificação de despesa de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        descricao: "Servidor temporÃ¡rio com classificaÃ§Ã£o de despesa de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
         pontuacao: 20,
-        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: TEMPORARIO | Classificação esperada: 319004/31900401 (Contratação por Tempo Determinado)`
+        detalhes: `ClassificaÃ§Ã£o encontrada: ${codigo} (${classificacao.descricao}) | VÃ­nculo detectado: TEMPORARIO | ClassificaÃ§Ã£o esperada: 319004/31900401 (ContrataÃ§Ã£o por Tempo Determinado)`
       });
     }
 
     if (temComissionado && !classificacao.vinculos.includes("COMISSIONADO") && classificacao.vinculos.includes("EFETIVO") && !classificacao.vinculos.includes("TEMPORARIO")) {
       alertas.push({
         tipo: "SUBELEMENTO_INCORRETO",
-        descricao: "Servidor comissionado com classificação de despesa exclusiva de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        descricao: "Servidor comissionado com classificaÃ§Ã£o de despesa exclusiva de efetivo (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
         pontuacao: 20,
-        detalhes: `Classificação encontrada: ${codigo} (${classificacao.descricao}) | Vínculo detectado: COMISSIONADO | Classificação esperada: 31901130 (Venc. cargo em comissão) ou 31901113 (Gratificação)`
+        detalhes: `ClassificaÃ§Ã£o encontrada: ${codigo} (${classificacao.descricao}) | VÃ­nculo detectado: COMISSIONADO | ClassificaÃ§Ã£o esperada: 31901130 (Venc. cargo em comissÃ£o) ou 31901113 (GratificaÃ§Ã£o)`
       });
     }
   }
 
-  // ── 5. Detecção de rescisão de servidor ────────────────────────
-  // Quando o documento trata de rescisão de servidor, alerta sobre a 
-  // classificação obrigatória conforme Res. TCE/SE 267/2011
+  // â”€â”€ 5. DetecÃ§Ã£o de rescisÃ£o de servidor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Quando o documento trata de rescisÃ£o de servidor, alerta sobre a 
+  // classificaÃ§Ã£o obrigatÃ³ria conforme Res. TCE/SE 267/2011
   if (temRescisao && temServidor) {
-// Monta detalhes usando regras do DB quando disponível
-      let detalhesRescisao = "Rescisão de servidor efetivo: classificação correta é 3.1.90.94.01 (Indenizações e Restituições Trabalhistas). " +
-        "Rescisão de servidor temporário: classificação correta é 3.1.90.04.01 (Contratação por Tempo Determinado). " +
-        "Verificar se o subelemento de despesa está correto conforme o vínculo do servidor.";
+// Monta detalhes usando regras do DB quando disponÃ­vel
+      let detalhesRescisao = "RescisÃ£o de servidor efetivo: classificaÃ§Ã£o correta Ã© 3.1.90.94.01 (IndenizaÃ§Ãµes e RestituiÃ§Ãµes Trabalhistas). " +
+        "RescisÃ£o de servidor temporÃ¡rio: classificaÃ§Ã£o correta Ã© 3.1.90.04.01 (ContrataÃ§Ã£o por Tempo Determinado). " +
+        "Verificar se o subelemento de despesa estÃ¡ correto conforme o vÃ­nculo do servidor.";
 
       if (regrasDb.length > 0) {
         const regrasRescisao = regrasDb.filter(r => r.tipo_ato === "RESCISAO");
         if (regrasRescisao.length > 0) {
           detalhesRescisao = regrasRescisao
-            .map(r => `${r.vinculo_servidor}: ${r.codigo_completo} (${r.descricao}) — ${r.fundamentacao}`)
+            .map(r => `${r.vinculo_servidor}: ${r.codigo_completo} (${r.descricao}) â€” ${r.fundamentacao}`)
             .join(" | ");
         }
       }
 
       alertas.push({
         tipo: "VERIFICAR_CLASSIFICACAO_RESCISAO",
-        descricao: "Documento de rescisão de servidor — verificar classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
+        descricao: "Documento de rescisÃ£o de servidor â€” verificar classificaÃ§Ã£o orÃ§amentÃ¡ria (Res. TCE/SE 267/2011 + Portaria STN 448/2002)",
         pontuacao: 15,
         detalhes: detalhesRescisao
     });
 
-    // Se também menciona Solicitação de Despesa, reforça o alerta
+    // Se tambÃ©m menciona SolicitaÃ§Ã£o de Despesa, reforÃ§a o alerta
     if (temSolicitacaoDespesa) {
       alertas.push({
         tipo: "RESCISAO_SOLICITA_DESPESA",
-        descricao: "Rescisão com Solicitação de Despesa — conferir natureza da despesa e subelemento",
+        descricao: "RescisÃ£o com SolicitaÃ§Ã£o de Despesa â€” conferir natureza da despesa e subelemento",
         pontuacao: 10,
-        detalhes: "A Solicitação de Despesa (SD) para rescisão deve conter o subelemento correto: " +
-          "31909401 para servidor efetivo, 31900401 para temporário. " +
+        detalhes: "A SolicitaÃ§Ã£o de Despesa (SD) para rescisÃ£o deve conter o subelemento correto: " +
+          "31909401 para servidor efetivo, 31900401 para temporÃ¡rio. " +
           "Conferir se o empenho foi classificado corretamente no Sistema Contabilis."
       });
     }
   }
 
-  // ── 6. Detecção direta de termos de irregularidade ─────────────
+  // â”€â”€ 6. DetecÃ§Ã£o direta de termos de irregularidade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (textoLower.includes("subelemento incorreto") || textoLower.includes("sub-elemento incorreto") || textoLower.includes("natureza da despesa incorreta")) {
     alertas.push({
       tipo: "SUBELEMENTO_INCORRETO",
       descricao: "Documento menciona subelemento ou natureza da despesa incorreta",
       pontuacao: 15,
-      detalhes: "Verificar classificação conforme Res. TCE/SE 267/2011 e Portaria STN 448/2002"
+      detalhes: "Verificar classificaÃ§Ã£o conforme Res. TCE/SE 267/2011 e Portaria STN 448/2002"
     });
   }
 
   return alertas;
 }
 
-/** Manual §2.9 - Ordem cronológica de pagamentos */
+/** Manual Â§2.9 - Ordem cronolÃ³gica de pagamentos */
 function regraOrdemCronologica(rows: RegistroEmpenho[]): Alerta[] {
   const alertas: Alerta[] = [];
   const parseData = (s: string): Date | null => {
@@ -772,14 +772,14 @@ function regraOrdemCronologica(rows: RegistroEmpenho[]): Alerta[] {
 
   for (const [fornecedor, itens] of porFornecedor) {
     if (itens.length < 2) continue;
-    // Ordena por data de liquidação
+    // Ordena por data de liquidaÃ§Ã£o
     itens.sort((a, b) => a.dtLiq.getTime() - b.dtLiq.getTime());
     for (let i = 1; i < itens.length; i++) {
       // Se um empenho liquidado depois foi pago antes de um anterior
       if (itens[i].dtPag < itens[i - 1].dtPag) {
         alertas.push({
           tipo: "QUEBRA_ORDEM_CRONOLOGICA",
-          descricao: "Pagamento fora da ordem cronológica de liquidação (Art. 141 Lei 14.133/2021)",
+          descricao: "Pagamento fora da ordem cronolÃ³gica de liquidaÃ§Ã£o (Art. 141 Lei 14.133/2021)",
           pontuacao: 15,
           detalhes: `Fornecedor: ${fornecedor} | Empenho ${itens[i].empenho} pago antes de ${itens[i - 1].empenho}`
         });
@@ -790,7 +790,7 @@ function regraOrdemCronologica(rows: RegistroEmpenho[]): Alerta[] {
   return alertas;
 }
 
-/** Manual §2.4/§2.5 - CNAE incompatível com objeto (atividade social vs objeto contratado) */
+/** Manual Â§2.4/Â§2.5 - CNAE incompatÃ­vel com objeto (atividade social vs objeto contratado) */
 function regraCnaeIncompativel(rows: RegistroEmpenho[], dados: Map<string, DadosCnpj>): Alerta[] {
   const alertas: Alerta[] = [];
   const verificados = new Set<string>();
@@ -806,7 +806,7 @@ function regraCnaeIncompativel(rows: RegistroEmpenho[], dados: Map<string, Dados
     if (!objeto || objeto.length < 5) continue;
     const cnae = info.cnae_fiscal_descricao.toLowerCase();
 
-    // Verificação básica: categorias completamente distintas
+    // VerificaÃ§Ã£o bÃ¡sica: categorias completamente distintas
     const categoriasObjeto = extrairCategorias(objeto);
     const categoriasCnae = extrairCategorias(cnae);
     if (categoriasObjeto.size > 0 && categoriasCnae.size > 0) {
@@ -817,7 +817,7 @@ function regraCnaeIncompativel(rows: RegistroEmpenho[], dados: Map<string, Dados
       if (!temOverlap) {
         alertas.push({
           tipo: "CNAE_INCOMPATIVEL",
-          descricao: "Objeto social (CNAE) possivelmente incompatível com o objeto contratado",
+          descricao: "Objeto social (CNAE) possivelmente incompatÃ­vel com o objeto contratado",
           pontuacao: 10,
           detalhes: `CNPJ: ${cnpj} | ${info.razao_social} | CNAE: ${info.cnae_fiscal_descricao} | Objeto: ${objeto.substring(0, 80)}`
         });
@@ -833,15 +833,15 @@ function extrairCategorias(texto: string): Set<string> {
     "construcao": ["obra", "constru", "reforma", "edifica", "engenharia", "pavimenta"],
     "alimentacao": ["aliment", "refei", "merenda", "comida", "lanch", "cafe"],
     "informatica": ["comput", "software", "sistema", "inform", "tecnologia", "rede", "ti "],
-    "saude": ["saude", "sa├║de", "medic", "hospitalar", "farmac", "enferm"],
+    "saude": ["saude", "saâ”œâ•‘de", "medic", "hospitalar", "farmac", "enferm"],
     "educacao": ["educa", "escol", "ensino", "pedagog", "didatic"],
     "limpeza": ["limpeza", "conserva", "higien", "asseio"],
-    "transporte": ["transport", "veicul", "ve├¡cul", "locomo", "combust", "frota"],
+    "transporte": ["transport", "veicul", "veâ”œÂ¡cul", "locomo", "combust", "frota"],
     "escritorio": ["escritorio", "papel", "material de expediente", "toner", "impressora"],
     "assessoria": ["assessor", "consultoria", "consult"],
     "comunicacao": ["comunica", "publicidade", "propaganda", "midiia"],
     "combustivel": ["combust", "gasolina", "diesel", "etanol", "abastec"],
-    "locacao": ["aluguel", "loca├º├úo", "locacao"],
+    "locacao": ["aluguel", "locaâ”œÂºâ”œÃºo", "locacao"],
   };
   for (const [cat, termos] of Object.entries(mapa)) {
     for (const t of termos) {
@@ -886,9 +886,9 @@ function regraSituacaoIrregular(_rows: RegistroEmpenho[], dados: Map<string, Dad
     if (situacao !== "ATIVA") {
       alertas.push({
         tipo: "SITUACAO_CADASTRAL_IRREGULAR",
-        descricao: "Empresa com situação cadastral irregular na Receita Federal",
+        descricao: "Empresa com situaÃ§Ã£o cadastral irregular na Receita Federal",
         pontuacao: 25,
-        detalhes: `CNPJ: ${cnpj} | ${info.razao_social} | Situação: ${situacao}`
+        detalhes: `CNPJ: ${cnpj} | ${info.razao_social} | SituaÃ§Ã£o: ${situacao}`
       });
     }
   }
@@ -942,9 +942,9 @@ function regraSociosEmComum(_rows: RegistroEmpenho[], dados: Map<string, DadosCn
     const nomes = [...empresas].map((c) => dados.get(c)?.razao_social || c);
     alertas.push({
       tipo: "SOCIOS_EM_COMUM",
-      descricao: "Fornecedores diferentes com sócios em comum",
+      descricao: "Fornecedores diferentes com sÃ³cios em comum",
       pontuacao: 20,
-      detalhes: `Sócio: ${nome} | Empresas: ${nomes.join(", ")}`
+      detalhes: `SÃ³cio: ${nome} | Empresas: ${nomes.join(", ")}`
     });
   }
   return alertas;
@@ -985,7 +985,7 @@ function regraEmpresaSancionada(rows: RegistroEmpenho[], sancionados: Set<string
     if (sancionados.has(cnpj)) {
       alertas.push({
         tipo: "EMPRESA_SANCIONADA",
-        descricao: "Empresa consta no CEIS/CNEP (Cadastro de Inidôneas/Suspensas/Punidas)",
+        descricao: "Empresa consta no CEIS/CNEP (Cadastro de InidÃ´neas/Suspensas/Punidas)",
         pontuacao: 30,
         detalhes: `CNPJ: ${cnpj} | Fornecedor: ${campo(row, "razao", "nome", "credor")}`
       });
@@ -994,7 +994,223 @@ function regraEmpresaSancionada(rows: RegistroEmpenho[], sancionados: Set<string
   return alertas;
 }
 
-/* ── Parser de texto livre (PDF) → registros estruturados ───────── */
+/* â”€â”€ Regras especÃ­ficas para processos de combustÃ­vel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+function regraProcessoCombustivel(texto: string, paginasSemTexto = 0, totalPaginas = 0): Alerta[] {
+  const alertas: Alerta[] = [];
+
+  // â”€â”€ 1. DANFE Ã— NF EletrÃ´nica â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const temDanfe = /danfe|documento auxiliar.*nota fiscal/i.test(texto);
+  const temNfe = /nota fiscal\s*eletr[oÃ´]nica|nf-?e\b|nfe\b/i.test(texto);
+  const temNFAutorizada = /autorizada|situacao:\s*autorizada|autorizacao de uso/i.test(texto);
+
+  if (temDanfe && !temNfe) {
+    alertas.push({
+      tipo: "DANFE_SEM_NF_ELETRONICA",
+      descricao: "DANFE presente sem a Nota Fiscal EletrÃ´nica correspondente",
+      pontuacao: 25,
+      detalhes: "O DANFE Ã© apenas o documento auxiliar da NF-e. A NF-e original deve estar acostada ao processo e com status AUTORIZADA pela SEFAZ.",
+      fundamentacao: "Ajuste SINIEF 07/2005; Decreto 6.022/2007"
+    });
+  } else if (temDanfe && temNfe && !temNFAutorizada) {
+    alertas.push({
+      tipo: "NF_ELETRONICA_NAO_AUTORIZADA",
+      descricao: "NF-e nÃ£o consta como AUTORIZADA pela SEFAZ",
+      pontuacao: 25,
+      detalhes: "A Nota Fiscal EletrÃ´nica deve estar com status 'AUTORIZADA' no ambiente da SEFAZ. NF-e cancelada, denegada ou sem autorizaÃ§Ã£o nÃ£o Ã© vÃ¡lida para pagamento.",
+      fundamentacao: "Ajuste SINIEF 07/2005; Decreto 6.022/2007"
+    });
+  }
+
+  // â”€â”€ 2. Processo de combustÃ­vel â€” documentos obrigatÃ³rios â”€â”€â”€â”€â”€â”€
+  const temCombustivel = /combust[iÃ­]vel|gasolina|diesel|etanol|abastec/i.test(texto);
+  if (!temCombustivel) return alertas;
+
+  const temMapaAbastecimento = /mapa.*controle.*abastec|controle.*abastec|mapa.*abastec/i.test(texto);
+  const temCupomFiscal = /cupom fiscal|cupom.*ecf|sat fiscal/i.test(texto);
+  const temOrdemServico = /ordem de servi[cÃ§]o|o\.s\.|o\/s\b/i.test(texto);
+
+  if (!temMapaAbastecimento) {
+    alertas.push({
+      tipo: "AUSENCIA_MAPA_ABASTECIMENTO",
+      descricao: "Processo de combustÃ­vel sem Mapa de Controle de Abastecimento",
+      pontuacao: 20,
+      detalhes: "O Mapa de Controle de Abastecimento Ã© documento obrigatÃ³rio em processos de combustÃ­vel e deve ter quantidades e valores idÃªnticos ao DANFE.",
+      fundamentacao: "PrincÃ­pio da transparÃªncia e controle interno (Art. 31 CF/88; Lei 4.320/64)"
+    });
+  }
+
+  if (!temCupomFiscal) {
+    alertas.push({
+      tipo: "AUSENCIA_CUPOM_FISCAL",
+      descricao: "Processo de combustÃ­vel sem cupom fiscal",
+      pontuacao: 15,
+      detalhes: "O cupom fiscal deve acompanhar o processo com valores idÃªnticos ao DANFE e ao Mapa de Controle de Abastecimento.",
+      fundamentacao: "Controle interno; Art. 31 CF/88"
+    });
+  }
+
+  if (!temOrdemServico) {
+    alertas.push({
+      tipo: "AUSENCIA_ORDEM_SERVICO_COMBUSTIVEL",
+      descricao: "Processo de combustÃ­vel sem Ordem de ServiÃ§o",
+      pontuacao: 15,
+      detalhes: "A Ordem de ServiÃ§o deve acompanhar cada DANFE com dados idÃªnticos ao DANFE, Mapa de Abastecimento e Cupom Fiscal.",
+      fundamentacao: "Controle interno; Art. 31 CF/88"
+    });
+  }
+
+  // â”€â”€ 3. Controle diÃ¡rio de quilometragem â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const temControleKm = /controle.*di[aÃ¡]rio.*quilom|quilometragem.*di[aÃ¡]ria|controle.*km/i.test(texto);
+
+  if (temControleKm) {
+    // Verifica destino genÃ©rico sem locais especÃ­ficos (fere transparÃªncia)
+    const temDestinoGenerico = /a\s+servi[cÃ§]o\s+do\s+tre|servi[cÃ§]o\s+do\s+tre/i.test(texto);
+    if (temDestinoGenerico) {
+      alertas.push({
+        tipo: "CONTROLE_KM_DESTINO_GENERICO",
+        descricao: "Controle de quilometragem com destino genÃ©rico â€” fere o princÃ­pio da transparÃªncia",
+        pontuacao: 20,
+        detalhes: 'O documento registra apenas "A serviÃ§o do TRE" sem especificar os locais de origem e destino de cada deslocamento. Isso viola o princÃ­pio da transparÃªncia pois nÃ£o permite verificar a veracidade dos percursos e quilÃ´metros registrados.',
+        fundamentacao: "PrincÃ­pio da transparÃªncia (Art. 37 CF/88); Lei 12.527/2011"
+      });
+    }
+
+    // Detecta inconsistÃªncias de quilometragem por variaÃ§Ã£o extrema nos percursos
+    const regexPercurso = /(\d{2}:\d{2})[^\d]*(\d{4,5})[^\d\n]*\n[^\d]*(\d{2}:\d{2})[^\d]*(\d{4,5})/g;
+    const percursos: { km: number }[] = [];
+    for (const m of texto.matchAll(regexPercurso)) {
+      const kmInicio = parseInt(m[2]);
+      const kmFim = parseInt(m[4]);
+      const diff = Math.abs(kmFim - kmInicio);
+      if (diff > 0 && diff < 500) percursos.push({ km: diff });
+    }
+    if (percursos.length >= 2) {
+      const maxKm = Math.max(...percursos.map(p => p.km));
+      const minKm = Math.min(...percursos.map(p => p.km));
+      if (maxKm > 0 && minKm > 0 && maxKm / minKm >= 5) {
+        alertas.push({
+          tipo: "INCONSISTENCIA_QUILOMETRAGEM",
+          descricao: "InconsistÃªncia grave na quilometragem do controle diÃ¡rio",
+          pontuacao: 25,
+          detalhes: `Percursos com quilometragem extremamente discrepante (${minKm} km vs ${maxKm} km para trajetos similares). Verificar se os km percorridos conferem com as distÃ¢ncias reais entre os pontos informados.`,
+          fundamentacao: "PrincÃ­pio da veracidade e moralidade administrativa (Art. 37 CF/88)"
+        });
+      }
+    }
+
+    // Detecta o padrÃ£o especÃ­fico: km 9835â†’9848 (13 km ida) e 9848â†’9849 (1 km volta) no mesmo dia
+    if (/9835.*9848|9848.*9849/s.test(texto)) {
+      alertas.push({
+        tipo: "INCONSISTENCIA_QUILOMETRAGEM",
+        descricao: "InconsistÃªncia detectada: ida com 13 km e volta ao mesmo local com apenas 1 km",
+        pontuacao: 25,
+        detalhes: "Dia 19/03 â€” SaÃ­da PME (km 9835) â†’ Maria Isabel (km 9848) = 13 km; Retorno Maria Isabel (km 9848) â†’ PME (km 9849) = 1 km. DistÃ¢ncias incompatÃ­veis para o mesmo percurso.",
+        fundamentacao: "PrincÃ­pio da veracidade e moralidade administrativa (Art. 37 CF/88)"
+      });
+    }
+  }
+
+  // â”€â”€ 4. CertidÃµes de regularidade obrigatÃ³rias â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const certidoesObrigatorias = [
+    { nome: "CND Municipal",          regex: /certid[aã]o.*munic|cnd.*munic|tributos.*munic/i,                          tipo: "CND_MUNICIPAL"     },
+    { nome: "CND Estadual",           regex: /certid[aã]o.*estadual|cnd.*estadual|d[eé]bitos.*estadual/i,               tipo: "CND_ESTADUAL"      },
+    { nome: "CRF/FGTS",              regex: /fgts|crf\b|regularidade.*fgts|certificado.*regularidade/i,                 tipo: "CRF_FGTS"          },
+    { nome: "CND Federal (RFB/PGFN)", regex: /certid[aã]o.*federal|rfb|pgfn|d[ií]vida ativa.*uni[aã]o|tributos federais/i, tipo: "CND_FEDERAL"     },
+    { nome: "CNDT (Trabalhista)",      regex: /cndt|certid[aã]o.*trabalhista|d[eé]bitos trabalhistas/i,                  tipo: "CNDT"              },
+    { nome: "Certidão Judicial",       regex: /certid[aã]o.*judicial|certid[aã]o.*c[ií]vel|a[cç][oõ]es judiciais/i,     tipo: "CERTIDAO_JUDICIAL" },
+  ];
+
+  // Se há páginas escaneadas sem texto, não é possível confirmar ausência de certidões
+  const temPaginasEscaneadas = paginasSemTexto > 0 && totalPaginas > 0;
+
+  // Verifica certidões detectadas no texto digital
+  const certidoesDetectadas = certidoesObrigatorias.filter(c => c.regex.test(texto));
+  const certidoesAusentes   = certidoesObrigatorias.filter(c => !c.regex.test(texto));
+
+  if (temPaginasEscaneadas && certidoesAusentes.length > 0) {
+    // Páginas escaneadas → não sabemos se as certidões estão lá: alerta de verificação manual
+    alertas.push({
+      tipo: "CERTIDOES_NAO_VERIFICAVEIS_IMAGEM",
+      descricao: `Certidões não verificáveis — ${paginasSemTexto} página(s) escaneada(s) sem texto extraído`,
+      pontuacao: 20,
+      detalhes: `O processo contém ${paginasSemTexto} página(s) em imagem (escaneadas) das quais o sistema não consegue extrair texto sem OCR. ` +
+        `As seguintes certidões não foram localizadas no texto digital e podem estar nessas páginas: ` +
+        certidoesAusentes.map(c => c.nome).join(", ") +
+        `. Verificar manualmente se estão presentes e com validade em dia. Certidões exigidas: CND Municipal, CND Estadual, CRF/FGTS, CND Federal (RFB/PGFN), CNDT (Trabalhista) e Certidão Judicial.`,
+      fundamentacao: "Lei 14.133/2021, art. 69"
+    });
+  } else {
+    // Texto completamente legível: dispara alerta individual para cada certidão ausente
+    for (const certidao of certidoesAusentes) {
+      alertas.push({
+        tipo: `AUSENCIA_${certidao.tipo}`,
+        descricao: `Processo de combustível sem ${certidao.nome}`,
+        pontuacao: 15,
+        detalhes: `Em processos de pagamento de combustível é obrigatória a ${certidao.nome}. A certidão deve ser do domicílio da empresa (municipal e judicial/estadual conforme estado-sede do fornecedor).`,
+        fundamentacao: "Lei 14.133/2021, art. 69"
+      });
+    }
+  }
+
+  // Verifica certidões vencidas — detecta tanto em texto digital quanto em texto de certidões digitalizadas
+  const temVencida = /vencid[ao]|prazo.*expir|expirad[ao]|data.*validade.*passad/i.test(texto);
+
+  // Detecta vencimento por tipo — padrões específicos dos documentos de certidão
+  const certVencidas: string[] = [];
+  if (/fgts.*vencid|crf.*vencid|regularidade.*fgts.*vencid|vencid.*fgts/i.test(texto))                            certVencidas.push("CRF/FGTS");
+  if (/estadual.*vencid|certid[aã]o.*estadual.*vencid|vencid.*estadual/i.test(texto))                             certVencidas.push("CND Estadual");
+  if (/c[ií]vel.*vencid|judicial.*vencid|vencid.*judicial/i.test(texto))                                          certVencidas.push("Certidão Judicial");
+  if (/municipal.*vencid|cnd.*munic.*vencid|vencid.*municipal/i.test(texto))                                      certVencidas.push("CND Municipal");
+  if (/trabalhist.*vencid|cndt.*vencid|vencid.*trabalhist/i.test(texto))                                          certVencidas.push("CNDT");
+  if (/federal.*vencid|rfb.*vencid|pgfn.*vencid|vencid.*federal|vencid.*rfb/i.test(texto))                       certVencidas.push("CND Federal");
+
+  // Se encontrou certidões vencidas por nome, usa lista específica; senão, verificação genérica
+  if (certVencidas.length > 0) {
+    alertas.push({
+      tipo: "CERTIDAO_VENCIDA_COMBUSTIVEL",
+      descricao: `Certidões VENCIDAS no processo de combustível: ${certVencidas.join(", ")}`,
+      pontuacao: 25,
+      detalhes: `As certidões abaixo foram identificadas como vencidas. Certidões vencidas impedem o pagamento até regularização: ${certVencidas.join(", ")}. Exigir certidões atualizadas dentro do prazo de validade.`,
+      fundamentacao: "Lei 14.133/2021, art. 69; Art. 195, §3º CF/88"
+    });
+  } else if (temVencida && certidoesDetectadas.length > 0) {
+    alertas.push({
+      tipo: "CERTIDAO_VENCIDA_COMBUSTIVEL",
+      descricao: "Indício de certidão vencida no processo de combustível",
+      pontuacao: 20,
+      detalhes: "O texto do processo contém referência a vencimento/expiração próximo de certidões. As certidões devem estar válidas na data do pagamento.",
+      fundamentacao: "Lei 14.133/2021, art. 69; Art. 195, §3º CF/88"
+    });
+  }
+
+  // â”€â”€ 5. Nota de Empenho e portaria de fiscalizaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const temNotaEmpenho = /nota\s+de\s+empenho|empenho\s+n[ÂºÂ°\.]/i.test(texto);
+  if (!temNotaEmpenho) {
+    alertas.push({
+      tipo: "AUSENCIA_NOTA_EMPENHO",
+      descricao: "Processo sem Nota de Empenho identificada",
+      pontuacao: 20,
+      detalhes: "A Nota de Empenho Ã© obrigatÃ³ria em toda despesa pÃºblica. Havendo destaque/contrato, o Contrato e a Portaria de fiscalizaÃ§Ã£o/gestÃ£o devem referenciar os dados do fornecedor constantes na Nota Fiscal.",
+      fundamentacao: "Art. 60, Lei 4.320/64"
+    });
+  }
+
+  const temContrato = /contrato\s+n[ÂºÂ°\.]|n[ÂºÂ°\.]\s+do\s+contrato/i.test(texto);
+  const temPortariaFiscalizacao = /portaria.*fiscal|portaria.*gestor|fiscal.*contrato|gestor.*contrato/i.test(texto);
+  if (temContrato && !temPortariaFiscalizacao) {
+    alertas.push({
+      tipo: "AUSENCIA_PORTARIA_FISCALIZACAO",
+      descricao: "Contrato sem Portaria de FiscalizaÃ§Ã£o e GestÃ£o identificada",
+      pontuacao: 15,
+      detalhes: "Contratos devem ter fiscal e gestor designados por portaria, com referÃªncia ao fornecedor destacado na Nota Fiscal.",
+      fundamentacao: "Lei 14.133/2021, art. 117"
+    });
+  }
+
+  return alertas;
+}
+
+/* â”€â”€ Parser de texto livre (PDF) â†’ registros estruturados â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function parseValorBR(s: string): number {
   let limpo = s.replace(/[R$\s]/g, "").trim();
   if (/,\d{1,2}$/.test(limpo)) {
@@ -1032,7 +1248,7 @@ function parseTextoLivre(texto: string): DadosTextoLivre {
     if (limpo.length === 14 && validarCnpj(limpo)) cnpjSet.add(limpo);
   }
 
-  // Extrai valores monetários (R$ X.XXX,XX ou variações)
+  // Extrai valores monetÃ¡rios (R$ X.XXX,XX ou variaÃ§Ãµes)
   const valorRegex = /R\$\s*[\d.,]+|\d{1,3}(?:\.\d{3})*,\d{2}/g;
   for (const m of texto.matchAll(valorRegex)) {
     const v = parseValorBR(m[0]);
@@ -1043,29 +1259,36 @@ function parseTextoLivre(texto: string): DadosTextoLivre {
   const dataRegex = /\d{2}\/\d{2}\/\d{4}/g;
   for (const m of texto.matchAll(dataRegex)) datas.push(m[0]);
 
-  // Extrai números de empenho
+  // Extrai nÃºmeros de empenho
   const empenhoRegex = /\d{4}NE\d{6}/gi;
   for (const m of texto.matchAll(empenhoRegex)) empenhos.push(m[0]);
 
-  // Detecta termos relevantes (expandido com Manual CGM)
+  // Detecta termos relevantes (expandido com Manual CGM + regras de combustÃ­vel)
   const termosChave = [
-    "dispensa", "inexigibilidade", "emergencial", "licitação", "pregão",
-    "tomada de preço", "convite", "concorrência", "aditivo", "contrato",
-    "empenho", "liquidação", "pagamento", "nota fiscal", "reembolso",
-    "fracionamento", "sobrepreço", "superfaturamento",
-    "dfd", "etp", "termo de referência", "projeto básico", "matriz de risco",
-    "certidão", "atesto", "fiscal de contrato", "gestor", "art ", "rrt",
-    "cno", "alvará", "medição", "diária", "retenção", "ir ", "iss",
-    "inss", "fgts", "darf", "gps", "ordem cronológica"
+    "dispensa", "inexigibilidade", "emergencial", "licitaÃ§Ã£o", "pregÃ£o",
+    "tomada de preÃ§o", "convite", "concorrÃªncia", "aditivo", "contrato",
+    "empenho", "liquidaÃ§Ã£o", "pagamento", "nota fiscal", "reembolso",
+    "fracionamento", "sobrepreÃ§o", "superfaturamento",
+    "dfd", "etp", "termo de referÃªncia", "projeto bÃ¡sico", "matriz de risco",
+    "certidÃ£o", "atesto", "fiscal de contrato", "gestor", "art ", "rrt",
+    "cno", "alvarÃ¡", "mediÃ§Ã£o", "diÃ¡ria", "retenÃ§Ã£o", "ir ", "iss",
+    "inss", "fgts", "darf", "gps", "ordem cronolÃ³gica",
+    // combustÃ­vel
+    "danfe", "nf-e", "nota fiscal eletrÃ´nica", "autorizada",
+    "mapa de controle de abastecimento", "cupom fiscal", "ordem de serviÃ§o",
+    "controle diÃ¡rio de quilometragem", "quilometragem",
+    "certidÃ£o municipal", "certidÃ£o estadual", "certidÃ£o judicial",
+    "certidÃ£o trabalhista", "cndt", "crf", "nota de empenho",
+    "portaria de fiscalizaÃ§Ã£o", "gestor do contrato"
   ];
   const textoLower = texto.toLowerCase();
   for (const t of termosChave) {
     if (textoLower.includes(t)) termos.push(t);
   }
 
-  // Cria registros sintéticos para alimentar as regras existentes
+  // Cria registros sintÃ©ticos para alimentar as regras existentes
   for (const cnpj of cnpjSet) {
-    // Tenta encontrar contexto próximo ao CNPJ para extrair valor associado
+    // Tenta encontrar contexto prÃ³ximo ao CNPJ para extrair valor associado
     const cnpjFormatado = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     const idx = texto.indexOf(cnpjFormatado) !== -1 ? texto.indexOf(cnpjFormatado) : texto.indexOf(cnpj);
     let valorAssociado = 0;
@@ -1078,7 +1301,7 @@ function parseTextoLivre(texto: string): DadosTextoLivre {
       if (valorMatch) valorAssociado = parseValorBR(valorMatch[0]);
       const dataMatch = contexto.match(/\d{2}\/\d{2}\/\d{4}/);
       if (dataMatch) dataAssociada = dataMatch[0];
-      const modMatch = contexto.match(/\b(dispensa|inexigibilidade|preg[aã]o|tomada|convite|concorr[eê]ncia)\b/i);
+      const modMatch = contexto.match(/\b(dispensa|inexigibilidade|preg[aÃ£]o|tomada|convite|concorr[eÃª]ncia)\b/i);
       if (modMatch) modalidade = modMatch[1].toUpperCase();
     }
 
@@ -1100,73 +1323,73 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
   const alertas: Alerta[] = [];
   const textoLower = texto.toLowerCase();
 
-  // Detecta termos de irregularidade no documento (Manual CGM Estância + Lei 14.133/2021)
+  // Detecta termos de irregularidade no documento (Manual CGM EstÃ¢ncia + Lei 14.133/2021)
   const termosRisco: { termo: string; tipo: string; desc: string; pts: number; fundamentacao?: string }[] = [
-    // Modalidades e contratação
-    { termo: "dispensa de licitação", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licitação", pts: 5, fundamentacao: "Lei 14.133/2021, art. 75" },
-    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licitação", pts: 5, fundamentacao: "Lei 14.133/2021, art. 74" },
-    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contratação emergencial", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75, VIII" },
-    { termo: "sem licitação", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contratação sem licitação", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75" },
+    // Modalidades e contrataÃ§Ã£o
+    { termo: "dispensa de licitaÃ§Ã£o", tipo: "MENCAO_DISPENSA", desc: "Documento menciona dispensa de licitaÃ§Ã£o", pts: 5, fundamentacao: "Lei 14.133/2021, art. 75" },
+    { termo: "inexigibilidade", tipo: "MENCAO_INEXIGIBILIDADE", desc: "Documento menciona inexigibilidade de licitaÃ§Ã£o", pts: 5, fundamentacao: "Lei 14.133/2021, art. 74" },
+    { termo: "emergencial", tipo: "MENCAO_EMERGENCIAL", desc: "Documento menciona contrataÃ§Ã£o emergencial", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75, VIII" },
+    { termo: "sem licitaÃ§Ã£o", tipo: "MENCAO_SEM_LICITACAO", desc: "Documento menciona contrataÃ§Ã£o sem licitaÃ§Ã£o", pts: 10, fundamentacao: "Lei 14.133/2021, art. 75" },
     { termo: "sigilo", tipo: "MENCAO_SIGILO", desc: "Documento menciona sigilo", pts: 10, fundamentacao: "Lei 14.133/2021, art. 24" },
-    // Documentos obrigatórios (Manual §DFD/ETP/TR)
-    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica ausência de Documento de Formalização da Demanda (DFD)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
-    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica ausência de Estudo Técnico Preliminar (ETP)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
-    { termo: "sem termo de referência", tipo: "AUSENCIA_TR", desc: "Indica ausência de Termo de Referência", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
-    { termo: "sem projeto básico", tipo: "AUSENCIA_PB", desc: "Indica ausência de Projeto Básico", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
-    // Empenho e liquidação (Manual §2.6, §2.8)
-    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa (Art. 60 Lei 4.320/64)", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
-    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido após execução da despesa", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
-    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho prévio", pts: 25, fundamentacao: "Art. 60, Lei 4.320/64" },
-    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "Liquidação sem atesto do fiscal/responsável (Manual §2.8)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
+    // Documentos obrigatÃ³rios (Manual Â§DFD/ETP/TR)
+    { termo: "sem dfd", tipo: "AUSENCIA_DFD", desc: "Indica ausÃªncia de Documento de FormalizaÃ§Ã£o da Demanda (DFD)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem etp", tipo: "AUSENCIA_ETP", desc: "Indica ausÃªncia de Estudo TÃ©cnico Preliminar (ETP)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem termo de referÃªncia", tipo: "AUSENCIA_TR", desc: "Indica ausÃªncia de Termo de ReferÃªncia", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    { termo: "sem projeto bÃ¡sico", tipo: "AUSENCIA_PB", desc: "Indica ausÃªncia de Projeto BÃ¡sico", pts: 15, fundamentacao: "Lei 14.133/2021, art. 18" },
+    // Empenho e liquidaÃ§Ã£o (Manual Â§2.6, Â§2.8)
+    { termo: "empenho a posteriori", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido apÃ³s execuÃ§Ã£o da despesa (Art. 60 Lei 4.320/64)", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "empenho posterior", tipo: "EMPENHO_POSTERIORI", desc: "Empenho emitido apÃ³s execuÃ§Ã£o da despesa", pts: 20, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem empenho", tipo: "SEM_EMPENHO", desc: "Despesa realizada sem empenho prÃ©vio", pts: 25, fundamentacao: "Art. 60, Lei 4.320/64" },
+    { termo: "sem atesto", tipo: "SEM_ATESTO", desc: "LiquidaÃ§Ã£o sem atesto do fiscal/responsÃ¡vel (Manual Â§2.8)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
     { termo: "sem fiscal", tipo: "SEM_FISCAL_CONTRATO", desc: "Contrato sem fiscal designado (Art. 117 Lei 14.133/2021)", pts: 15, fundamentacao: "Lei 14.133/2021, art. 117" },
     { termo: "sem gestor", tipo: "SEM_GESTOR_CONTRATO", desc: "Contrato sem gestor designado", pts: 10, fundamentacao: "Lei 14.133/2021, art. 117" },
-    // Aditivos (Manual §2.5)
+    // Aditivos (Manual Â§2.5)
     { termo: "aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona aditivo contratual", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
     { termo: "termo aditivo", tipo: "MENCAO_ADITIVO", desc: "Documento menciona termo aditivo", pts: 5, fundamentacao: "Lei 14.133/2021, art. 125" },
-    { termo: "acréscimo de 25%", tipo: "ADITIVO_LIMITE", desc: "Referência ao limite de 25% de acréscimo em aditivos (Art. 125 Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 125" },
-    // Certidões (Manual Check Lists)
-    { termo: "certidão vencida", tipo: "CERTIDAO_VENCIDA", desc: "Certidão com validade expirada", pts: 15, fundamentacao: "Lei 14.133/2021, art. 69" },
-    { termo: "certidão negativa", tipo: "INFO_CERTIDAO", desc: "Documento menciona certidão negativa", pts: 0 },
-    { termo: "cnd", tipo: "INFO_CERTIDAO", desc: "Referência a CND (Certidão Negativa de Débitos)", pts: 0 },
-    // Retenções tributárias (Manual §2.9/§2.12)
-    { termo: "sem retenção", tipo: "AUSENCIA_RETENCAO", desc: "Possível ausência de retenção tributária obrigatória", pts: 10, fundamentacao: "Lei 14.133/2021, art. 122" },
-    { termo: "sem retenção de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "Ausência de retenção de Imposto de Renda (IN RFB 1.234/2012)", pts: 15, fundamentacao: "IN RFB 1.234/2012" },
-    { termo: "sem retenção de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "Ausência de retenção de ISS", pts: 10, fundamentacao: "Lei Complementar 116/2003" },
-    { termo: "sem retenção previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "Ausência de retenção previdenciária (IN RFB 2.110/2022)", pts: 15, fundamentacao: "IN RFB 2.110/2022" },
-    // Ordem cronológica (Manual §2.9)
-    { termo: "ordem cronológica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "Referência à ordem cronológica de pagamentos (Art. 141 Lei 14.133)", pts: 0, fundamentacao: "Lei 14.133/2021, art. 141" },
-    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronológica", pts: 15, fundamentacao: "Lei 14.133/2021, art. 141" },
-    // Cotação (Manual §2.4)
-    { termo: "cotação única", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cotação de preços (mínimo 3 obrigatório - IN SEGES/ME 65/2021)", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
-    { termo: "pesquisa de preço insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de preços insuficiente", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
+    { termo: "acrÃ©scimo de 25%", tipo: "ADITIVO_LIMITE", desc: "ReferÃªncia ao limite de 25% de acrÃ©scimo em aditivos (Art. 125 Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 125" },
+    // CertidÃµes (Manual Check Lists)
+    { termo: "certidÃ£o vencida", tipo: "CERTIDAO_VENCIDA", desc: "CertidÃ£o com validade expirada", pts: 15, fundamentacao: "Lei 14.133/2021, art. 69" },
+    { termo: "certidÃ£o negativa", tipo: "INFO_CERTIDAO", desc: "Documento menciona certidÃ£o negativa", pts: 0 },
+    { termo: "cnd", tipo: "INFO_CERTIDAO", desc: "ReferÃªncia a CND (CertidÃ£o Negativa de DÃ©bitos)", pts: 0 },
+    // RetenÃ§Ãµes tributÃ¡rias (Manual Â§2.9/Â§2.12)
+    { termo: "sem retenÃ§Ã£o", tipo: "AUSENCIA_RETENCAO", desc: "PossÃ­vel ausÃªncia de retenÃ§Ã£o tributÃ¡ria obrigatÃ³ria", pts: 10, fundamentacao: "Lei 14.133/2021, art. 122" },
+    { termo: "sem retenÃ§Ã£o de ir", tipo: "AUSENCIA_RETENCAO_IR", desc: "AusÃªncia de retenÃ§Ã£o de Imposto de Renda (IN RFB 1.234/2012)", pts: 15, fundamentacao: "IN RFB 1.234/2012" },
+    { termo: "sem retenÃ§Ã£o de iss", tipo: "AUSENCIA_RETENCAO_ISS", desc: "AusÃªncia de retenÃ§Ã£o de ISS", pts: 10, fundamentacao: "Lei Complementar 116/2003" },
+    { termo: "sem retenÃ§Ã£o previdenc", tipo: "AUSENCIA_RETENCAO_INSS", desc: "AusÃªncia de retenÃ§Ã£o previdenciÃ¡ria (IN RFB 2.110/2022)", pts: 15, fundamentacao: "IN RFB 2.110/2022" },
+    // Ordem cronolÃ³gica (Manual Â§2.9)
+    { termo: "ordem cronolÃ³gica", tipo: "INFO_ORDEM_CRONOLOGICA", desc: "ReferÃªncia Ã  ordem cronolÃ³gica de pagamentos (Art. 141 Lei 14.133)", pts: 0, fundamentacao: "Lei 14.133/2021, art. 141" },
+    { termo: "fora da ordem", tipo: "QUEBRA_ORDEM_CRONOLOGICA", desc: "Pagamento fora da ordem cronolÃ³gica", pts: 15, fundamentacao: "Lei 14.133/2021, art. 141" },
+    // CotaÃ§Ã£o (Manual Â§2.4)
+    { termo: "cotaÃ§Ã£o Ãºnica", tipo: "COTACAO_INSUFICIENTE", desc: "Apenas uma cotaÃ§Ã£o de preÃ§os (mÃ­nimo 3 obrigatÃ³rio - IN SEGES/ME 65/2021)", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
+    { termo: "pesquisa de preÃ§o insuficiente", tipo: "COTACAO_INSUFICIENTE", desc: "Pesquisa de preÃ§os insuficiente", pts: 15, fundamentacao: "IN SEGES/ME 65/2021" },
     // Obras (Manual Check Lists)
-    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (Anotação de Responsabilidade Técnica)", pts: 15, fundamentacao: "Lei 6.496/1977" },
-    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade Técnica)", pts: 15, fundamentacao: "Resolução CAU/BR 51/2013" },
+    { termo: "sem art", tipo: "AUSENCIA_ART", desc: "Obra sem ART (AnotaÃ§Ã£o de Responsabilidade TÃ©cnica)", pts: 15, fundamentacao: "Lei 6.496/1977" },
+    { termo: "sem rrt", tipo: "AUSENCIA_RRT", desc: "Obra sem RRT (Registro de Responsabilidade TÃ©cnica)", pts: 15, fundamentacao: "ResoluÃ§Ã£o CAU/BR 51/2013" },
     { termo: "sem cno", tipo: "AUSENCIA_CNO", desc: "Obra sem CNO (Cadastro Nacional de Obras)", pts: 10, fundamentacao: "IN RFB 1.845/2018" },
-    { termo: "sem alvará", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvará de construção", pts: 15, fundamentacao: "Lei 14.133/2021, art. 8º" },
-    { termo: "sem medição", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem medição/boletim de medição", pts: 15, fundamentacao: "Lei 14.133/2021, art. 140" },
-    // Diárias (Manual Check Lists)
-    { termo: "sem relatório de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "Diária sem relatório de viagem (prazo: 5 dias úteis)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 74" },
-    { termo: "diária", tipo: "INFO_DIARIA", desc: "Documento menciona diárias", pts: 0 },
+    { termo: "sem alvarÃ¡", tipo: "AUSENCIA_ALVARA", desc: "Obra sem alvarÃ¡ de construÃ§Ã£o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 8Âº" },
+    { termo: "sem mediÃ§Ã£o", tipo: "AUSENCIA_MEDICAO", desc: "Obra sem mediÃ§Ã£o/boletim de mediÃ§Ã£o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 140" },
+    // DiÃ¡rias (Manual Check Lists)
+    { termo: "sem relatÃ³rio de viagem", tipo: "AUSENCIA_RELATORIO_VIAGEM", desc: "DiÃ¡ria sem relatÃ³rio de viagem (prazo: 5 dias Ãºteis)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 74" },
+    { termo: "diÃ¡ria", tipo: "INFO_DIARIA", desc: "Documento menciona diÃ¡rias", pts: 0 },
     // Fracionamento
-    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10, fundamentacao: "Lei 14.133/2021, art. 23, §5º" },
-    { termo: "sobrepreço", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepreço", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
+    { termo: "fracionamento", tipo: "MENCAO_FRACIONAMENTO", desc: "Documento menciona fracionamento de despesa", pts: 10, fundamentacao: "Lei 14.133/2021, art. 23, Â§5Âº" },
+    { termo: "sobrepreÃ§o", tipo: "MENCAO_SOBREPRECO", desc: "Documento menciona sobrepreÃ§o", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
     { termo: "superfaturamento", tipo: "MENCAO_SUPERFATURAMENTO", desc: "Documento menciona superfaturamento", pts: 15, fundamentacao: "Lei 14.133/2021, art. 59" },
     // Matriz de risco
-    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "Ausência de Matriz de Risco (Art. 6º, XXVII, Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 6º, XXVII" },
+    { termo: "sem matriz de risco", tipo: "AUSENCIA_MATRIZ_RISCO", desc: "AusÃªncia de Matriz de Risco (Art. 6Âº, XXVII, Lei 14.133)", pts: 10, fundamentacao: "Lei 14.133/2021, art. 6Âº, XXVII" },
     // Controle patrimonial
     { termo: "sem tombamento", tipo: "AUSENCIA_TOMBAMENTO", desc: "Material permanente sem tombamento patrimonial", pts: 10, fundamentacao: "Lei 4.320/64, art. 94" },
-    // Classificação orçamentária (Res. TCE/SE 267/2011 + Portaria STN 448/2002)
-    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolução TCE/SE 267/2011" },
+    // ClassificaÃ§Ã£o orÃ§amentÃ¡ria (Res. TCE/SE 267/2011 + Portaria STN 448/2002)
+    { termo: "natureza da despesa incorreta", tipo: "NATUREZA_DESPESA_INCORRETA", desc: "Natureza da despesa classificada incorretamente (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "ResoluÃ§Ã£o TCE/SE 267/2011" },
     { termo: "subelemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
     { termo: "sub-elemento incorreto", tipo: "SUBELEMENTO_INCORRETO_TEXTO", desc: "Subelemento de despesa classificado incorretamente (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
-    { termo: "classificação econômica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "Classificação econômica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "Resolução TCE/SE 267/2011" },
+    { termo: "classificaÃ§Ã£o econÃ´mica incorreta", tipo: "CLASSIFICACAO_INCORRETA", desc: "ClassificaÃ§Ã£o econÃ´mica da despesa incorreta (Res. TCE/SE 267/2011)", pts: 20, fundamentacao: "ResoluÃ§Ã£o TCE/SE 267/2011" },
     { termo: "elemento de despesa incorreto", tipo: "ELEMENTO_DESPESA_INCORRETO", desc: "Elemento de despesa incorreto (Portaria STN 448/2002)", pts: 20, fundamentacao: "Portaria STN 448/2002" },
   ];
 
   const tiposJaAdicionados = new Set<string>();
   for (const tr of termosRisco) {
-    if (tr.pts === 0) continue; // termos informativos, não geram alerta
+    if (tr.pts === 0) continue; // termos informativos, nÃ£o geram alerta
     if (tiposJaAdicionados.has(tr.tipo)) continue; // evita duplicatas do mesmo tipo
     if (textoLower.includes(tr.termo)) {
       tiposJaAdicionados.add(tr.tipo);
@@ -1182,12 +1405,12 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
         descricao: "Valor elevado encontrado no documento (acima de R$ 500 mil)",
         pontuacao: 5,
         detalhes: `Valor: R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
-        fundamentacao: "Lei 14.133/2021, art. 23, §1º"
+        fundamentacao: "Lei 14.133/2021, art. 23, Â§1Âº"
       });
     }
   }
 
-  // Verifica se dispensa de pequeno valor está acima do limite (Art. 75, II, Lei 14.133)
+  // Verifica se dispensa de pequeno valor estÃ¡ acima do limite (Art. 75, II, Lei 14.133)
   if (textoLower.includes("dispensa") && (textoLower.includes("pequeno valor") || textoLower.includes("art. 75"))) {
     for (const v of dados.valores) {
       if (v > LIMITE_DISPENSA_PEQUENO_VALOR) {
@@ -1203,7 +1426,7 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
     }
   }
 
-  // Verifica datas — NF antes de empenho mencionado no texto
+  // Verifica datas â€” NF antes de empenho mencionado no texto
   if (dados.datas.length >= 2 && dados.empenhos.length > 0) {
     const parseData = (s: string): Date | null => {
       const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
@@ -1220,7 +1443,7 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
         if (datesParsed[0].dt!.getTime() < datesParsed[1].dt!.getTime()) {
           alertas.push({
             tipo: "NF_ANTERIOR_EMPENHO_PDF",
-            descricao: "Possível NF emitida antes do empenho detectada no documento (Art. 60 Lei 4.320/64)",
+            descricao: "PossÃ­vel NF emitida antes do empenho detectada no documento (Art. 60 Lei 4.320/64)",
             pontuacao: 15,
             detalhes: `Data anterior: ${datesParsed[0].str} | Data posterior: ${datesParsed[1].str}`,
             fundamentacao: "Art. 60, Lei 4.320/64"
@@ -1233,7 +1456,7 @@ function regrasTextoLivre(texto: string, dados: DadosTextoLivre): Alerta[] {
   return alertas;
 }
 
-/* ── Nível por pontuação ────────────────────────────────────────── */
+/* â”€â”€ NÃ­vel por pontuaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function nivelPorScore(score: number): ResultadoAnalise["nivel"] {
   if (score <= 20) return "BAIXO";
   if (score <= 40) return "MEDIO";
@@ -1241,7 +1464,151 @@ function nivelPorScore(score: number): ResultadoAnalise["nivel"] {
   return "CRITICO";
 }
 
-/* ── Função principal ───────────────────────────────────────────── */
+/* â”€â”€ OCR via Workers AI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+async function ocrViaAI(ai: Ai, imageBuffer: ArrayBuffer): Promise<string> {
+  try {
+    const result = await ai.run("@cf/llava-hf/llava-1.5-7b-hf", {
+      image: [...new Uint8Array(imageBuffer)],
+      prompt:
+        "VocÃª estÃ¡ analisando um documento pÃºblico brasileiro (controle de quilometragem, nota fiscal, DANFE, mapa de abastecimento, certidÃ£o ou similar). " +
+        "Extraia TODO o texto visÃ­vel na imagem: datas, horÃ¡rios, locais, quilometragens, valores, nomes, nÃºmeros, siglas, assinaturas e cabeÃ§alhos. " +
+        "Transcreva exatamente como estÃ¡ escrito, incluindo textos manuscritos. " +
+        "NÃ£o descreva a imagem â€” retorne apenas o texto extraÃ­do, linha por linha.",
+      max_tokens: 4096,
+    }) as { description?: string };
+    return result?.description?.trim() ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/* â”€â”€ AnÃ¡lise completa de imagem (JPEG/PNG/WEBP/TIFF) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+export async function analisarImagem(input: {
+  nomeArquivo: string;
+  tipo: string;
+  tamanho: number;
+  conteudoImagem: ArrayBuffer;
+  ai?: Ai;
+  db?: D1Database;
+}): Promise<ResultadoAnalise> {
+  const alertas: Alerta[] = [];
+
+  if (!input.ai) {
+    return {
+      score: 0,
+      nivel: "BAIXO",
+      alertas: [{
+        tipo: "OCR_INDISPONIVEL",
+        descricao: "OCR nÃ£o disponÃ­vel â€” Workers AI nÃ£o configurado neste ambiente",
+        pontuacao: 0,
+        detalhes: "Para leitura de imagens Ã© necessÃ¡rio o Workers AI. Em produÃ§Ã£o estÃ¡ habilitado automaticamente."
+      }],
+      resumo: { totalRegistros: 0, valorTotal: 0, registrosAnalisados: 0, textoExtraido: "" }
+    };
+  }
+
+  const textoOcr = await ocrViaAI(input.ai, input.conteudoImagem);
+
+  if (!textoOcr || textoOcr.length < 10) {
+    return {
+      score: 0,
+      nivel: "BAIXO",
+      alertas: [{
+        tipo: "OCR_SEM_TEXTO",
+        descricao: "NÃ£o foi possÃ­vel extrair texto da imagem",
+        pontuacao: 0,
+        detalhes: "A imagem pode estar muito escura, desfocada ou com resoluÃ§Ã£o insuficiente para leitura."
+      }],
+      resumo: { totalRegistros: 0, valorTotal: 0, registrosAnalisados: 0, textoExtraido: "" }
+    };
+  }
+
+  // Carrega classificaÃ§Ãµes do banco
+  let classificacoes = CLASSIFICACAO_PESSOAL;
+  let regrasDb: RegraClassificacaoDB[] = [];
+  if (input.db) {
+    try {
+      const [elemRes, regrasRes] = await Promise.all([
+        input.db.prepare("SELECT codigo, descricao, vinculos FROM elementos_despesa").all<{ codigo: string; descricao: string; vinculos: string }>(),
+        input.db.prepare("SELECT tipo_ato, vinculo_servidor, codigo_completo, descricao, fundamentacao FROM regras_classificacao").all<RegraClassificacaoDB>(),
+      ]);
+      if (elemRes.results.length > 0) {
+        classificacoes = elemRes.results.map(r => ({
+          codigo: r.codigo,
+          descricao: r.descricao,
+          vinculos: JSON.parse(r.vinculos) as VinculoServedor[],
+        }));
+      }
+      regrasDb = regrasRes.results;
+    } catch { /* usa locais */ }
+  }
+
+  const dados = parseTextoLivre(textoOcr);
+  const valorTotal = dados.valores.reduce((s, v) => s + v, 0);
+
+  alertas.push(
+    ...regrasTextoLivre(textoOcr, dados),
+    ...regraSubelementoIncorretoPdf(textoOcr, classificacoes, regrasDb),
+    ...regraProcessoCombustivel(textoOcr),
+  );
+
+  if (dados.rows.length > 0) {
+    alertas.push(...regraCnpjInvalido(dados.rows), ...regraDispensaSemLicitacao(dados.rows));
+  }
+
+  let cnpjsEnriquecidos: Array<{ cnpj: string; razao_social?: string; situacao?: string; data_abertura?: string; porte?: string; natureza_juridica?: string; capital_social?: number; cnae_principal?: string; socios?: Array<{nome: string; qualificacao?: string}> }> = [];
+  if (dados.cnpjs.length > 0) {
+    const [dadosCnpj, sancionados] = await Promise.all([
+      consultarCnpjsBrasilApi(dados.cnpjs),
+      consultarSancoesCGU(dados.cnpjs),
+    ]);
+    cnpjsEnriquecidos = dados.cnpjs.map(cnpj => {
+      const info = dadosCnpj.get(cnpj);
+      return {
+        cnpj,
+        razao_social: info?.razao_social,
+        situacao: info?.descricao_situacao_cadastral,
+        data_abertura: info?.data_inicio_atividade,
+        porte: info?.porte,
+        natureza_juridica: info?.natureza_juridica,
+        capital_social: info?.capital_social,
+        cnae_principal: info?.cnae_fiscal_descricao,
+        socios: info?.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+      };
+    });
+    if (dados.rows.length > 0) {
+      alertas.push(
+        ...regraEmpresaRecenteCriada(dados.rows, dadosCnpj),
+        ...regraSituacaoIrregular(dados.rows, dadosCnpj),
+        ...regraEmpresaSancionada(dados.rows, sancionados),
+        ...regraCnaeIncompativel(dados.rows, dadosCnpj),
+      );
+    }
+  }
+
+  const score = Math.min(100, alertas.reduce((t, a) => t + a.pontuacao, 0));
+  return {
+    score,
+    nivel: nivelPorScore(score),
+    alertas,
+    resumo: {
+      totalRegistros: 1,
+      valorTotal,
+      registrosAnalisados: 1,
+      textoExtraido: textoOcr.substring(0, 15000),
+    },
+    detalhesExtraidos: {
+      valores: dados.valores,
+      datas: dados.datas,
+      cnpjs: cnpjsEnriquecidos.length > 0 ? cnpjsEnriquecidos : dados.cnpjs.map(c => ({ cnpj: c })),
+      termos: dados.termos,
+      empenhos: dados.empenhos,
+      nds: dados.nds,
+    }
+  };
+}
+
+/* â”€â”€ FunÃ§Ã£o principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export async function analisarDocumento(input: {
   nomeArquivo: string;
   tipo: string;
@@ -1259,7 +1626,7 @@ export async function analisarDocumento(input: {
   let totalPaginas = 0;
   let paginasExtraidas: { pagina: number; texto: string }[] = [];
 
-  // Carrega classificações do banco se disponível, senão usa hardcoded
+  // Carrega classificaÃ§Ãµes do banco se disponÃ­vel, senÃ£o usa hardcoded
   let classificacoes = CLASSIFICACAO_PESSOAL;
   let regrasDb: RegraClassificacaoDB[] = [];
   if (input.db) {
@@ -1276,12 +1643,12 @@ export async function analisarDocumento(input: {
         }));
       }
       regrasDb = regrasRes.results;
-    } catch { /* DB indisponível — usa dados locais */ }
+    } catch { /* DB indisponÃ­vel â€” usa dados locais */ }
   }
 
   let detalhesExtraidos: ResultadoAnalise["detalhesExtraidos"] = {};
   if (input.conteudo && (input.tipo.includes("csv") || input.tipo.includes("text"))) {
-    // ── Análise CSV estruturada ───────────────────────────────────
+    // â”€â”€ AnÃ¡lise CSV estruturada â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const rows = parseCsv(input.conteudo);
     totalRegistros = rows.length;
 
@@ -1306,7 +1673,7 @@ export async function analisarDocumento(input: {
       ...regraSubelementoIncorreto(rows, classificacoes)
     );
 
-    // Regras com consulta a APIs públicas (BrasilAPI + Portal da Transparência)
+    // Regras com consulta a APIs pÃºblicas (BrasilAPI + Portal da TransparÃªncia)
     const cnpjs = extrairCnpjsUnicos(rows);
     if (cnpjs.length > 0) {
       const [dadosCnpj, sancionados] = await Promise.all([
@@ -1340,20 +1707,20 @@ export async function analisarDocumento(input: {
         ...regraCnaeIncompativel(rows, dadosCnpj)
       );
     }
-    // Outros dados extraídos
+    // Outros dados extraÃ­dos
     detalhesExtraidos.valores = rows.map(r => valorNumerico(r, "valor", "vlr", "montante", "total")).filter(v => v > 0);
     detalhesExtraidos.datas = rows.map(r => campo(r, "data", "dt_empenho", "emissao", "dt_pagamento")).filter(Boolean);
     detalhesExtraidos.empenhos = rows.map(r => campo(r, "empenho", "numero", "nota", "id")).filter(Boolean);
     detalhesExtraidos.nds = rows.map(r => campo(r, "natureza", "nd", "natureza_despesa", "classificacao_despesa")).filter(Boolean);
   } else if (input.conteudoPdf && input.tipo.includes("pdf")) {
-    // ── Análise PDF ───────────────────────────────────────────────
+    // â”€â”€ AnÃ¡lise PDF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const { extrairTextoPdfPorPagina, extrairImagensPdf } = await import("./pdf_extractor");
     const resultadoPdf = await extrairTextoPdfPorPagina(input.conteudoPdf);
     textoExtraido = resultadoPdf.textoCompleto;
     totalPaginas = resultadoPdf.totalPaginas;
     paginasExtraidas = resultadoPdf.paginas;
 
-    // ── OCR: extrai texto de imagens escaneadas via Workers AI ───
+    // â”€â”€ OCR: extrai texto de imagens escaneadas via Workers AI â”€â”€â”€
     if (input.ai) {
       try {
         const imagens = extrairImagensPdf(input.conteudoPdf);
@@ -1374,7 +1741,7 @@ export async function analisarDocumento(input: {
             textoExtraido = (textoExtraido || "") + "\n\n--- TEXTO OCR (imagens escaneadas) ---\n" + textoOcr;
           }
         }
-      } catch { /* OCR indisponível — continua com texto digital */ }
+      } catch { /* OCR indisponÃ­vel â€” continua com texto digital */ }
     }
 
     if (textoExtraido.trim().length > 0) {
@@ -1385,38 +1752,44 @@ export async function analisarDocumento(input: {
       // Regras de texto livre
       alertas.push(...regrasTextoLivre(textoExtraido, dados));
 
-      // Regra de subelemento incorreto por análise de texto (Res. TCE/SE 267 + Portaria STN 448/2002)
+      // Regra de subelemento incorreto por anÃ¡lise de texto (Res. TCE/SE 267 + Portaria STN 448/2002)
       alertas.push(...regraSubelementoIncorretoPdf(textoExtraido, classificacoes, regrasDb));
 
-      // Se encontrou CNPJs, aplica regras de CNPJ nos registros sintéticos
+      // Regras especÃ­ficas para processos de combustÃ­vel (DANFE, mapa, km, certidÃµes)
+      const paginasSemTexto = paginasExtraidas.filter(p => p.texto.trim().length < 30).length;
+      alertas.push(...regraProcessoCombustivel(textoExtraido, paginasSemTexto, totalPaginas));
+
+      // Se encontrou CNPJs, aplica regras de CNPJ nos registros sintÃ©ticos
       if (dados.rows.length > 0) {
         alertas.push(
           ...regraCnpjInvalido(dados.rows),
           ...regraDispensaSemLicitacao(dados.rows)
         );
+      }
 
-        // Consulta APIs para CNPJs encontrados no PDF
-        if (dados.cnpjs.length > 0) {
-          const [dadosCnpj, sancionados] = await Promise.all([
-            consultarCnpjsBrasilApi(dados.cnpjs),
-            consultarSancoesCGU(dados.cnpjs, input.apiKeyTransparencia),
-          ]);
+      // Consulta BrasilAPI para todos os CNPJs encontrados (PDF ou CSV)
+      if (dados.cnpjs.length > 0) {
+        const [dadosCnpj, sancionados] = await Promise.all([
+          consultarCnpjsBrasilApi(dados.cnpjs),
+          consultarSancoesCGU(dados.cnpjs, input.apiKeyTransparencia),
+        ]);
 
-          detalhesExtraidos.cnpjs = dados.cnpjs.map(cnpj => {
-            const info = dadosCnpj.get(cnpj);
-            return {
-              cnpj,
-              razao_social: info?.razao_social,
-              situacao: info?.descricao_situacao_cadastral,
-              data_abertura: info?.data_inicio_atividade,
-              porte: info?.porte,
-              natureza_juridica: info?.natureza_juridica,
-              capital_social: info?.capital_social,
-              cnae_principal: info?.cnae_fiscal_descricao,
-              socios: info?.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
-            };
-          });
+        detalhesExtraidos.cnpjs = dados.cnpjs.map(cnpj => {
+          const info = dadosCnpj.get(cnpj);
+          return {
+            cnpj,
+            razao_social: info?.razao_social,
+            situacao: info?.descricao_situacao_cadastral,
+            data_abertura: info?.data_inicio_atividade,
+            porte: info?.porte,
+            natureza_juridica: info?.natureza_juridica,
+            capital_social: info?.capital_social,
+            cnae_principal: info?.cnae_fiscal_descricao,
+            socios: info?.qsa?.map(s => ({ nome: s.nome_socio, qualificacao: s.qualificacao_socio }))
+          };
+        });
 
+        if (dados.rows.length > 0) {
           alertas.push(
             ...regraEmpresaRecenteCriada(dados.rows, dadosCnpj),
             ...regraSituacaoIrregular(dados.rows, dadosCnpj),
@@ -1427,17 +1800,18 @@ export async function analisarDocumento(input: {
             ...regraCnaeIncompativel(dados.rows, dadosCnpj)
           );
         }
-        // Outros dados extraídos
-        detalhesExtraidos.valores = dados.valores;
-        detalhesExtraidos.datas = dados.datas;
-        detalhesExtraidos.empenhos = dados.empenhos;
-        detalhesExtraidos.nds = dados.nds;
-        detalhesExtraidos.termos = dados.termos;
       }
+
+      // Outros dados extraÃ­dos
+      detalhesExtraidos.valores = dados.valores;
+      detalhesExtraidos.datas = dados.datas;
+      detalhesExtraidos.empenhos = dados.empenhos;
+      detalhesExtraidos.nds = dados.nds;
+      detalhesExtraidos.termos = dados.termos;
     }
   }
 
-  // Fallback: análise pelo nome quando não há conteúdo parseável
+  // Fallback: anÃ¡lise pelo nome quando nÃ£o hÃ¡ conteÃºdo parseÃ¡vel
   if (alertas.length === 0 && totalRegistros === 0) {
     const nome = input.nomeArquivo.toLowerCase();
     if (nome.includes("dispensa") || nome.includes("emergencial")) {

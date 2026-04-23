@@ -1,4 +1,4 @@
-import { analisarDocumento } from "../analise";
+import { analisarDocumento, analisarImagem } from "../analise";
 
 interface Env {
   DB: D1Database;
@@ -24,26 +24,27 @@ export async function reanaliseRoute(env: Env, username: string, id: number): Pr
   let conteudo: string | undefined;
   let conteudoPdf: ArrayBuffer | undefined;
   const tipo = doc.tipo || "";
+  const nomeExt = doc.nome_arquivo.split(".").pop()?.toLowerCase() ?? "";
+  const EXTS_IMAGEM = ["jpg", "jpeg", "png", "webp", "tiff", "tif", "bmp"];
+  const isImagem = tipo.startsWith("image/") || EXTS_IMAGEM.includes(nomeExt);
 
-  if (tipo.includes("csv") || tipo.includes("text") || doc.nome_arquivo.endsWith(".csv")) {
+  let resultado;
+  if (isImagem) {
+    const conteudoImagem = await obj.arrayBuffer();
+    resultado = await analisarImagem({ nomeArquivo: doc.nome_arquivo, tipo, tamanho: doc.tamanho, conteudoImagem, db: env.DB, ai: env.AI });
+  } else if (tipo.includes("csv") || tipo.includes("text") || doc.nome_arquivo.endsWith(".csv")) {
     conteudo = await obj.text();
+    resultado = await analisarDocumento({ nomeArquivo: doc.nome_arquivo, tipo, tamanho: doc.tamanho, conteudo, db: env.DB, ai: env.AI });
   } else if (tipo.includes("pdf") || doc.nome_arquivo.endsWith(".pdf")) {
     conteudoPdf = await obj.arrayBuffer();
+    resultado = await analisarDocumento({ nomeArquivo: doc.nome_arquivo, tipo, tamanho: doc.tamanho, conteudoPdf, db: env.DB, ai: env.AI });
+  } else {
+    resultado = await analisarDocumento({ nomeArquivo: doc.nome_arquivo, tipo, tamanho: doc.tamanho, conteudo: "", db: env.DB, ai: env.AI });
   }
-
-  const resultado = await analisarDocumento({
-    nomeArquivo: doc.nome_arquivo,
-    tipo: tipo,
-    tamanho: doc.tamanho,
-    conteudo,
-    conteudoPdf,
-    db: env.DB,
-    ai: env.AI,
-  });
 
   await env.DB
     .prepare("UPDATE documentos SET score = ?, nivel = ?, alertas = ?, status = 'concluido' WHERE id = ?")
-    .bind(resultado.score, resultado.nivel, JSON.stringify({ alertas: resultado.alertas, resumo: resultado.resumo }), id)
+    .bind(resultado.score, resultado.nivel, JSON.stringify({ alertas: resultado.alertas, resumo: resultado.resumo, detalhesExtraidos: resultado.detalhesExtraidos }), id)
     .run();
 
   return Response.json({ ok: true, resultado });

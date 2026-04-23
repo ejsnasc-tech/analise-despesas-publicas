@@ -13,7 +13,8 @@ bucket_name = "andre-fiscaliza-docs"
 
 # [ai]
 # binding = "AI"
-# Nota: AI requer autenticação Cloudflare. Descomente para uso em produção (deploy).
+# Nota: Workers AI — habilitado para OCR de imagens e PDFs escaneados.
+# Descomentado somente para deploy (--remote). Em dev local, o binding AI não funciona sem auth.
 
 [vars]
 ADMIN_USER = "andre"

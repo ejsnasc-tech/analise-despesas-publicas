@@ -6,12 +6,12 @@ interface Env {
   BUCKET: R2Bucket;
 }
 
-function parseAlertasData(alertas: string | null): { alertas: unknown[]; resumo?: unknown } {
+function parseAlertasData(alertas: string | null): { alertas: unknown[]; resumo?: unknown; detalhesExtraidos?: unknown } {
   if (!alertas) return { alertas: [] };
   try {
     const parsed = JSON.parse(alertas);
     if (Array.isArray(parsed)) return { alertas: parsed };
-    if (parsed && Array.isArray(parsed.alertas)) return { alertas: parsed.alertas, resumo: parsed.resumo };
+    if (parsed && Array.isArray(parsed.alertas)) return { alertas: parsed.alertas, resumo: parsed.resumo, detalhesExtraidos: parsed.detalhesExtraidos };
     return { alertas: [] };
   } catch {
     return { alertas: [] };
@@ -45,7 +45,7 @@ export async function getDocumentoRoute(env: Env, username: string, id: number):
   if (!doc) return Response.json({ ok: false, message: "Documento não encontrado" }, { status: 404 });
 
   const data = parseAlertasData(doc.alertas);
-  return Response.json({ ...doc, alertas: data.alertas, resumo: data.resumo });
+  return Response.json({ ...doc, alertas: data.alertas, resumo: data.resumo, detalhesExtraidos: data.detalhesExtraidos });
 }
 
 export async function deleteDocumentoRoute(env: Env, username: string, id: number): Promise<Response> {
